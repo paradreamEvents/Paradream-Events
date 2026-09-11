@@ -520,3 +520,6 @@ h3{font-size:clamp(1.25rem,2.4vw,1.55rem)}
 .gallery-grid .shot.extra[hidden]{display:none}
 .gallery-more{margin-top:1.8rem}
 .gallery-more[hidden]{display:none}
+
+/* gallery loading / empty state */
+.gallery-empty{margin-top:2rem;color:var(--body-grey);opacity:.7;font-size:.95rem}

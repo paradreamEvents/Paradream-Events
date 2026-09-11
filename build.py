@@ -21,9 +21,9 @@ SOCIALS = {
     "linkedin":  "",
 }
 
-# How many photos are in the gallery — files must be images/gallery-1.jpg ... gallery-N.jpg
-GALLERY_COUNT = 30
-# How many show before the "Show more" button
+# The gallery finds its own photos: drop images/gallery-1.jpg, gallery-2.jpg ...
+# into the images folder and they appear. No code change needed.
+# This is only how many show before the "Show more" button.
 GALLERY_VISIBLE = 12
 
 PHONE_DISPLAY = "81406046"
@@ -570,13 +570,6 @@ page("our-services.html", "Our Services - Paradream Events",
 
 
 # ── Gallery ─────────────────────────────────────────────────
-shots = "\n".join(
-    '      <figure class="shot%s">\n%s\n      </figure>' % (
-        "" if i <= GALLERY_VISIBLE else " extra",
-        responsive(f"images/gallery-{i}.jpg", f"Paradream event photo {i}",
-                   "(max-width:640px) 46vw, (max-width:1100px) 31vw, 360px",
-                   [500, 800, 1200], 800, 800))
-    for i in range(1, GALLERY_COUNT + 1))
 page("gallery.html", "Gallery - Paradream Events",
      "Photos from weddings, engagements, baptisms, birthdays and Christmas events by Paradream in Lebanon.",
      f"""
@@ -587,10 +580,9 @@ page("gallery.html", "Gallery - Paradream Events",
 
 <section class="band">
   <div class="band-inner">
-    <div class="gallery-grid" id="gallery-grid">
-{shots}
-    </div>
-    <p class="gallery-more"><button class="btn btn-outline" id="gallery-more" type="button">Show more photos</button></p>
+    <div class="gallery-grid" id="gallery-grid" data-visible="{GALLERY_VISIBLE}"></div>
+    <p class="gallery-empty" id="gallery-empty">Loading photos&hellip;</p>
+    <p class="gallery-more" hidden><button class="btn btn-outline" id="gallery-more" type="button">Show more photos</button></p>
   </div>
 </section>
 """)

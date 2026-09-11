@@ -134,24 +134,9 @@ var PRICING = {
     } else counters.forEach(run);
   }
 
-  /* ── Gallery: show more ──────────────────────── */
-  var moreBtn = $("#gallery-more");
-  if (moreBtn) {
-    var extras = $$(".gallery-grid .shot.extra");
-    if (!extras.length) {
-      moreBtn.parentNode.hidden = true;
-    } else {
-      extras.forEach(function (im) { im.hidden = true; });
-      moreBtn.addEventListener("click", function () {
-        extras.forEach(function (im) { im.hidden = false; });
-        moreBtn.parentNode.hidden = true;
-      });
-    }
-  }
-
-  /* ── Gallery lightbox ────────────────────────── */
-  var shots = $$(".gallery-grid img");
-  if (shots.length) {
+  /* Gallery lightbox, wired up once tiles exist */
+  function setupLightbox(shots) {
+    if (!shots.length) return;
     var box = document.createElement("div");
     box.className = "lightbox";
     box.hidden = true;
@@ -163,9 +148,7 @@ var PRICING = {
       '<p class="lb-count"></p>';
     document.body.appendChild(box);
 
-    var bi = 0,
-        bimg = $("img", box),
-        bcount = $(".lb-count", box);
+    var bi = 0, bimg = $("img", box), bcount = $(".lb-count", box);
 
     var openShot = function (n) {
       bi = (n + shots.length) % shots.length;
@@ -177,7 +160,7 @@ var PRICING = {
     };
     var closeShot = function () { box.hidden = true; document.body.style.overflow = ""; };
 
-    shots.forEach(function (s, k) { s.addEventListener("click", function () { openShot(k); }); });
+    shots.forEach(function (sh, k) { sh.addEventListener("click", function () { openShot(k); }); });
     $(".lb-close", box).addEventListener("click", closeShot);
     $(".lb-prev", box).addEventListener("click", function () { openShot(bi - 1); });
     $(".lb-next", box).addEventListener("click", function () { openShot(bi + 1); });
@@ -188,6 +171,85 @@ var PRICING = {
       if (e.key === "ArrowRight") openShot(bi + 1);
       if (e.key === "ArrowLeft") openShot(bi - 1);
     });
+  }
+
+  /* Gallery: work out which photos actually exist in images/ */
+  var grid = $("#gallery-grid");
+  if (grid) {
+    var VISIBLE = parseInt(grid.dataset.visible, 10) || 12;
+    var BATCH = 6;
+    var CAP = 200;
+
+    var gsrc = function (n, w, q) {
+      return "/.netlify/images?url=/images/gallery-" + n + ".jpg&w=" + w +
+             "&fit=cover&q=" + (q || 86);
+    };
+
+    var probe = function (n) {
+      return new Promise(function (resolve) {
+        var t = new Image();
+        t.onload = function () { resolve(n); };
+        t.onerror = function () { resolve(null); };
+        t.src = gsrc(n, 80);
+      });
+    };
+
+    var tile = function (n, hidden) {
+      var fig = document.createElement("figure");
+      fig.className = "shot" + (hidden ? " extra" : "");
+      if (hidden) fig.hidden = true;
+      var im = document.createElement("img");
+      im.src = gsrc(n, 800);
+      im.srcset = gsrc(n, 500) + " 500w, " + gsrc(n, 800) + " 800w, " + gsrc(n, 1200) + " 1200w";
+      im.sizes = "(max-width:640px) 46vw, (max-width:1100px) 31vw, 360px";
+      im.width = 800;
+      im.height = 800;
+      im.loading = "lazy";
+      im.decoding = "async";
+      im.alt = "Paradream event photo " + n;
+      im.dataset.full = gsrc(n, 1600, 88);
+      fig.appendChild(im);
+      return fig;
+    };
+
+    var found = [], next = 1;
+
+    var finish = function () {
+      var empty = $("#gallery-empty");
+      if (!found.length) {
+        if (empty) empty.textContent = "Photos coming soon.";
+        return;
+      }
+      if (empty) empty.remove();
+
+      found.sort(function (a, b) { return a - b; });
+      found.forEach(function (n, i) { grid.appendChild(tile(n, i >= VISIBLE)); });
+
+      var moreWrap = $(".gallery-more"), moreBtn = $("#gallery-more");
+      var extras = $$(".shot.extra", grid);
+      if (extras.length && moreWrap && moreBtn) {
+        moreWrap.hidden = false;
+        moreBtn.addEventListener("click", function () {
+          extras.forEach(function (f) { f.hidden = false; });
+          moreWrap.hidden = true;
+        });
+      }
+      setupLightbox($$("img", grid));
+    };
+
+    var round = function () {
+      var jobs = [];
+      for (var i = 0; i < BATCH && next + i <= CAP; i++) jobs.push(probe(next + i));
+      next += BATCH;
+      Promise.all(jobs).then(function (res) {
+        var hits = res.filter(Boolean);
+        found = found.concat(hits);
+        if (hits.length === BATCH && next <= CAP) round();
+        else finish();
+      });
+    };
+
+    round();
   }
 
   /* ── Quote calculator ────────────────────────── */

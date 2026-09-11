@@ -138,6 +138,14 @@ document.querySelectorAll('form:not(.as-form)').forEach(function (f) {
 <script>
 %s
 </script>
+<script>
+(function(){
+  var g = document.getElementById('gallery-grid');
+  if (!g) return;
+  var empty = document.getElementById('gallery-empty');
+  if (empty) empty.textContent = 'Gallery photos only load on the live site.';
+})();
+</script>
 </body></html>
 """ % (css, LOGO, nav, '\n'.join(sections), fix(footer), cookie, fabs, asst, js)
 
