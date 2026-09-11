@@ -137,7 +137,7 @@ var PRICING = {
   /* ── Gallery: show more ──────────────────────── */
   var moreBtn = $("#gallery-more");
   if (moreBtn) {
-    var extras = $$(".gallery-grid img.extra");
+    var extras = $$(".gallery-grid .shot.extra");
     if (!extras.length) {
       moreBtn.parentNode.hidden = true;
     } else {

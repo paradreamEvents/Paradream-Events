@@ -64,7 +64,7 @@ def img(slug, ext="png", w=1800, q="auto:best"):
 def hero_img(slug, ext="png"):
     return img(slug, ext, w=2600, q="auto:best")
 
-def cdn(path, w, extra="&amp;fit=cover&amp;q=80"):
+def cdn(path, w, extra="&amp;fit=cover&amp;q=86"):
     return f"/.netlify/images?url=/{path}&amp;w={w}{extra}"
 
 def responsive(path, alt, sizes, widths, ratio_w, ratio_h, cls=""):
@@ -571,10 +571,11 @@ page("our-services.html", "Our Services - Paradream Events",
 
 # ── Gallery ─────────────────────────────────────────────────
 shots = "\n".join(
-    responsive(f"images/gallery-{i}.jpg", f"Paradream event photo {i}",
-               "(max-width:700px) 46vw, (max-width:1100px) 30vw, 280px",
-               [400, 700, 1000], 800, 800,
-               cls="" if i <= GALLERY_VISIBLE else "extra")
+    '      <figure class="shot%s">\n%s\n      </figure>' % (
+        "" if i <= GALLERY_VISIBLE else " extra",
+        responsive(f"images/gallery-{i}.jpg", f"Paradream event photo {i}",
+                   "(max-width:640px) 46vw, (max-width:1100px) 31vw, 360px",
+                   [500, 800, 1200], 800, 800))
     for i in range(1, GALLERY_COUNT + 1))
 page("gallery.html", "Gallery - Paradream Events",
      "Photos from weddings, engagements, baptisms, birthdays and Christmas events by Paradream in Lebanon.",
