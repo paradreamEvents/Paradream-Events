@@ -1,0 +1,14 @@
+# Old Strikingly URLs -> new pages
+/home                       /                      301
+/proposal                   /occasions.html        301
+/engagement                 /occasions.html        301
+/bachelor                   /occasions.html        301
+/your-big-day               /occasions.html        301
+/holy-first-communion       /occasions.html        301
+/baptism                    /occasions.html        301
+/gender-reveal              /occasions.html        301
+/birthday-1                 /occasions.html        301
+/christmas                  /occasions.html        301
+/live-show-parade           /our-services.html     301
+/portfolio/items/*          /our-services.html     301
+/pages/cookie-policy        /privacy.html          301
