@@ -493,7 +493,7 @@ page("occasions.html", "Occasions We Cover - Paradream Events",
 # ── Our Services ────────────────────────────────────────────
 SERVICES = [(x["title"], x["text"]) for x in CONTENT["services"]]
 tiles = "\n".join(f"""      <a class="tile reveal" href="contact-us.html">
-{responsive(f"images/service-{i+1}.jpg", name, "(max-width:700px) 92vw, (max-width:1100px) 45vw, 360px", [400, 760, 1100], 4, 3)}
+{responsive(f"images/service-{i+1}.jpg", name, "(max-width:700px) 92vw, (max-width:1100px) 45vw, 360px", [400, 760, 1100], 1400, 1050)}
         <div class="tile-body">
           <h3>{name}</h3>
           <p>{desc}</p>

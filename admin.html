@@ -65,6 +65,13 @@ code{background:var(--cream);padding:.1rem .35rem;border-radius:2px;font-size:.9
 .entry{border:1px solid var(--line);border-radius:3px;padding:.9rem;margin-bottom:.8rem;background:#fff}
 .entry h4{margin:0 0 .7rem;font-size:.9rem;color:var(--red)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.slot{display:grid;grid-template-columns:200px 1fr;gap:1rem;border:1px solid var(--line);
+  border-radius:4px;padding:.9rem;margin-bottom:.8rem;background:#fff;align-items:start}
+.slot-img{position:relative;aspect-ratio:4/3;background:var(--cream);border-radius:3px;
+  overflow:hidden;display:grid;place-items:center}
+.slot-img img{width:100%;height:100%;object-fit:cover}
+.slot-body .fld{margin-bottom:.6rem}
+@media(max-width:640px){.slot{grid-template-columns:1fr}}
 @media(max-width:640px){.two{grid-template-columns:1fr}}
 </style>
 </head>
@@ -108,6 +115,11 @@ code{background:var(--cream);padding:.1rem .35rem;border-radius:2px;font-size:.9
     </div>
 
     <div class="grid" id="grid"></div>
+
+    <p class="muted" style="margin:.4rem 0 0">
+      Everything you change is published together in one deploy. Make all your
+      edits first, then press Publish once — each deploy costs 15 Netlify credits.
+    </p>
 
     <div class="bar">
       <button id="publish" disabled>Publish changes</button>
@@ -255,6 +267,34 @@ function render() {
   var grid = $("#grid");
   grid.innerHTML = "";
 
+  // Service tiles are fixed slots: each one belongs to a named service.
+  if (tab === "service") {
+    grid.className = "";
+    if (!content) { grid.innerHTML = "<p class='muted'>Loading...</p>"; return; }
+    grid.innerHTML = content.services.map(function (sv, i) {
+      var n = i + 1;
+      var file = "service-" + n + ".jpg";
+      var repl = queued.filter(function (q) { return q.name === file; })[0];
+      var cur = existing.filter(function (f) { return f.name === file; })[0];
+      var img = repl ? repl.dataUrl : (cur ? cur.url : "");
+      return '<div class="slot">' +
+        '<div class="slot-img">' +
+          (img ? '<img src="' + img + '" alt="">' : '<span class="muted">No photo</span>') +
+          (repl ? '<span class="badge">New</span>' : '') +
+        '</div>' +
+        '<div class="slot-body">' +
+          field("Service name", sv.title, "services." + i + ".title") +
+          field("Description", sv.text, "services." + i + ".text", true) +
+          '<button class="ghost tiny" data-slot="' + n + '">' +
+            (img ? "Change photo" : "Add photo") + '</button>' +
+          ' <span class="muted" style="font-size:.72rem">' + file + '</span>' +
+        '</div></div>';
+    }).join("");
+    refreshPublish();
+    return;
+  }
+  grid.className = "grid";
+
   var mine = existing
     .filter(function (f) { return f.name.indexOf(tab + "-") === 0; })
     .sort(function (a, b) { return numOf(a.name) - numOf(b.name); });
@@ -293,58 +333,110 @@ async function handle(files) {
     if (!file.type.indexOf || file.type.indexOf("image/") !== 0) continue;
     var img = await readImage(file);
     var dataUrl = process(img, p.w, p.h);
-    queued.push({ name: tab + "-" + nextFree() + ".jpg", dataUrl: dataUrl });
+
+    var name;
+    if (slotTarget) {
+      name = "service-" + slotTarget + ".jpg";
+      queued = queued.filter(function (q) { return q.name !== name; });
+      slotTarget = null;
+    } else {
+      name = tab + "-" + nextFree() + ".jpg";
+    }
+    queued.push({ name: name, dataUrl: dataUrl });
     render();
+    if (!slotTarget && tab === "service") break;  // one file per slot
   }
 }
 
-/* ── Publish: commit each change ───────────────── */
+function b64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+/* ── Publish: ONE commit for everything ────────────
+   Netlify charges 15 credits per production deploy, so every change
+   in this session is bundled into a single commit and a single build.
+   ------------------------------------------------------------------ */
 async function publish() {
   $("#publish").disabled = true;
   $("#log").textContent = "";
-  var done = 0, total = queued.length + deleting.length;
 
-  for (var i = 0; i < queued.length; i++) {
-    var q = queued[i];
-    try {
-      await api("/repos/" + REPO + "/contents/" + DIR + "/" + q.name, {
-        method: "PUT",
+  var changes = queued.length + deleting.length + (contentDirty ? 1 : 0);
+  if (!changes) return;
+
+  try {
+    say("Preparing " + changes + " change" + (changes === 1 ? "" : "s") + "...");
+
+    // 1. where main currently points
+    var ref = await api("/repos/" + REPO + "/git/ref/heads/" + BRANCH);
+    var headSha = ref.object.sha;
+    var headCommit = await api("/repos/" + REPO + "/git/commits/" + headSha);
+
+    // 2. upload each image as a blob
+    var tree = [];
+    for (var i = 0; i < queued.length; i++) {
+      var q = queued[i];
+      say("Uploading " + q.name);
+      var blob = await api("/repos/" + REPO + "/git/blobs", {
+        method: "POST",
+        body: JSON.stringify({ content: q.dataUrl.split(",")[1], encoding: "base64" })
+      });
+      tree.push({ path: DIR + "/" + q.name, mode: "100644", type: "blob", sha: blob.sha });
+    }
+
+    // 3. text changes
+    if (contentDirty) {
+      say("Saving text changes");
+      var cblob = await api("/repos/" + REPO + "/git/blobs", {
+        method: "POST",
         body: JSON.stringify({
-          message: "Add " + q.name + " via photo manager",
-          content: q.dataUrl.split(",")[1],
-          branch: BRANCH
+          content: b64(JSON.stringify(content, null, 2)),
+          encoding: "base64"
         })
       });
-      done++;
-      say("Uploaded " + q.name);
-    } catch (e) { say("FAILED " + q.name + ": " + e.message); }
-    $("#status").textContent = done + " / " + total;
-  }
+      tree.push({ path: "content.json", mode: "100644", type: "blob", sha: cblob.sha });
+    }
 
-  for (var j = 0; j < deleting.length; j++) {
-    var name = deleting[j];
-    var f = existing.filter(function (x) { return x.name === name; })[0];
-    if (!f) continue;
-    try {
-      await api("/repos/" + REPO + "/contents/" + DIR + "/" + name, {
-        method: "DELETE",
-        body: JSON.stringify({
-          message: "Remove " + name + " via photo manager",
-          sha: f.sha,
-          branch: BRANCH
-        })
-      });
-      done++;
-      say("Removed " + name);
-    } catch (e) { say("FAILED " + name + ": " + e.message); }
-    $("#status").textContent = done + " / " + total;
-  }
+    // 4. deletions — a null sha removes the path
+    deleting.forEach(function (name) {
+      say("Removing " + name);
+      tree.push({ path: DIR + "/" + name, mode: "100644", type: "blob", sha: null });
+    });
 
-  if (contentDirty) {
-    try { await publishContent(); } catch (e) { say("FAILED content.json: " + e.message); }
+    // 5. one tree, one commit, one deploy
+    var newTree = await api("/repos/" + REPO + "/git/trees", {
+      method: "POST",
+      body: JSON.stringify({ base_tree: headCommit.tree.sha, tree: tree })
+    });
+
+    var msg = [];
+    if (queued.length) msg.push(queued.length + " photo" + (queued.length === 1 ? "" : "s"));
+    if (deleting.length) msg.push(deleting.length + " removed");
+    if (contentDirty) msg.push("text updates");
+
+    var commit = await api("/repos/" + REPO + "/git/commits", {
+      method: "POST",
+      body: JSON.stringify({
+        message: "Admin: " + msg.join(", "),
+        tree: newTree.sha,
+        parents: [headSha]
+      })
+    });
+
+    await api("/repos/" + REPO + "/git/refs/heads/" + BRANCH, {
+      method: "PATCH",
+      body: JSON.stringify({ sha: commit.sha })
+    });
+
+    say("\nPublished as one commit — one Netlify deploy, 15 credits.");
+    say("Your site updates in a minute or two.");
+
+    queued = []; deleting = []; contentDirty = false;
+    await load();
+    await loadContent();
+  } catch (e) {
+    say("FAILED: " + e.message);
+    refreshPublish();
   }
-  say("\nDone. Netlify is rebuilding — your site updates in a minute or two.");
-  await load();
 }
 
 /* ── Content editor ────────────────────────────── */
@@ -356,6 +448,7 @@ function loadContent() {
     content = JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\s/g, "")))));
     contentDirty = false;
     renderEditor();
+    if (tab === "service") render();
   });
 }
 
@@ -406,13 +499,6 @@ function renderEditor() {
         field("Button link", s.link, "hero." + i + ".link") + '</div></div>';
     }).join("") + '</div></details>';
 
-  h += '<details class="sec"><summary>Services (' + content.services.length + ')</summary><div class="body">' +
-    content.services.map(function (s, i) {
-      return '<div class="entry"><h4>service-' + (i + 1) + '.jpg</h4>' +
-        field("Name", s.title, "services." + i + ".title") +
-        field("Description", s.text, "services." + i + ".text", true) + '</div>';
-    }).join("") + '</div></details>';
-
   h += '<details class="sec"><summary>Occasions (' + content.occasions.length + ')</summary><div class="body">' +
     content.occasions.map(function (o, i) {
       return '<div class="entry"><h4>' + o.title + '</h4>' +
@@ -452,26 +538,6 @@ document.addEventListener("input", function (e) {
   refreshPublish();
 });
 
-function b64(str) {
-  return btoa(unescape(encodeURIComponent(str)));
-}
-
-async function publishContent() {
-  var body = JSON.stringify(content, null, 2);
-  await api("/repos/" + REPO + "/contents/content.json", {
-    method: "PUT",
-    body: JSON.stringify({
-      message: "Update site content via admin",
-      content: b64(body),
-      sha: contentSha,
-      branch: BRANCH
-    })
-  });
-  say("Saved content.json");
-  contentDirty = false;
-  await loadContent();
-}
-
 function refreshPublish() {
   var pending = queued.length + deleting.length + (contentDirty ? 1 : 0);
   $("#publish").disabled = !pending;
@@ -490,8 +556,9 @@ $("#connect").addEventListener("click", function () {
     $("#signin").hidden = true;
     $("#manager").hidden = false;
     $("#who").textContent = r.full_name;
-    load();
-    loadContent().catch(function (e) { say("Could not load content.json: " + e.message); });
+    load().then(function () {
+      return loadContent();
+    }).catch(function (e) { say("Could not load content.json: " + e.message); });
   }).catch(function (e) {
     $("#signin-msg").textContent = "Could not connect: " + e.message;
   });
@@ -504,7 +571,7 @@ document.querySelectorAll(".tabs button").forEach(function (b) {
     tab = b.dataset.tab;
     var isText = tab === "content";
     $("#editor").hidden = !isText;
-    $("#drop").hidden = isText;
+    $("#drop").hidden = isText || tab === "service";
     $("#grid").hidden = isText;
     $("#drop-hint").textContent = tab === "service"
       ? "Service tiles are 4:3 — name order sets which service they belong to"
@@ -522,7 +589,14 @@ drop.addEventListener("drop", function (e) {
 });
 picker.addEventListener("change", function () { handle(picker.files); picker.value = ""; });
 
+var slotTarget = null;
+
 $("#grid").addEventListener("click", function (e) {
+  if (e.target.dataset && e.target.dataset.slot) {
+    slotTarget = parseInt(e.target.dataset.slot, 10);
+    picker.click();
+    return;
+  }
   var del = e.target.dataset.del, dropIdx = e.target.dataset.drop;
   if (del) {
     var at = deleting.indexOf(del);
