@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """Builds the Paradream static site. Run: python3 build.py"""
-import os, html
+import os, html, json
+
+# Everything editable lives in content.json — the admin panel writes to it.
+CONTENT = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                      "content.json"), encoding="utf-8"))
+SITE = CONTENT["site"]
 
 OUT = os.path.dirname(os.path.abspath(__file__))
 
@@ -14,21 +19,16 @@ OG = f"{CDN}/c_limit,fl_lossy,h_630,w_1200,f_auto,q_auto/17545664/376585_257154.
 # An icon with an empty URL is simply not shown, so nothing on the site
 # ever links to a page that doesn't exist.
 # ─────────────────────────────────────────────────────────────────────
-SOCIALS = {
-    "instagram": "https://www.instagram.com/paradream.lb/",
-    "tiktok":    "https://www.tiktok.com/@paradream.lb",
-    "facebook":  "https://www.facebook.com/share/1CtjhSYU7K/",
-    "linkedin":  "",
-}
+SOCIALS = CONTENT["socials"]
 
 # The gallery finds its own photos: drop images/gallery-1.jpg, gallery-2.jpg ...
 # into the images folder and they appear. No code change needed.
 # This is only how many show before the "Show more" button.
 GALLERY_VISIBLE = 12
 
-PHONE_DISPLAY = "81406046"
-PHONE_TEL     = "+96181406046"
-EMAIL         = "paradedream@gmail.com"
+PHONE_DISPLAY = SITE["phone_display"]
+PHONE_TEL     = SITE["phone_tel"]
+EMAIL         = SITE["email"]
 
 ICONS = {
  "instagram": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5.2"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.3" cy="6.7" r="1.15" fill="currentColor" stroke="none"/></svg>',
@@ -236,6 +236,17 @@ def page(filename, title, description, body, current=None):
     print("wrote", filename)
 
 
+faq_html = "\n".join(
+    f"""      <details>
+        <summary>{f["q"]}</summary>
+        <p>{f["a"]}</p>
+      </details>""" for f in CONTENT["faqs"])
+
+counters_html = "\n".join(
+    f'      <div class="counter"><b data-count="{c["number"]}" '
+    f'data-suffix="{c.get("suffix","")}">0</b><span>{c["label"]}</span></div>'
+    for c in CONTENT["counters"])
+
 # ── Home ────────────────────────────────────────────────────
 home = f"""
 <section class="hero-slider">
@@ -290,22 +301,15 @@ home = f"""
 <section class="band about">
   <div class="band-inner reveal">
     <h2>About Us</h2>
-    <p>At Paradream Events, we're passionate about turning your most precious moments into
-    unforgettable memories. Based in Beirut, Lebanon, with over 12 years of experience in events,
-    hospitality, and F&amp;B services, our team of dedicated planners handles every detail — from the
-    first consultation to the final applause. Whether it's an intimate baptism or a grand wedding
-    celebration, we bring creativity, professionalism, and heart to every event.
-    You dream it. We achieve it.</p>
+    <p>{CONTENT["about"]}</p>
   </div>
 </section>
 
 <section class="band">
   <div class="band-inner reveal">
     <div class="counters">
-      <div class="counter"><b data-count="150" data-suffix="+">0</b><span>celebrations brought to life</span></div>
-      <div class="counter"><b data-count="12" data-suffix="+">0</b><span>years in events and hospitality</span></div>
-      <div class="counter"><b data-count="20" data-suffix="+">0</b><span>kinds of occasion covered</span></div>
-      <div class="counter"><b data-count="100" data-suffix="%">0</b><span>of it handled by one team</span></div>
+{counters_html}
+    </div>
     </div>
   </div>
 </section>
@@ -393,22 +397,7 @@ home = f"""
   <div class="band-inner reveal">
     <h2>Frequently Asked Questions</h2>
     <div class="faq">
-      <details>
-        <summary>What is the overall cost of organizing the event, and what factors influence the final price?</summary>
-        <p>The overall cost of organizing an event depends on various factors, including the venue, catering, entertainment, staffing, and any additional services or equipment required. The final price is influenced by the size and scope of the event, the complexity of logistics, and the level of customization desired. We provide a detailed estimate based on your specific requirements to ensure transparency and help you manage your budget effectively.</p>
-      </details>
-      <details>
-        <summary>How far in advance should I start planning my event?</summary>
-        <p>It is recommended to start planning your event at least 6 to 12 months in advance. This allows enough time for securing venues, arranging vendors, and addressing any logistical details, ensuring a well-organized and successful event.<br>For larger or more complex events, additional planning time may be necessary.</p>
-      </details>
-      <details>
-        <summary>What factors should I consider when setting the event budget?</summary>
-        <p>When setting the event budget, the factors to consider will vary based on the type and scale of the event.<br>But the main factors can be (the venue cost, catering and beverages, entertainment and live shows, theme, table decoration, chocolate, staffing&hellip;etc)</p>
-      </details>
-      <details>
-        <summary>Why should I consider hiring an event planner for my upcoming event?</summary>
-        <p>At the end, engaging a professional event organizer during this period is essential, as their expertise ensures meticulous planning, effective problem-solving, Strategic Planning, Budget Management, Attention to Detail, Access to Resources, Stress Reduction and creative solutions.</p>
-      </details>
+{faq_html}
     </div>
   </div>
 </section>
@@ -419,18 +408,7 @@ page("index.html", "Paradream Events",
 
 
 # ── Why Paradream ───────────────────────────────────────────
-TESTIMONIALS = [
-    (img("327623_961035", "jpg"), "Mitri &amp; Sethrida's Wedding",
-     "From our proposal to our wedding, Paradream exceeded every expectation. We had a clear vision, and they brought it to life flawlessly—the mood board was executed exactly as we imagined. The atmosphere was electric, everyone was dancing and celebrating with joy. It truly felt like a dream. I confidently recommend Paradream to anyone planning a special event; they made our moments unforgettable."),
-    (img("220930_341269"), "Jean-Marie &amp; Lili's Engagement",
-     "I still get chills thinking about our engagement night—Paradream turned it into absolute MAGIC! From the moment we stepped in, it felt like we were living inside a fairytale. The setup was breathtaking, the entertainment was next-level, and the vibe? Unmatched. Every guest was blown away, and we were speechless. If you're planning an engagement, don't even think twice. Book Paradream now—they don't just plan events, they create unforgettable moments you'll cherish forever!"),
-    (img("285581_545397"), "Bruna's Birthday",
-     "I honestly couldn't believe it—they actually made it happen! My birthday felt like a dream come true. Even though I was far away, Paradream showed up to celebrate with me, and turned a regular day into something unforgettable. It started as a surprise, but since then, they've become a part of every celebration in my life. Their energy, their team, their beautiful spirit—Paradream doesn't just show up, they light up the entire occasion. I wouldn't celebrate without them!"),
-    (img("225122_87972", "jpg"), "Exquitech Christmas Gathering",
-     "Paradream transformed our vision into a truly unforgettable experience. From the first idea to the final execution, their team showed exceptional creativity, professionalism, and attention to detail. We want to express our sincere gratitude to Paradream for their dedication and for making our event so meaningful and seamless. Choosing them was the best decision we could have made, and their commitment to excellence truly sets them apart. It's clear why Paradream is recognized as one of Lebanon's leading event planning and entertainment agencies—they deliver innovation, quality, and moments that stay with you forever."),
-    (img("588520_558441", "jpg"), "SOS End Of Project",
-     "This Christmas, we had the honor of turning a meaningful dream into reality by supporting an organization as inspiring as SOS Children's Village. We are deeply grateful for the opportunity to collaborate with such a remarkable children's center and contribute to its heartfelt mission. Being part of an initiative that brings care, joy, and hope to young lives made this experience truly impactful and memorable. Moments like these reinforce why Paradream proudly stands as one of the leading event planning and entertainment agencies in Lebanon—dedicated to creating experiences that inspire, connect, and truly make a difference."),
-]
+TESTIMONIALS = [(x["image"], x["name"], x["text"]) for x in CONTENT["testimonials"]]
 
 quotes = "\n".join(f"""      <figure class="quote reveal">
         <img src="{src}" alt="" loading="lazy">
@@ -482,26 +460,7 @@ page("why-paradream.html", "Why Paradream? | Top Event Planner &amp; Parade Expe
 
 
 # ── Occasions ───────────────────────────────────────────────
-OCCASIONS = [
-    ("proposal", "Proposal", img("314845_494302"),
-     "The proposal is a once-in-a-lifetime, and we specialize in crafting unforgettable experiences that ensure a perfect and memorable \"yes\" moment."),
-    ("engagement", "Engagement", img("878787_304110"),
-     "Celebrate your love story with our bespoke engagement event services. We are dedicated to crafting an unforgettable experience. Our team of experienced planners will work closely with you to bring your dream to life, ensuring every element of the celebration is designed and flawlessly executed. From intimate moments to grand gestures."),
-    ("bachelor", "Bachelor", img("961079_835977"),
-     "Experience an exceptional bachelor party with our elite planning services. We create sophisticated, tailored celebrations, handling every detail from curated activities to premium entertainment. Trust us to turn your dream into an unforgettable event that leaves a lasting impression."),
-    ("wedding", "Your Big Day", img("345364_832215"),
-     "Make your dream wedding come true with Paradream. Our expert planning transforms your vision into a flawlessly executed celebration that you'll treasure forever."),
-    ("communion", "Holy First Communion", img("680926_291951"),
-     "Your child's First Communion deserves to be a truly exceptional and memorable event. Our expertise in detailed planning, combined with a touch of spiritual sophistication, ensures a distinguished and meaningful celebration."),
-    ("baptism", "Baptism", "https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/f_auto,q_1,w_4096/unsplashcom/photo-1566516171511-1c411a59c8ba?h=9000&amp;w=1200&amp;fit=clip&amp;fm=jpg",
-     "Your child's Baptism is a sacred milestone that calls for a warm, heartfelt celebration. With our thoughtful planning and eye for detail, we create a serene and joyful atmosphere that honors the spiritual significance of this blessed day."),
-    ("gender-reveal", "Gender Reveal", "https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/f_auto,q_1,w_4096/unsplashcom/photo-1668473586781-b6cfff4d70c9?h=9000&amp;w=1200&amp;fit=clip&amp;fm=jpg",
-     "The sweetest suspense of all — boy or girl, we celebrate with sparkle and surprise! Every gender reveal is a magical moment, filled with joy, love, and a burst of color!"),
-    ("birthday", "Birthday", img("454022_381372"),
-     "Choose Paradream to make your birthday truly unforgettable, ensuring a seamless and exceptional experience that will leave a lasting impression on you and your guests."),
-    ("christmas", "Christmas", img("443863_125203", "jpg"),
-     "Christmas is the dreaming season, and Christmas is better together! Music at Christmas time is like no other, enchanting hearts and weaving joy into the air. P.S: Ask Santa Claus for Paradream!"),
-]
+OCCASIONS = [(x["slug"], x["title"], x["image"], x["text"]) for x in CONTENT["occasions"]]
 
 occ_html = "\n".join(f"""      <article class="occasion reveal" id="{slug}">
         <img class="occasion-img" src="{src}" alt="{name}" loading="lazy">
@@ -532,17 +491,7 @@ page("occasions.html", "Occasions We Cover - Paradream Events",
 
 
 # ── Our Services ────────────────────────────────────────────
-SERVICES = [
-    ("Live Show Parade", "A full parade built around your entrance — performers, music and movement."),
-    ("Oriental Zaffah", "The traditional zaffah, with drummers and dancers, timed to your moment."),
-    ("Photo Booth &amp; Entertainment", "Props, prints and an attendant, so guests leave with something in hand."),
-    ("Characters &amp; Mascots", "Costumed performers who keep children entertained throughout the event."),
-    ("Circus Show", "Acrobats, fire and LED acts for the part of the night people remember."),
-    ("Inflatable Games", "Slides, castles and obstacle courses, delivered, installed and supervised."),
-    ("Table Decoration Set-Up", "Centerpieces, linens and styling arranged before your guests arrive."),
-    ("Catering Services", "Menus, service staff and bar built around your guest count."),
-    ("Christmas Mascots", "Santa and friends, for home visits, offices and Christmas gatherings."),
-]
+SERVICES = [(x["title"], x["text"]) for x in CONTENT["services"]]
 tiles = "\n".join(f"""      <a class="tile reveal" href="contact-us.html">
 {responsive(f"images/service-{i+1}.jpg", name, "(max-width:700px) 92vw, (max-width:1100px) 45vw, 360px", [400, 760, 1100], 4, 3)}
         <div class="tile-body">

@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Paradream — photo manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--red:#E4251B;--red-dark:#C11C13;--ink:#12263A;--grey:#2C3E50;--line:#E3E6EA;--cream:#F5F7F9}
+*{box-sizing:border-box}
+body{margin:0;font-family:Lato,system-ui,sans-serif;color:var(--grey);background:#fff;line-height:1.6}
+header{background:#000;color:#fff;padding:1.3rem max(4vw,1.2rem);display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+header h1{margin:0;font-size:1.3rem;font-weight:900}
+header .who{margin-inline-start:auto;font-size:.85rem;opacity:.75}
+main{width:min(1060px,94vw);margin:1.8rem auto 4rem}
+h2{color:var(--ink);font-weight:900;font-size:1.1rem;margin:2rem 0 .2rem}
+.hint{font-size:.88rem;opacity:.8;margin:0 0 1rem}
+button{font-family:inherit;font-weight:700;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:.75rem 1.5rem;border-radius:2px;border:1px solid var(--red);background:var(--red);color:#fff;cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.ghost{background:#fff;color:var(--red)}
+button.tiny{padding:.3rem .7rem;font-size:.68rem;letter-spacing:.05em}
+input[type=password],input[type=text]{font-family:inherit;font-size:1rem;padding:.65rem .8rem;
+  border:1px solid var(--line);border-radius:3px;width:100%;color:var(--ink)}
+.card{border:1px solid var(--line);border-radius:4px;padding:1.4rem;margin-bottom:1.4rem;background:var(--cream)}
+.card p{margin:.4rem 0 1rem;font-size:.92rem}
+.row{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap}
+.tabs{display:flex;gap:.5rem;margin:1.6rem 0 1rem;border-bottom:1px solid var(--line)}
+.tabs button{background:none;border:0;border-bottom:2px solid transparent;color:var(--grey);
+  padding:.7rem .9rem;border-radius:0}
+.tabs button.on{color:var(--red);border-bottom-color:var(--red)}
+#drop{border:2px dashed var(--line);border-radius:6px;padding:2.4rem 1.2rem;text-align:center;
+  background:var(--cream);cursor:pointer;margin-bottom:1.2rem}
+#drop.over{border-color:var(--red);background:#FFF5F4}
+#drop strong{display:block;color:var(--ink);font-size:1.05rem}
+#drop span{font-size:.88rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.8rem}
+.item{border:1px solid var(--line);border-radius:4px;overflow:hidden;background:#fff;position:relative}
+.item img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.item .cap{padding:.4rem .5rem;font-size:.75rem;display:flex;justify-content:space-between;align-items:center;gap:.4rem}
+.item.pending{outline:2px solid var(--red)}
+.badge{position:absolute;top:.4rem;left:.4rem;background:var(--red);color:#fff;font-size:.62rem;
+  padding:.15rem .45rem;border-radius:2px;letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+.log{font-size:.85rem;margin-top:1rem;padding:.8rem 1rem;border-radius:3px;background:var(--cream);
+  border-inline-start:3px solid var(--red);white-space:pre-wrap;max-height:220px;overflow:auto}
+.log[hidden]{display:none}
+.bar{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);
+  padding:1rem 0;margin-top:1.4rem;display:flex;gap:.8rem;align-items:center;flex-wrap:wrap}
+.muted{font-size:.85rem;opacity:.75}
+a{color:var(--red)}
+code{background:var(--cream);padding:.1rem .35rem;border-radius:2px;font-size:.9em}
+.sec{border:1px solid var(--line);border-radius:4px;margin-bottom:1rem;overflow:hidden}
+.sec>summary{cursor:pointer;padding:.9rem 1.1rem;background:var(--cream);font-weight:700;color:var(--ink);
+  list-style:none;display:flex;justify-content:space-between;align-items:center}
+.sec>summary::after{content:"+";color:var(--red);font-size:1.2rem}
+.sec[open]>summary::after{content:"\2013"}
+.sec .body{padding:1.1rem}
+.fld{margin-bottom:.9rem}
+.fld label{display:block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink);font-weight:700;margin-bottom:.25rem}
+.fld textarea,.fld input{width:100%;font-family:inherit;font-size:.95rem;padding:.55rem .7rem;
+  border:1px solid var(--line);border-radius:3px;color:var(--ink);background:#fff}
+.fld textarea{resize:vertical;min-height:80px}
+.entry{border:1px solid var(--line);border-radius:3px;padding:.9rem;margin-bottom:.8rem;background:#fff}
+.entry h4{margin:0 0 .7rem;font-size:.9rem;color:var(--red)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+@media(max-width:640px){.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Paradream photo manager</h1>
+  <span class="who" id="who"></span>
+</header>
+
+<main>
+
+  <!-- ── Sign in ─────────────────────────────────── -->
+  <section id="signin" class="card">
+    <h2 style="margin-top:0">Connect to GitHub</h2>
+    <p>Paste a GitHub personal access token with <b>repo</b> access. It is stored only in this
+    browser and never sent anywhere except GitHub.
+    <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">Create one here</a>
+    — choose "Tokens (classic)", tick <b>repo</b>.</p>
+    <div class="row">
+      <input type="password" id="token" placeholder="ghp_..." autocomplete="off" style="flex:1 1 320px">
+      <button id="connect">Connect</button>
+    </div>
+    <p class="muted" id="signin-msg" style="margin-bottom:0"></p>
+  </section>
+
+  <!-- ── Manager ─────────────────────────────────── -->
+  <section id="manager" hidden>
+    <div class="tabs">
+      <button data-tab="gallery" class="on">Gallery</button>
+      <button data-tab="service">Service tiles</button>
+      <button data-tab="content">Text &amp; details</button>
+    </div>
+
+    <div id="editor" hidden></div>
+
+    <div id="drop" tabindex="0" role="button">
+      <strong>Drop photos here</strong>
+      <span id="drop-hint">They are resized and sharpened automatically before upload</span>
+      <input type="file" id="picker" accept="image/*" multiple hidden>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="bar">
+      <button id="publish" disabled>Publish changes</button>
+      <button class="ghost" id="reload">Reload</button>
+      <span class="muted" id="status"></span>
+    </div>
+
+    <div class="log" id="log" hidden></div>
+  </section>
+
+</main>
+
+<script>
+var REPO = "paradreamEvents/Paradream-Events";
+var BRANCH = "main";
+var DIR = "images";
+
+var PRESETS = {
+  gallery: { w: 1400, h: 1400 },
+  service: { w: 1400, h: 1050 }
+};
+
+var token = localStorage.getItem("pd-gh-token") || "";
+var tab = "gallery";
+var existing = [];   // {name, sha, url}
+var queued = [];     // {name, dataUrl, replaces}
+var deleting = [];   // names
+
+var $ = function (s) { return document.querySelector(s); };
+
+function api(path, opts) {
+  opts = opts || {};
+  opts.headers = Object.assign({
+    "Authorization": "Bearer " + token,
+    "Accept": "application/vnd.github+json"
+  }, opts.headers || {});
+  return fetch("https://api.github.com" + path, opts).then(function (r) {
+    if (!r.ok) return r.json().then(function (e) {
+      throw new Error(e.message || ("GitHub returned " + r.status));
+    });
+    return r.status === 204 ? null : r.json();
+  });
+}
+
+function say(msg) {
+  var log = $("#log");
+  log.hidden = false;
+  log.textContent += msg + "\n";
+  log.scrollTop = log.scrollHeight;
+}
+
+/* ── Image processing (same as photo-prep) ─────── */
+function readImage(file) {
+  return new Promise(function (res, rej) {
+    var im = new Image();
+    im.onload = function () { URL.revokeObjectURL(im.src); res(im); };
+    im.onerror = rej;
+    im.src = URL.createObjectURL(file);
+  });
+}
+
+function sharpen(ctx, w, h, amount) {
+  var src = ctx.getImageData(0, 0, w, h), d = src.data, copy = new Uint8ClampedArray(d);
+  var k = [0, -amount, 0, -amount, 1 + 4 * amount, -amount, 0, -amount, 0];
+  for (var y = 1; y < h - 1; y++) for (var x = 1; x < w - 1; x++) {
+    var o = (y * w + x) * 4;
+    for (var ch = 0; ch < 3; ch++) {
+      var sum = 0, i = 0;
+      for (var ky = -1; ky <= 1; ky++) for (var kx = -1; kx <= 1; kx++)
+        sum += copy[((y + ky) * w + (x + kx)) * 4 + ch] * k[i++];
+      d[o + ch] = sum;
+    }
+  }
+  ctx.putImageData(src, 0, 0);
+}
+
+function process(img, tw, th) {
+  var scale = Math.max(tw / img.width, th / img.height);
+  var source = img;
+
+  if (scale > 1.15) {
+    var w = img.width, h = img.height;
+    var cur = document.createElement("canvas");
+    cur.width = w; cur.height = h;
+    cur.getContext("2d").drawImage(img, 0, 0);
+    var steps = Math.min(3, Math.ceil(Math.log(scale) / Math.log(1.7)));
+    var f = Math.pow(scale, 1 / steps);
+    for (var s = 0; s < steps; s++) {
+      var nw = Math.round(w * f), nh = Math.round(h * f);
+      var nx = document.createElement("canvas");
+      nx.width = nw; nx.height = nh;
+      var nc = nx.getContext("2d");
+      nc.imageSmoothingEnabled = true; nc.imageSmoothingQuality = "high";
+      nc.drawImage(cur, 0, 0, nw, nh);
+      sharpen(nc, nw, nh, 0.3);
+      cur = nx; w = nw; h = nh;
+    }
+    source = cur;
+    scale = Math.max(tw / w, th / h);
+  }
+
+  var c = document.createElement("canvas");
+  c.width = tw; c.height = th;
+  var ctx = c.getContext("2d");
+  ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
+  var sw = source.width || source.naturalWidth, sh = source.height || source.naturalHeight;
+  var dw = sw * scale, dh = sh * scale;
+  ctx.drawImage(source, (tw - dw) / 2, (th - dh) / 2, dw, dh);
+  sharpen(ctx, tw, th, 0.38);
+  return c.toDataURL("image/jpeg", 0.86);
+}
+
+/* ── Load what's already in the repo ───────────── */
+function load() {
+  $("#status").textContent = "Loading...";
+  queued = []; deleting = [];
+  return api("/repos/" + REPO + "/contents/" + DIR + "?ref=" + BRANCH)
+    .then(function (files) {
+      existing = files
+        .filter(function (f) { return /\.(jpe?g|png|webp)$/i.test(f.name); })
+        .map(function (f) { return { name: f.name, sha: f.sha, url: f.download_url }; });
+      render();
+      $("#status").textContent = "";
+    })
+    .catch(function (e) {
+      $("#status").textContent = "Could not load: " + e.message;
+    });
+}
+
+function numOf(name) {
+  var m = name.match(/-(\d+)\./);
+  return m ? parseInt(m[1], 10) : 0;
+}
+
+function nextFree() {
+  var used = existing.filter(function (f) { return f.name.indexOf(tab + "-") === 0; })
+                     .map(function (f) { return numOf(f.name); });
+  queued.forEach(function (q) { used.push(numOf(q.name)); });
+  var n = 1;
+  while (used.indexOf(n) !== -1) n++;
+  return n;
+}
+
+function render() {
+  var grid = $("#grid");
+  grid.innerHTML = "";
+
+  var mine = existing
+    .filter(function (f) { return f.name.indexOf(tab + "-") === 0; })
+    .sort(function (a, b) { return numOf(a.name) - numOf(b.name); });
+
+  mine.forEach(function (f) {
+    var gone = deleting.indexOf(f.name) !== -1;
+    var el = document.createElement("div");
+    el.className = "item" + (gone ? " pending" : "");
+    el.innerHTML =
+      (gone ? '<span class="badge">Removing</span>' : '') +
+      '<img src="' + f.url + '" alt="" loading="lazy" style="' + (gone ? 'opacity:.35' : '') + '">' +
+      '<div class="cap"><span>' + f.name.replace(".jpg", "") + '</span>' +
+      '<button class="ghost tiny" data-del="' + f.name + '">' + (gone ? "Undo" : "Remove") + '</button></div>';
+    grid.appendChild(el);
+  });
+
+  queued.forEach(function (q, i) {
+    var el = document.createElement("div");
+    el.className = "item pending";
+    el.innerHTML =
+      '<span class="badge">New</span>' +
+      '<img src="' + q.dataUrl + '" alt="">' +
+      '<div class="cap"><span>' + q.name.replace(".jpg", "") + '</span>' +
+      '<button class="ghost tiny" data-drop="' + i + '">Remove</button></div>';
+    grid.appendChild(el);
+  });
+
+  refreshPublish();
+}
+
+/* ── Queue uploads ─────────────────────────────── */
+async function handle(files) {
+  var p = PRESETS[tab];
+  for (var i = 0; i < files.length; i++) {
+    var file = files[i];
+    if (!file.type.indexOf || file.type.indexOf("image/") !== 0) continue;
+    var img = await readImage(file);
+    var dataUrl = process(img, p.w, p.h);
+    queued.push({ name: tab + "-" + nextFree() + ".jpg", dataUrl: dataUrl });
+    render();
+  }
+}
+
+/* ── Publish: commit each change ───────────────── */
+async function publish() {
+  $("#publish").disabled = true;
+  $("#log").textContent = "";
+  var done = 0, total = queued.length + deleting.length;
+
+  for (var i = 0; i < queued.length; i++) {
+    var q = queued[i];
+    try {
+      await api("/repos/" + REPO + "/contents/" + DIR + "/" + q.name, {
+        method: "PUT",
+        body: JSON.stringify({
+          message: "Add " + q.name + " via photo manager",
+          content: q.dataUrl.split(",")[1],
+          branch: BRANCH
+        })
+      });
+      done++;
+      say("Uploaded " + q.name);
+    } catch (e) { say("FAILED " + q.name + ": " + e.message); }
+    $("#status").textContent = done + " / " + total;
+  }
+
+  for (var j = 0; j < deleting.length; j++) {
+    var name = deleting[j];
+    var f = existing.filter(function (x) { return x.name === name; })[0];
+    if (!f) continue;
+    try {
+      await api("/repos/" + REPO + "/contents/" + DIR + "/" + name, {
+        method: "DELETE",
+        body: JSON.stringify({
+          message: "Remove " + name + " via photo manager",
+          sha: f.sha,
+          branch: BRANCH
+        })
+      });
+      done++;
+      say("Removed " + name);
+    } catch (e) { say("FAILED " + name + ": " + e.message); }
+    $("#status").textContent = done + " / " + total;
+  }
+
+  if (contentDirty) {
+    try { await publishContent(); } catch (e) { say("FAILED content.json: " + e.message); }
+  }
+  say("\nDone. Netlify is rebuilding — your site updates in a minute or two.");
+  await load();
+}
+
+/* ── Content editor ────────────────────────────── */
+var content = null, contentSha = null, contentDirty = false;
+
+function loadContent() {
+  return api("/repos/" + REPO + "/contents/content.json?ref=" + BRANCH).then(function (f) {
+    contentSha = f.sha;
+    content = JSON.parse(decodeURIComponent(escape(atob(f.content.replace(/\s/g, "")))));
+    contentDirty = false;
+    renderEditor();
+  });
+}
+
+function field(label, value, path, multiline) {
+  var tag = multiline ? "textarea" : "input";
+  var val = String(value == null ? "" : value)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+  return '<div class="fld"><label>' + label + '</label>' +
+    (multiline
+      ? '<textarea data-path="' + path + '">' + val + '</textarea>'
+      : '<input data-path="' + path + '" value="' + val + '">') +
+    '</div>';
+}
+
+function renderEditor() {
+  if (!content) return;
+  var h = "";
+
+  h += '<details class="sec" open><summary>Contact details</summary><div class="body">' +
+    field("Phone (shown)", content.site.phone_display, "site.phone_display") +
+    field("Phone (dial)", content.site.phone_tel, "site.phone_tel") +
+    field("Email", content.site.email, "site.email") +
+    field("Tagline", content.site.tagline, "site.tagline") +
+    '</div></details>';
+
+  h += '<details class="sec"><summary>Social links</summary><div class="body">' +
+    Object.keys(content.socials).map(function (k) {
+      return field(k + " (leave empty to hide the icon)", content.socials[k], "socials." + k);
+    }).join("") + '</div></details>';
+
+  h += '<details class="sec"><summary>Home page numbers</summary><div class="body">' +
+    content.counters.map(function (c, i) {
+      return '<div class="entry"><div class="two">' +
+        field("Number", c.number, "counters." + i + ".number") +
+        field("Suffix", c.suffix, "counters." + i + ".suffix") +
+        '</div>' + field("Label", c.label, "counters." + i + ".label") + '</div>';
+    }).join("") + '</div></details>';
+
+  h += '<details class="sec"><summary>About text</summary><div class="body">' +
+    field("About Us paragraph", content.about, "about", true) + '</div></details>';
+
+  h += '<details class="sec"><summary>Hero slides</summary><div class="body">' +
+    content.hero.map(function (s, i) {
+      return '<div class="entry"><h4>Slide ' + (i + 1) + '</h4>' +
+        field("Heading", s.title, "hero." + i + ".title") +
+        field("Sub-heading", s.text, "hero." + i + ".text") +
+        '<div class="two">' + field("Button", s.cta, "hero." + i + ".cta") +
+        field("Button link", s.link, "hero." + i + ".link") + '</div></div>';
+    }).join("") + '</div></details>';
+
+  h += '<details class="sec"><summary>Services (' + content.services.length + ')</summary><div class="body">' +
+    content.services.map(function (s, i) {
+      return '<div class="entry"><h4>service-' + (i + 1) + '.jpg</h4>' +
+        field("Name", s.title, "services." + i + ".title") +
+        field("Description", s.text, "services." + i + ".text", true) + '</div>';
+    }).join("") + '</div></details>';
+
+  h += '<details class="sec"><summary>Occasions (' + content.occasions.length + ')</summary><div class="body">' +
+    content.occasions.map(function (o, i) {
+      return '<div class="entry"><h4>' + o.title + '</h4>' +
+        field("Title", o.title, "occasions." + i + ".title") +
+        field("Description", o.text, "occasions." + i + ".text", true) + '</div>';
+    }).join("") + '</div></details>';
+
+  h += '<details class="sec"><summary>Testimonials (' + content.testimonials.length + ')</summary><div class="body">' +
+    content.testimonials.map(function (t, i) {
+      return '<div class="entry"><h4>' + t.name + '</h4>' +
+        field("Who", t.name, "testimonials." + i + ".name") +
+        field("Quote", t.text, "testimonials." + i + ".text", true) + '</div>';
+    }).join("") + '</div></details>';
+
+  h += '<details class="sec"><summary>FAQs (' + content.faqs.length + ')</summary><div class="body">' +
+    content.faqs.map(function (f, i) {
+      return '<div class="entry">' +
+        field("Question", f.q, "faqs." + i + ".q") +
+        field("Answer", f.a, "faqs." + i + ".a", true) + '</div>';
+    }).join("") + '</div></details>';
+
+  $("#editor").innerHTML = h;
+}
+
+function setPath(obj, path, value) {
+  var parts = path.split("."), ref = obj;
+  for (var i = 0; i < parts.length - 1; i++) ref = ref[parts[i]];
+  var last = parts[parts.length - 1];
+  ref[last] = (typeof ref[last] === "number") ? (parseFloat(value) || 0) : value;
+}
+
+document.addEventListener("input", function (e) {
+  var p = e.target.dataset && e.target.dataset.path;
+  if (!p || !content) return;
+  setPath(content, p, e.target.value);
+  contentDirty = true;
+  refreshPublish();
+});
+
+function b64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+async function publishContent() {
+  var body = JSON.stringify(content, null, 2);
+  await api("/repos/" + REPO + "/contents/content.json", {
+    method: "PUT",
+    body: JSON.stringify({
+      message: "Update site content via admin",
+      content: b64(body),
+      sha: contentSha,
+      branch: BRANCH
+    })
+  });
+  say("Saved content.json");
+  contentDirty = false;
+  await loadContent();
+}
+
+function refreshPublish() {
+  var pending = queued.length + deleting.length + (contentDirty ? 1 : 0);
+  $("#publish").disabled = !pending;
+  $("#publish").textContent = pending
+    ? "Publish " + pending + " change" + (pending === 1 ? "" : "s")
+    : "Publish changes";
+}
+
+/* ── Wiring ────────────────────────────────────── */
+$("#connect").addEventListener("click", function () {
+  token = $("#token").value.trim();
+  if (!token) return;
+  $("#signin-msg").textContent = "Checking...";
+  api("/repos/" + REPO).then(function (r) {
+    localStorage.setItem("pd-gh-token", token);
+    $("#signin").hidden = true;
+    $("#manager").hidden = false;
+    $("#who").textContent = r.full_name;
+    load();
+    loadContent().catch(function (e) { say("Could not load content.json: " + e.message); });
+  }).catch(function (e) {
+    $("#signin-msg").textContent = "Could not connect: " + e.message;
+  });
+});
+
+document.querySelectorAll(".tabs button").forEach(function (b) {
+  b.addEventListener("click", function () {
+    document.querySelectorAll(".tabs button").forEach(function (x) { x.classList.remove("on"); });
+    b.classList.add("on");
+    tab = b.dataset.tab;
+    var isText = tab === "content";
+    $("#editor").hidden = !isText;
+    $("#drop").hidden = isText;
+    $("#grid").hidden = isText;
+    $("#drop-hint").textContent = tab === "service"
+      ? "Service tiles are 4:3 — name order sets which service they belong to"
+      : "They are resized and sharpened automatically before upload";
+    if (isText) renderEditor(); else render();
+  });
+});
+
+var drop = $("#drop"), picker = $("#picker");
+drop.addEventListener("click", function () { picker.click(); });
+drop.addEventListener("dragover", function (e) { e.preventDefault(); drop.classList.add("over"); });
+drop.addEventListener("dragleave", function () { drop.classList.remove("over"); });
+drop.addEventListener("drop", function (e) {
+  e.preventDefault(); drop.classList.remove("over"); handle(e.dataTransfer.files);
+});
+picker.addEventListener("change", function () { handle(picker.files); picker.value = ""; });
+
+$("#grid").addEventListener("click", function (e) {
+  var del = e.target.dataset.del, dropIdx = e.target.dataset.drop;
+  if (del) {
+    var at = deleting.indexOf(del);
+    if (at === -1) deleting.push(del); else deleting.splice(at, 1);
+    render();
+  }
+  if (dropIdx !== undefined) {
+    queued.splice(parseInt(dropIdx, 10), 1);
+    render();
+  }
+});
+
+$("#publish").addEventListener("click", publish);
+$("#reload").addEventListener("click", load);
+
+if (token) {
+  $("#token").value = token;
+  $("#connect").click();
+}
+</script>
+</body>
+</html>
