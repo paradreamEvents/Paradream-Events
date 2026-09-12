@@ -49,6 +49,18 @@ input[type=password],input[type=text]{font-family:inherit;font-size:1rem;padding
   padding:1rem 0;margin-top:1.4rem;display:flex;gap:.8rem;align-items:center;flex-wrap:wrap}
 .muted{font-size:.85rem;opacity:.75}
 a{color:var(--red)}
+#cropper{position:fixed;inset:0;z-index:200;background:rgba(10,16,24,.9);display:grid;place-items:center;padding:1rem}
+#cropper[hidden]{display:none}
+.crop-box{background:#fff;border-radius:6px;padding:1.4rem;width:min(560px,94vw)}
+.crop-box h3{margin:0 0 .2rem;color:var(--ink);font-weight:900}
+.crop-box p{margin:0 0 1rem;font-size:.85rem}
+.crop-view{position:relative;width:100%;overflow:hidden;background:#111;border-radius:3px;
+  cursor:grab;touch-action:none;user-select:none}
+.crop-view.grabbing{cursor:grabbing}
+.crop-view img{position:absolute;transform-origin:0 0;max-width:none;pointer-events:none}
+.crop-zoom{display:flex;align-items:center;gap:.8rem;margin-top:.9rem;font-size:.78rem;
+  letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--ink)}
+.crop-zoom input{flex:1;accent-color:var(--red)}
 code{background:var(--cream);padding:.1rem .35rem;border-radius:2px;font-size:.9em}
 .sec{border:1px solid var(--line);border-radius:4px;margin-bottom:1rem;overflow:hidden}
 .sec>summary{cursor:pointer;padding:.9rem 1.1rem;background:var(--cream);font-weight:700;color:var(--ink);
@@ -132,6 +144,24 @@ code{background:var(--cream);padding:.1rem .35rem;border-radius:2px;font-size:.9
 
 </main>
 
+<div id="cropper" hidden>
+  <div class="crop-box">
+    <h3>Position the photo</h3>
+    <p class="muted">Drag to move, slider to zoom. What you see is what appears on the site.</p>
+    <div class="crop-view" id="crop-view">
+      <img id="crop-img" alt="" draggable="false">
+    </div>
+    <label class="crop-zoom">
+      Zoom
+      <input type="range" id="crop-zoom" min="100" max="300" value="100">
+    </label>
+    <div class="row" style="margin-top:1rem">
+      <button id="crop-apply">Use this framing</button>
+      <button class="ghost" id="crop-cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <script>
 var REPO = "paradreamEvents/Paradream-Events";
 var BRANCH = "main";
@@ -196,12 +226,28 @@ function sharpen(ctx, w, h, amount) {
   ctx.putImageData(src, 0, 0);
 }
 
-function process(img, tw, th) {
-  var scale = Math.max(tw / img.width, th / img.height);
+function process(img, tw, th, rect) {
+  // If a framing was chosen, cut that piece out first and work from it.
+  if (rect) {
+    var pre = document.createElement("canvas");
+    pre.width = Math.max(1, Math.round(rect.sw));
+    pre.height = Math.max(1, Math.round(rect.sh));
+    var pctx = pre.getContext("2d");
+    pctx.imageSmoothingEnabled = true;
+    pctx.imageSmoothingQuality = "high";
+    pctx.drawImage(img, rect.sx, rect.sy, rect.sw, rect.sh, 0, 0, pre.width, pre.height);
+    img = pre;
+  }
+  return processInner(img, tw, th);
+}
+
+function processInner(img, tw, th) {
+  var iw = img.width || img.naturalWidth, ih = img.height || img.naturalHeight;
+  var scale = Math.max(tw / iw, th / ih);
   var source = img;
 
   if (scale > 1.15) {
-    var w = img.width, h = img.height;
+    var w = iw, h = ih;
     var cur = document.createElement("canvas");
     cur.width = w; cur.height = h;
     cur.getContext("2d").drawImage(img, 0, 0);
@@ -332,7 +378,9 @@ async function handle(files) {
     var file = files[i];
     if (!file.type.indexOf || file.type.indexOf("image/") !== 0) continue;
     var img = await readImage(file);
-    var dataUrl = process(img, p.w, p.h);
+    var rect = await openCropper(img, p.w, p.h);
+    if (!rect) { slotTarget = null; continue; }   // cancelled
+    var dataUrl = process(img, p.w, p.h, rect);
 
     var name;
     if (slotTarget) {
@@ -438,6 +486,105 @@ async function publish() {
     refreshPublish();
   }
 }
+
+/* ── Crop dialog ───────────────────────────────── */
+var crop = { img: null, base: 1, zoom: 1, x: 0, y: 0, vw: 0, vh: 0, resolve: null };
+
+function openCropper(img, ratioW, ratioH) {
+  return new Promise(function (resolve) {
+    crop.img = img;
+    crop.resolve = resolve;
+
+    var view = $("#crop-view");
+    $("#cropper").hidden = false;
+
+    // viewport sized to the target aspect ratio
+    crop.vw = view.clientWidth;
+    crop.vh = Math.round(crop.vw * ratioH / ratioW);
+    view.style.height = crop.vh + "px";
+
+    crop.base = Math.max(crop.vw / img.naturalWidth, crop.vh / img.naturalHeight);
+    crop.zoom = 1;
+    $("#crop-zoom").value = 100;
+
+    var el = $("#crop-img");
+    el.src = img.src;
+    el.style.width = img.naturalWidth + "px";
+    el.style.height = img.naturalHeight + "px";
+
+    // start centred
+    crop.x = (crop.vw - img.naturalWidth * crop.base) / 2;
+    crop.y = (crop.vh - img.naturalHeight * crop.base) / 2;
+    applyCrop();
+  });
+}
+
+function clampCrop() {
+  var w = crop.img.naturalWidth * crop.base * crop.zoom;
+  var h = crop.img.naturalHeight * crop.base * crop.zoom;
+  crop.x = Math.min(0, Math.max(crop.vw - w, crop.x));
+  crop.y = Math.min(0, Math.max(crop.vh - h, crop.y));
+}
+
+function applyCrop() {
+  clampCrop();
+  $("#crop-img").style.transform =
+    "translate(" + crop.x + "px," + crop.y + "px) scale(" + (crop.base * crop.zoom) + ")";
+}
+
+(function cropDrag() {
+  var view = $("#crop-view"), down = false, sx = 0, sy = 0, ox = 0, oy = 0;
+  var start = function (e) {
+    down = true; view.classList.add("grabbing");
+    var p = e.touches ? e.touches[0] : e;
+    sx = p.clientX; sy = p.clientY; ox = crop.x; oy = crop.y;
+  };
+  var move = function (e) {
+    if (!down) return;
+    e.preventDefault();
+    var p = e.touches ? e.touches[0] : e;
+    crop.x = ox + (p.clientX - sx);
+    crop.y = oy + (p.clientY - sy);
+    applyCrop();
+  };
+  var stop = function () { down = false; view.classList.remove("grabbing"); };
+
+  view.addEventListener("mousedown", start);
+  window.addEventListener("mousemove", move);
+  window.addEventListener("mouseup", stop);
+  view.addEventListener("touchstart", start, { passive: true });
+  window.addEventListener("touchmove", move, { passive: false });
+  window.addEventListener("touchend", stop);
+})();
+
+$("#crop-zoom").addEventListener("input", function () {
+  var old = crop.zoom;
+  crop.zoom = parseInt(this.value, 10) / 100;
+  // zoom around the centre of the viewport
+  var f = crop.zoom / old;
+  crop.x = crop.vw / 2 - (crop.vw / 2 - crop.x) * f;
+  crop.y = crop.vh / 2 - (crop.vh / 2 - crop.y) * f;
+  applyCrop();
+});
+
+$("#crop-cancel").addEventListener("click", function () {
+  $("#cropper").hidden = true;
+  if (crop.resolve) crop.resolve(null);
+  crop.resolve = null;
+});
+
+$("#crop-apply").addEventListener("click", function () {
+  var s = crop.base * crop.zoom;
+  var rect = {
+    sx: -crop.x / s,
+    sy: -crop.y / s,
+    sw: crop.vw / s,
+    sh: crop.vh / s
+  };
+  $("#cropper").hidden = true;
+  if (crop.resolve) crop.resolve(rect);
+  crop.resolve = null;
+});
 
 /* ── Content editor ────────────────────────────── */
 var content = null, contentSha = null, contentDirty = false;
