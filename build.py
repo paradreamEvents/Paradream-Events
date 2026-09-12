@@ -64,8 +64,29 @@ def img(slug, ext="png", w=1800, q="auto:best"):
 def hero_img(slug, ext="png"):
     return img(slug, ext, w=2600, q="auto:best")
 
+import hashlib
+
+_stamps = {}
+def stamp(path):
+    """Short hash of the file, so the URL changes only when the photo does.
+    Without this, Netlify's image cache can keep serving an old version."""
+    if path not in _stamps:
+        full = os.path.join(os.path.dirname(os.path.abspath(__file__)), path)
+        try:
+            with open(full, "rb") as fh:
+                _stamps[path] = hashlib.md5(fh.read()).hexdigest()[:8]
+        except OSError:
+            _stamps[path] = "0"
+    return _stamps[path]
+
+def media(src, w):
+    """Local file -> Netlify Image CDN. Anything else -> used as-is."""
+    if not src:
+        return ""
+    return cdn(src, w) if src.startswith("images/") else src
+
 def cdn(path, w, extra="&amp;fit=cover&amp;q=86"):
-    return f"/.netlify/images?url=/{path}&amp;w={w}{extra}"
+    return f"/.netlify/images?url=/{path}&amp;w={w}{extra}&amp;v={stamp(path)}"
 
 def responsive(path, alt, sizes, widths, ratio_w, ratio_h, cls=""):
     srcset = ",\n              ".join(f"{cdn(path, w)} {w}w" for w in widths)
@@ -247,6 +268,14 @@ counters_html = "\n".join(
     f'data-suffix="{c.get("suffix","")}">0</b><span>{c["label"]}</span></div>'
     for c in CONTENT["counters"])
 
+# Stamps for whatever gallery photos exist at build time
+import glob as _glob
+_img_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "images")
+gallery_stamps = json.dumps({
+    os.path.basename(p).replace("gallery-", "").replace(".jpg", ""): stamp("images/" + os.path.basename(p))
+    for p in sorted(_glob.glob(os.path.join(_img_dir, "gallery-*.jpg")))
+})
+
 # ── Home ────────────────────────────────────────────────────
 home = f"""
 <section class="hero-slider">
@@ -411,7 +440,7 @@ page("index.html", "Paradream Events",
 TESTIMONIALS = [(x["image"], x["name"], x["text"]) for x in CONTENT["testimonials"]]
 
 quotes = "\n".join(f"""      <figure class="quote reveal">
-        <img src="{src}" alt="" loading="lazy">
+        <img src="{media(src, 900)}" alt="" loading="lazy">
         <div>
           <blockquote>{text}</blockquote>
           <cite>{name}</cite>
@@ -463,7 +492,7 @@ page("why-paradream.html", "Why Paradream? | Top Event Planner &amp; Parade Expe
 OCCASIONS = [(x["slug"], x["title"], x["image"], x["text"]) for x in CONTENT["occasions"]]
 
 occ_html = "\n".join(f"""      <article class="occasion reveal" id="{slug}">
-        <img class="occasion-img" src="{src}" alt="{name}" loading="lazy">
+        <img class="occasion-img" src="{media(src, 1200)}" alt="{name}" loading="lazy">
         <div>
           <h3>{name}</h3>
           <p>{text}</p>
@@ -491,14 +520,14 @@ page("occasions.html", "Occasions We Cover - Paradream Events",
 
 
 # ── Our Services ────────────────────────────────────────────
-SERVICES = [(x["title"], x["text"]) for x in CONTENT["services"]]
+SERVICES = [(x["title"], x["text"], x.get("image", "")) for x in CONTENT["services"]]
 tiles = "\n".join(f"""      <a class="tile reveal" href="contact-us.html">
-{responsive(f"images/service-{i+1}.jpg", name, "(max-width:700px) 92vw, (max-width:1100px) 45vw, 360px", [400, 760, 1100], 1400, 1050)}
+{responsive(image, name, "(max-width:700px) 92vw, (max-width:1100px) 45vw, 360px", [400, 760, 1100], 1400, 1050) if image.startswith("images/") else f'      <img src="{image}" alt="{name}" loading="lazy">'}
         <div class="tile-body">
           <h3>{name}</h3>
           <p>{desc}</p>
         </div>
-      </a>""" for i, (name, desc) in enumerate(SERVICES))
+      </a>""" for i, (name, desc, image) in enumerate(SERVICES))
 
 page("our-services.html", "Our Services - Paradream Events",
      "Live show parades, oriental zaffah, photo booths, mascots, circus shows, inflatable games, table decoration, catering and Christmas mascots.",
@@ -529,7 +558,8 @@ page("gallery.html", "Gallery - Paradream Events",
 
 <section class="band">
   <div class="band-inner">
-    <div class="gallery-grid" id="gallery-grid" data-visible="{GALLERY_VISIBLE}"></div>
+    <div class="gallery-grid" id="gallery-grid" data-visible="{GALLERY_VISIBLE}"
+         data-stamps='{gallery_stamps}'></div>
     <p class="gallery-empty" id="gallery-empty">Loading photos&hellip;</p>
     <p class="gallery-more" hidden><button class="btn btn-outline" id="gallery-more" type="button">Show more photos</button></p>
   </div>

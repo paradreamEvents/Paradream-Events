@@ -180,9 +180,13 @@ var PRICING = {
     var BATCH = 6;
     var CAP = 200;
 
+    var STAMPS = {};
+    try { STAMPS = JSON.parse(grid.dataset.stamps || "{}"); } catch (e) {}
+
     var gsrc = function (n, w, q) {
+      var v = STAMPS[n] ? "&v=" + STAMPS[n] : "";
       return "/.netlify/images?url=/images/gallery-" + n + ".jpg&w=" + w +
-             "&fit=cover&q=" + (q || 86);
+             "&fit=cover&q=" + (q || 86) + v;
     };
 
     var probe = function (n) {

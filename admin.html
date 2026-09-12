@@ -84,6 +84,13 @@ code{background:var(--cream);padding:.1rem .35rem;border-radius:2px;font-size:.9
 .slot-img img{width:100%;height:100%;object-fit:cover}
 .slot-body .fld{margin-bottom:.6rem}
 @media(max-width:640px){.slot{grid-template-columns:1fr}}
+.item-row{display:grid;grid-template-columns:180px 1fr;gap:1rem;border:1px solid var(--line);
+  border-radius:4px;padding:.9rem;margin-bottom:.8rem;background:#fff;align-items:start}
+.item-row:has(.item-body:only-child){grid-template-columns:1fr}
+.item-photo .slot-img{aspect-ratio:4/3;margin-bottom:.5rem}
+.item-tools{display:flex;gap:.4rem;margin-top:.3rem}
+button.danger{color:#B00;border-color:#B00}
+@media(max-width:640px){.item-row{grid-template-columns:1fr}}
 @media(max-width:640px){.two{grid-template-columns:1fr}}
 </style>
 </head>
@@ -114,8 +121,7 @@ code{background:var(--cream);padding:.1rem .35rem;border-radius:2px;font-size:.9
   <section id="manager" hidden>
     <div class="tabs">
       <button data-tab="gallery" class="on">Gallery</button>
-      <button data-tab="service">Service tiles</button>
-      <button data-tab="content">Text &amp; details</button>
+      <button data-tab="content">Content &amp; text</button>
     </div>
 
     <div id="editor" hidden></div>
@@ -378,11 +384,31 @@ async function handle(files) {
     var file = files[i];
     if (!file.type.indexOf || file.type.indexOf("image/") !== 0) continue;
     var img = await readImage(file);
-    var rect = await openCropper(img, p.w, p.h);
-    if (!rect) { slotTarget = null; continue; }   // cancelled
-    var dataUrl = process(img, p.w, p.h, rect);
+
+    var target = p;
+    if (photoTarget) {
+      var sc = secFor(photoTarget.split(".")[0]);
+      if (sc && sc.ratio) target = { w: sc.ratio[0], h: sc.ratio[1] };
+    }
+
+    var rect = await openCropper(img, target.w, target.h);
+    if (!rect) { slotTarget = null; photoTarget = null; continue; }
+    var dataUrl = process(img, target.w, target.h, rect);
 
     var name;
+    if (photoTarget) {
+      var parts = photoTarget.split(".");
+      var sec = secFor(parts[0]);
+      var idx = parseInt(parts[1], 10);
+      name = parts[0].replace(/s$/, "") + "-" + Date.now() + ".jpg";
+      content[parts[0]][idx].image = "images/" + name;
+      contentDirty = true;
+      photoTarget = null;
+      queued.push({ name: name, dataUrl: dataUrl });
+      renderEditor();
+      refreshPublish();
+      continue;
+    }
     if (slotTarget) {
       name = "service-" + slotTarget + ".jpg";
       queued = queued.filter(function (q) { return q.name !== name; });
@@ -610,6 +636,46 @@ function field(label, value, path, multiline) {
     '</div>';
 }
 
+/* Sections the editor can manage. Anything listed here can be added to,
+   removed from, reordered, and given a photo. */
+var SECTIONS = [
+  { key: "hero", label: "Hero slides", photo: true, ratio: [2400, 1600],
+    fields: [["title","Heading"],["text","Sub-heading",1],["cta","Button text"],["link","Button link"]],
+    blank: function () { return { title:"New slide", text:"", cta:"Book Now!", link:"contact-us.html", image:"", position:"center" }; } },
+
+  { key: "services", label: "Services", photo: true, ratio: [1400, 1050],
+    fields: [["title","Name"],["text","Description",1]],
+    blank: function () { return { title:"New service", text:"", image:"" }; } },
+
+  { key: "occasions", label: "Occasions", photo: true, ratio: [1500, 1000],
+    fields: [["title","Title"],["text","Description",1],["slug","Link id (letters only)"]],
+    blank: function () { return { slug:"new-occasion", title:"New occasion", text:"", image:"" }; } },
+
+  { key: "testimonials", label: "Testimonials", photo: true, ratio: [1200, 900],
+    fields: [["name","Who"],["text","Quote",1]],
+    blank: function () { return { name:"New client", text:"", image:"" }; } },
+
+  { key: "faqs", label: "FAQs", photo: false,
+    fields: [["q","Question"],["a","Answer",1]],
+    blank: function () { return { q:"New question", a:"" }; } },
+
+  { key: "counters", label: "Home page numbers", photo: false,
+    fields: [["number","Number"],["suffix","Suffix"],["label","Label"]],
+    blank: function () { return { number:0, suffix:"+", label:"" }; } }
+];
+
+function photoFor(item) {
+  var src = item.image || "";
+  if (!src) return "";
+  if (src.indexOf("images/") === 0) {
+    var q = queued.filter(function (x) { return "images/" + x.name === src; })[0];
+    if (q) return q.dataUrl;
+    var f = existing.filter(function (x) { return "images/" + x.name === src; })[0];
+    return f ? f.url : "";
+  }
+  return src;   // remote URL
+}
+
 function renderEditor() {
   if (!content) return;
   var h = "";
@@ -623,49 +689,48 @@ function renderEditor() {
 
   h += '<details class="sec"><summary>Social links</summary><div class="body">' +
     Object.keys(content.socials).map(function (k) {
-      return field(k + " (leave empty to hide the icon)", content.socials[k], "socials." + k);
-    }).join("") + '</div></details>';
-
-  h += '<details class="sec"><summary>Home page numbers</summary><div class="body">' +
-    content.counters.map(function (c, i) {
-      return '<div class="entry"><div class="two">' +
-        field("Number", c.number, "counters." + i + ".number") +
-        field("Suffix", c.suffix, "counters." + i + ".suffix") +
-        '</div>' + field("Label", c.label, "counters." + i + ".label") + '</div>';
+      return field(k + " (empty hides the icon)", content.socials[k], "socials." + k);
     }).join("") + '</div></details>';
 
   h += '<details class="sec"><summary>About text</summary><div class="body">' +
     field("About Us paragraph", content.about, "about", true) + '</div></details>';
 
-  h += '<details class="sec"><summary>Hero slides</summary><div class="body">' +
-    content.hero.map(function (s, i) {
-      return '<div class="entry"><h4>Slide ' + (i + 1) + '</h4>' +
-        field("Heading", s.title, "hero." + i + ".title") +
-        field("Sub-heading", s.text, "hero." + i + ".text") +
-        '<div class="two">' + field("Button", s.cta, "hero." + i + ".cta") +
-        field("Button link", s.link, "hero." + i + ".link") + '</div></div>';
-    }).join("") + '</div></details>';
+  SECTIONS.forEach(function (sec) {
+    var list = content[sec.key] || [];
+    h += '<details class="sec"><summary>' + sec.label + ' (' + list.length + ')</summary><div class="body">';
 
-  h += '<details class="sec"><summary>Occasions (' + content.occasions.length + ')</summary><div class="body">' +
-    content.occasions.map(function (o, i) {
-      return '<div class="entry"><h4>' + o.title + '</h4>' +
-        field("Title", o.title, "occasions." + i + ".title") +
-        field("Description", o.text, "occasions." + i + ".text", true) + '</div>';
-    }).join("") + '</div></details>';
+    h += list.map(function (item, i) {
+      var body = sec.fields.map(function (f) {
+        return field(f[1], item[f[0]], sec.key + "." + i + "." + f[0], !!f[2]);
+      }).join("");
 
-  h += '<details class="sec"><summary>Testimonials (' + content.testimonials.length + ')</summary><div class="body">' +
-    content.testimonials.map(function (t, i) {
-      return '<div class="entry"><h4>' + t.name + '</h4>' +
-        field("Who", t.name, "testimonials." + i + ".name") +
-        field("Quote", t.text, "testimonials." + i + ".text", true) + '</div>';
-    }).join("") + '</div></details>';
+      var photo = "";
+      if (sec.photo) {
+        var src = photoFor(item);
+        photo = '<div class="slot-img">' +
+          (src ? '<img src="' + src + '" alt="">' : '<span class="muted">No photo</span>') +
+          '</div>' +
+          '<button class="ghost tiny" data-photo="' + sec.key + '.' + i + '">' +
+          (src ? "Change photo" : "Add photo") + '</button>';
+      }
 
-  h += '<details class="sec"><summary>FAQs (' + content.faqs.length + ')</summary><div class="body">' +
-    content.faqs.map(function (f, i) {
-      return '<div class="entry">' +
-        field("Question", f.q, "faqs." + i + ".q") +
-        field("Answer", f.a, "faqs." + i + ".a", true) + '</div>';
-    }).join("") + '</div></details>';
+      return '<div class="item-row">' +
+        (sec.photo ? '<div class="item-photo">' + photo + '</div>' : '') +
+        '<div class="item-body">' + body +
+          '<div class="item-tools">' +
+            '<button class="ghost tiny" data-move="' + sec.key + '.' + i + '.-1"' +
+              (i === 0 ? " disabled" : "") + '>&uarr;</button>' +
+            '<button class="ghost tiny" data-move="' + sec.key + '.' + i + '.1"' +
+              (i === list.length - 1 ? " disabled" : "") + '>&darr;</button>' +
+            '<button class="ghost tiny danger" data-del-item="' + sec.key + '.' + i + '">Delete</button>' +
+          '</div>' +
+        '</div></div>';
+    }).join("");
+
+    h += '<button class="ghost" data-add="' + sec.key + '">Add ' +
+         sec.label.replace(/s$/, "").toLowerCase() + '</button>';
+    h += '</div></details>';
+  });
 
   $("#editor").innerHTML = h;
 }
@@ -753,6 +818,58 @@ $("#grid").addEventListener("click", function (e) {
   if (dropIdx !== undefined) {
     queued.splice(parseInt(dropIdx, 10), 1);
     render();
+  }
+});
+
+function secFor(key) {
+  return SECTIONS.filter(function (s) { return s.key === key; })[0];
+}
+
+var photoTarget = null;   // "services.3" while choosing a photo for that item
+
+$("#editor").addEventListener("click", async function (e) {
+  var t = e.target;
+  if (!t.dataset) return;
+
+  // add
+  if (t.dataset.add) {
+    var sec = secFor(t.dataset.add);
+    content[sec.key].push(sec.blank());
+    contentDirty = true;
+    renderEditor();
+    refreshPublish();
+    return;
+  }
+
+  // reorder
+  if (t.dataset.move) {
+    var p = t.dataset.move.split(".");
+    var list = content[p[0]], i = parseInt(p[1], 10), dir = parseInt(p[2], 10);
+    var j = i + dir;
+    if (j < 0 || j >= list.length) return;
+    var tmp = list[i]; list[i] = list[j]; list[j] = tmp;
+    contentDirty = true;
+    renderEditor();
+    refreshPublish();
+    return;
+  }
+
+  // delete
+  if (t.dataset.delItem) {
+    var q = t.dataset.delItem.split(".");
+    if (!confirm("Remove this item from the site?")) return;
+    content[q[0]].splice(parseInt(q[1], 10), 1);
+    contentDirty = true;
+    renderEditor();
+    refreshPublish();
+    return;
+  }
+
+  // photo
+  if (t.dataset.photo) {
+    photoTarget = t.dataset.photo;
+    picker.click();
+    return;
   }
 });
 
