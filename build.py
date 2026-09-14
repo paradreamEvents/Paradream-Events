@@ -85,7 +85,7 @@ def media(src, w):
         return ""
     return cdn(src, w) if src.startswith("images/") else src
 
-def cdn(path, w, extra="&amp;fit=cover&amp;q=86"):
+def cdn(path, w, extra="&amp;fit=cover&amp;q=90"):
     return f"/.netlify/images?url=/{path}&amp;w={w}{extra}&amp;v={stamp(path)}"
 
 def responsive(path, alt, sizes, widths, ratio_w, ratio_h, cls=""):
@@ -681,7 +681,7 @@ page("join-us.html", "Join Our Team - Paradream Events",
     Tell us what you do and where you're based.</p>
   </div>
 
-  <form class="form" name="join-us" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="website">
+  <form class="form" name="join-us" method="POST" action="/thanks.html" enctype="multipart/form-data" data-netlify="true" netlify-honeypot="website">
     <input type="hidden" name="form-name" value="join-us">
     <p class="hp"><label>Leave empty <input name="website"></label></p>
 
@@ -720,6 +720,12 @@ page("join-us.html", "Join Our Team - Paradream Events",
     <div class="field">
       <label for="extra">Anything else you'd like to add?</label>
       <textarea id="extra" name="extra" rows="3"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="cv">Attach your CV</label>
+      <input id="cv" name="cv" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+      <small class="field-note">PDF or Word, up to 8 MB. Optional, but it helps.</small>
     </div>
     <button class="btn btn-solid" type="submit">Apply Now</button>
   </form>

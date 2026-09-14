@@ -186,7 +186,7 @@ var PRICING = {
     var gsrc = function (n, w, q) {
       var v = STAMPS[n] ? "&v=" + STAMPS[n] : "";
       return "/.netlify/images?url=/images/gallery-" + n + ".jpg&w=" + w +
-             "&fit=cover&q=" + (q || 86) + v;
+             "&fit=cover&q=" + (q || 90) + v;
     };
 
     var probe = function (n) {
@@ -431,29 +431,52 @@ var PRICING = {
 
     // Offline answers — used until the Netlify function has an API key
     var FALLBACK = [
-      [/price|cost|how much|budget|quote/i,
-       "Cost depends on the occasion, guest count and which services you want. The quote calculator on the Contact page gives you a range in a few clicks. For a firm figure, call us on +961 81 406 046."],
-      [/when|how far|advance|availability|date|book/i,
-       "We recommend booking 6 to 12 months ahead, especially for weddings. Larger events need more lead time. Send us your date and we'll tell you straight away if it's free."],
-      [/zaffah|parade|show|circus|entertain|mascot|inflat/i,
-       "We do live show parades, oriental zaffah, circus acts, photo booths, characters and mascots, and inflatable games. Our Services has the full list."],
-      [/cater|food|menu|f&b|drink/i,
-       "Yes — catering and F&B are part of what we do, with menus and service staff built around your guest count."],
-      [/where|location|address|office|outside/i,
-       "We're in Furn El Chebbak, Beirut, and we work across Lebanon. Events outside Beirut carry a small travel supplement."],
-      [/contact|phone|call|whatsapp|email/i,
-       "Call or WhatsApp +961 81 406 046, or email paradedream@gmail.com. There's a form on the Contact page too."],
-      [/join|hire|job|team|work with/i,
-       "We take on performers, dancers, drummers, mascot artists and service staff through the year. The Join Our Team page has the form."],
-      [/wedding|engagement|baptism|communion|birthday|christmas|proposal|bachelor|gender/i,
-       "We cover that. The Occasions page has details and photos for each one, and you can send an enquiry straight from there."]
+      [/plan|create|organi[sz]e|arrange|book|help me|want to|looking for|need a|i have a/i,
+       "Happy to help. Tell me the occasion, roughly when, where, and how many guests — " +
+       "or use the quote calculator on the home page for an instant range. " +
+       "To get moving properly, WhatsApp us on +961 81 406 046."],
+      [/price|cost|how much|budget|quote|rate|fee/i,
+       "Cost depends on the occasion, guest count and which services you want. The quote " +
+       "calculator on the home page gives you a range in a few clicks. For a firm figure, " +
+       "call us on +961 81 406 046."],
+      [/when|how far|advance|availab|date|free on|available/i,
+       "We recommend booking 6 to 12 months ahead, especially for weddings. Send us your " +
+       "date and we'll tell you straight away if it's free."],
+      [/zaffah|parade|show|circus|entertain|mascot|inflat|photo ?booth|dj|music|drum/i,
+       "We do live show parades, oriental zaffah, circus acts, photo booths, characters and " +
+       "mascots, and inflatable games. Our Services has the full list with photos."],
+      [/cater|food|menu|f&b|drink|bar|buffet/i,
+       "Yes — catering and F&B are part of what we do, with menus, service staff and bar " +
+       "built around your guest count."],
+      [/where|location|address|office|outside|region|area|deliver/i,
+       "We're in Furn El Chebbak, Beirut, and we work across Lebanon. Events outside Beirut " +
+       "carry a small travel supplement."],
+      [/contact|phone|call|whatsapp|email|reach|speak/i,
+       "Call or WhatsApp +961 81 406 046, or email paradedream@gmail.com. There's a form on " +
+       "the Contact page too."],
+      [/join|hire|job|team|work with|audition|apply|cv/i,
+       "We take on performers, dancers, drummers, mascot artists and service staff through " +
+       "the year. The Join Our Team page has a form where you can attach your CV."],
+      [/wedding|engagement|baptism|communion|birthday|christmas|proposal|bachelor|gender|corporate/i,
+       "We cover that. The Occasions page has details and photos for each one, and you can " +
+       "send an enquiry straight from there."],
+      [/photo|picture|gallery|portfolio|see your work|example/i,
+       "Have a look at the Gallery — it's full of real events we've run. There's more on " +
+       "Instagram at @paradream.lb."],
+      [/hello|hi|hey|good (morning|evening|afternoon)|salam|marhaba|bonjour/i,
+       "Hello! What are you planning? Tell me the occasion and roughly when, and I'll point " +
+       "you in the right direction."],
+      [/thank|shukran|merci/i,
+       "Any time. If you'd like to take it further, WhatsApp us on +961 81 406 046."]
     ];
 
     var offlineReply = function (q) {
       for (var k = 0; k < FALLBACK.length; k++) {
         if (FALLBACK[k][0].test(q)) return FALLBACK[k][1];
       }
-      return "I'm not sure about that one. Call or WhatsApp us on +961 81 406 046 and someone from the team will help.";
+      return "I can help with services, pricing, dates, locations and joining the team. " +
+             "For anything else — or to start planning properly — WhatsApp us on " +
+             "+961 81 406 046 and someone from the team will answer.";
     };
 
     var ask = function (text) {

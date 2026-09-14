@@ -64,9 +64,11 @@ a{color:var(--red)}
   cursor:grab;touch-action:none;user-select:none}
 .crop-view.grabbing{cursor:grabbing}
 .crop-view img{position:absolute;transform-origin:0 0;max-width:none;pointer-events:none}
-.crop-zoom{display:flex;align-items:center;gap:.8rem;margin-top:.9rem;font-size:.78rem;
-  letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--ink)}
-.crop-zoom input{flex:1;accent-color:var(--red)}
+.crop-controls{display:grid;grid-template-columns:1fr 1fr;gap:.5rem .9rem;margin-top:.9rem}
+.crop-controls label{display:flex;align-items:center;gap:.6rem;font-size:.7rem;
+  letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--ink)}
+.crop-controls input{flex:1;accent-color:var(--red);min-width:0}
+@media(max-width:520px){.crop-controls{grid-template-columns:1fr}}
 code{background:var(--cream);padding:.1rem .35rem;border-radius:2px;font-size:.9em}
 .sec{border:1px solid var(--line);border-radius:4px;margin-bottom:1rem;overflow:hidden}
 .sec>summary{cursor:pointer;padding:.9rem 1.1rem;background:var(--cream);font-weight:700;color:var(--ink);
@@ -168,17 +170,28 @@ button.danger{color:#B00;border-color:#B00}
 
 <div id="cropper" hidden>
   <div class="crop-box">
-    <h3>Position the photo</h3>
-    <p class="muted">Drag to move, slider to zoom. What you see is what appears on the site.</p>
+    <h3>Position and adjust</h3>
+    <p class="muted" id="crop-info">Drag to move. Everything updates live.</p>
+
     <div class="crop-view" id="crop-view">
       <img id="crop-img" alt="" draggable="false">
     </div>
-    <label class="crop-zoom">
-      Zoom
-      <input type="range" id="crop-zoom" min="100" max="300" value="100">
-    </label>
+
+    <div class="crop-controls">
+      <label>Zoom<input type="range" id="crop-zoom" min="100" max="300" value="100"></label>
+      <label>Brightness<input type="range" id="adj-bright" min="60" max="150" value="100"></label>
+      <label>Contrast<input type="range" id="adj-contrast" min="60" max="160" value="100"></label>
+      <label>Colour<input type="range" id="adj-sat" min="0" max="200" value="100"></label>
+      <label>Sharpness<input type="range" id="adj-sharp" min="0" max="100" value="38"></label>
+    </div>
+
+    <div class="row" style="margin-top:.9rem">
+      <button class="ghost tiny" id="crop-rotate">Rotate 90&deg;</button>
+      <button class="ghost tiny" id="crop-reset">Reset adjustments</button>
+    </div>
+
     <div class="row" style="margin-top:1rem">
-      <button id="crop-apply">Use this framing</button>
+      <button id="crop-apply">Use this photo</button>
       <button class="ghost" id="crop-cancel">Cancel</button>
     </div>
   </div>
@@ -250,6 +263,7 @@ function sharpen(ctx, w, h, amount) {
 
 function process(img, tw, th, rect) {
   // If a framing was chosen, cut that piece out first and work from it.
+  var sharpAmount = 0.38;
   if (rect) {
     var pre = document.createElement("canvas");
     pre.width = Math.max(1, Math.round(rect.sw));
@@ -257,13 +271,15 @@ function process(img, tw, th, rect) {
     var pctx = pre.getContext("2d");
     pctx.imageSmoothingEnabled = true;
     pctx.imageSmoothingQuality = "high";
+    if (rect.filter) pctx.filter = rect.filter;   // same brightness/contrast/colour as the preview
     pctx.drawImage(img, rect.sx, rect.sy, rect.sw, rect.sh, 0, 0, pre.width, pre.height);
     img = pre;
+    if (typeof rect.sharp === "number") sharpAmount = rect.sharp;
   }
-  return processInner(img, tw, th);
+  return processInner(img, tw, th, sharpAmount);
 }
 
-function processInner(img, tw, th) {
+function processInner(img, tw, th, sharpAmount) {
   var iw = img.width || img.naturalWidth, ih = img.height || img.naturalHeight;
   var scale = Math.max(tw / iw, th / ih);
   var source = img;
@@ -296,8 +312,8 @@ function processInner(img, tw, th) {
   var sw = source.width || source.naturalWidth, sh = source.height || source.naturalHeight;
   var dw = sw * scale, dh = sh * scale;
   ctx.drawImage(source, (tw - dw) / 2, (th - dh) / 2, dw, dh);
-  sharpen(ctx, tw, th, 0.38);
-  return c.toDataURL("image/jpeg", 0.86);
+  if (sharpAmount > 0) sharpen(ctx, tw, th, sharpAmount);
+  return c.toDataURL("image/jpeg", 0.92);
 }
 
 /* ── Load what's already in the repo ───────────── */
@@ -632,6 +648,13 @@ function openCropper(img, ratioW, ratioH) {
   return new Promise(function (resolve) {
     crop.img = img;
     crop.resolve = resolve;
+    crop.ratioW = ratioW;
+    crop.ratioH = ratioH;
+
+    var big = img.naturalWidth >= ratioW && img.naturalHeight >= ratioH;
+    $("#crop-info").innerHTML = "Drag to move. Everything updates live. &middot; Source " +
+      img.naturalWidth + "&times;" + img.naturalHeight +
+      (big ? " — good" : " — smaller than ideal, will be sharpened");
 
     var view = $("#crop-view");
     $("#cropper").hidden = false;
@@ -654,6 +677,7 @@ function openCropper(img, ratioW, ratioH) {
     crop.x = (crop.vw - img.naturalWidth * crop.base) / 2;
     crop.y = (crop.vh - img.naturalHeight * crop.base) / 2;
     applyCrop();
+    applyAdjust();
   });
 }
 
@@ -695,6 +719,49 @@ function applyCrop() {
   window.addEventListener("touchend", stop);
 })();
 
+function filterString() {
+  return "brightness(" + ($("#adj-bright").value / 100) + ") " +
+         "contrast(" + ($("#adj-contrast").value / 100) + ") " +
+         "saturate(" + ($("#adj-sat").value / 100) + ")";
+}
+
+function applyAdjust() {
+  $("#crop-img").style.filter = filterString();
+}
+
+["adj-bright", "adj-contrast", "adj-sat"].forEach(function (id) {
+  $("#" + id).addEventListener("input", applyAdjust);
+});
+
+$("#crop-reset").addEventListener("click", function () {
+  $("#adj-bright").value = 100;
+  $("#adj-contrast").value = 100;
+  $("#adj-sat").value = 100;
+  $("#adj-sharp").value = 38;
+  applyAdjust();
+});
+
+// Rotating re-enters the dialog with a turned copy, which keeps the maths simple
+$("#crop-rotate").addEventListener("click", function () {
+  var src = crop.img;
+  var c = document.createElement("canvas");
+  c.width = src.naturalHeight;
+  c.height = src.naturalWidth;
+  var ctx = c.getContext("2d");
+  ctx.translate(c.width / 2, c.height / 2);
+  ctx.rotate(Math.PI / 2);
+  ctx.drawImage(src, -src.naturalWidth / 2, -src.naturalHeight / 2);
+
+  var turned = new Image();
+  turned.onload = function () {
+    var res = crop.resolve;
+    crop.resolve = null;
+    $("#cropper").hidden = true;
+    openCropper(turned, crop.ratioW, crop.ratioH).then(res);
+  };
+  turned.src = c.toDataURL("image/jpeg", 0.95);
+});
+
 $("#crop-zoom").addEventListener("input", function () {
   var old = crop.zoom;
   crop.zoom = parseInt(this.value, 10) / 100;
@@ -717,7 +784,9 @@ $("#crop-apply").addEventListener("click", function () {
     sx: -crop.x / s,
     sy: -crop.y / s,
     sw: crop.vw / s,
-    sh: crop.vh / s
+    sh: crop.vh / s,
+    filter: filterString(),
+    sharp: parseInt($("#adj-sharp").value, 10) / 100
   };
   $("#cropper").hidden = true;
   if (crop.resolve) crop.resolve(rect);
