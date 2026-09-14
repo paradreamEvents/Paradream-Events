@@ -18,7 +18,15 @@
   },
   "hero": [
     {
-      "image": "images/hero-zaffah.jpg",
+      "image": "images/hero-christmas.jpg",
+      "position": "center 42%",
+      "title": "Christmas is better together",
+      "text": "Mascots, music and mornings your family will keep talking about.",
+      "cta": "See Christmas",
+      "link": "occasions.html#christmas"
+    },
+    {
+      "image": "images/hero-1789385570810.jpg",
       "position": "center 38%",
       "title": "Book Your Dream Event Now!",
       "text": "Your Dream Event Is One Click Away!",
@@ -26,21 +34,13 @@
       "link": "contact-us.html"
     },
     {
-      "image": "",
+      "image": "images/hero-1789385455052.jpg",
       "strikingly": "345364_832215",
       "position": "center",
       "title": "Weddings, done your way",
       "text": "Zaffah, parade and production, timed to the second.",
       "cta": "See weddings",
       "link": "occasions.html#wedding"
-    },
-    {
-      "image": "images/hero-christmas.jpg",
-      "position": "center 42%",
-      "title": "Christmas is better together",
-      "text": "Mascots, music and mornings your family will keep talking about.",
-      "cta": "See Christmas",
-      "link": "occasions.html#christmas"
     }
   ],
   "counters": [
