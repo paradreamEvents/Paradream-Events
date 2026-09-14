@@ -223,6 +223,20 @@ FOOTER = f"""<footer class="site-footer">
 <script src="main.js"></script>"""
 
 
+def analytics_tag():
+    a = CONTENT.get("analytics", {})
+    p = a.get("provider", "")
+    if p == "cloudflare" and a.get("cloudflare_token"):
+        return ('<script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
+                'data-cf-beacon=\'{"token": "%s"}\'></script>' % a["cloudflare_token"])
+    if p == "ga4" and a.get("ga4_id"):
+        gid = a["ga4_id"]
+        return (f'<script async src="https://www.googletagmanager.com/gtag/js?id={gid}"></script>'
+                f'<script>window.dataLayer=window.dataLayer||[];'
+                f'function gtag(){{dataLayer.push(arguments);}}'
+                f'gtag("js",new Date());gtag("config","{gid}");</script>')
+    return ""
+
 def page(filename, title, description, body, current=None):
     doc = f"""<!DOCTYPE html>
 <html lang="en">
@@ -241,6 +255,7 @@ def page(filename, title, description, body, current=None):
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+{analytics_tag()}
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>

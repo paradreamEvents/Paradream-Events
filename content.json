@@ -213,5 +213,10 @@
       "q": "Why should I consider hiring an event planner for my upcoming event?",
       "a": "At the end, engaging a professional event organizer during this period is essential, as their expertise ensures meticulous planning, effective problem-solving, Strategic Planning, Budget Management, Attention to Detail, Access to Resources, Stress Reduction and creative solutions."
     }
-  ]
+  ],
+  "analytics": {
+    "provider": "",
+    "cloudflare_token": "",
+    "ga4_id": ""
+  }
 }

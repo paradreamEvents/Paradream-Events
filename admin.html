@@ -49,6 +49,12 @@ input[type=password],input[type=text]{font-family:inherit;font-size:1rem;padding
   padding:1rem 0;margin-top:1.4rem;display:flex;gap:.8rem;align-items:center;flex-wrap:wrap}
 .muted{font-size:.85rem;opacity:.75}
 a{color:var(--red)}
+#preview{position:fixed;inset:0;z-index:190;background:#fff;display:flex;flex-direction:column}
+#preview[hidden]{display:none}
+.pv-bar{display:flex;align-items:center;gap:1rem;padding:.7rem 1rem;background:#000;color:#fff;font-size:.9rem}
+.pv-bar .muted{color:#aaa;margin-inline-end:auto}
+.pv-bar button{background:#fff;color:var(--red);border-color:#fff}
+#pv-frame{flex:1;width:100%;border:0}
 #cropper{position:fixed;inset:0;z-index:200;background:rgba(10,16,24,.9);display:grid;place-items:center;padding:1rem}
 #cropper[hidden]{display:none}
 .crop-box{background:#fff;border-radius:6px;padding:1.4rem;width:min(560px,94vw)}
@@ -140,6 +146,7 @@ button.danger{color:#B00;border-color:#B00}
     </p>
 
     <div class="bar">
+      <button class="ghost" id="preview-btn">Preview</button>
       <button id="publish" disabled>Publish changes</button>
       <button class="ghost" id="reload">Reload</button>
       <span class="muted" id="status"></span>
@@ -149,6 +156,15 @@ button.danger{color:#B00;border-color:#B00}
   </section>
 
 </main>
+
+<div id="preview" hidden>
+  <div class="pv-bar">
+    <strong>Preview — not published</strong>
+    <span class="muted" id="pv-note">This is how the home page will look</span>
+    <button class="ghost tiny" id="pv-close">Close</button>
+  </div>
+  <iframe id="pv-frame" title="Preview"></iframe>
+</div>
 
 <div id="cropper" hidden>
   <div class="crop-box">
@@ -513,6 +529,102 @@ async function publish() {
   }
 }
 
+/* ── Preview ───────────────────────────────────────
+   Renders the home page from the content you are editing, using the
+   real stylesheet. Costs nothing — no deploy, no credits.
+   ------------------------------------------------------------------ */
+function esc(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function previewSrc(item) {
+  var u = photoFor(item);
+  return u || "";
+}
+
+function buildPreview() {
+  var c = content;
+
+  var hero = (c.hero || []).slice(0, 1).map(function (s) {
+    var bg = previewSrc(s);
+    return '<section class="hero-slider"><div class="slide active" style="' +
+      (bg ? "background-image:url(\'" + bg + "\');" : "") +
+      "background-position:" + (s.position || "center") + '">' +
+      '<div class="slide-inner"><h1>' + esc(s.title) + '</h1><p>' + esc(s.text) + '</p>' +
+      '<a class="btn btn-solid" href="#">' + esc(s.cta) + '</a></div></div></section>';
+  }).join("");
+
+  var ticker = '<div class="ticker"><div class="ticker-track">' +
+    (c.occasions || []).concat(c.occasions || []).map(function (o) {
+      return "<span>" + esc(o.title) + "</span>";
+    }).join("") + '</div></div>';
+
+  var counters = '<section class="band"><div class="band-inner"><div class="counters">' +
+    (c.counters || []).map(function (x) {
+      return '<div class="counter"><b>' + esc(x.number) + esc(x.suffix || "") +
+             '</b><span>' + esc(x.label) + '</span></div>';
+    }).join("") + '</div></div></section>';
+
+  var about = '<section class="band about"><div class="band-inner"><h2>About Us</h2><p>' +
+    esc(c.about) + '</p></div></section>';
+
+  var services = '<section class="band band-cream"><div class="band-inner">' +
+    '<div class="services-head"><h2>What we bring</h2></div><div class="tiles">' +
+    (c.services || []).map(function (s) {
+      var src = previewSrc(s);
+      return '<span class="tile">' +
+        (src ? '<img src="' + src + '" alt="">' : '<div style="aspect-ratio:4/3;background:#eee"></div>') +
+        '<div class="tile-body"><h3>' + esc(s.title) + '</h3><p>' + esc(s.text) + '</p></div></span>';
+    }).join("") + '</div></div></section>';
+
+  var testimonials = '<section class="band"><div class="band-inner">' +
+    '<h2 class="section-title">What our clients say</h2><div class="quotes">' +
+    (c.testimonials || []).map(function (t) {
+      var src = previewSrc(t);
+      return '<figure class="quote">' +
+        (src ? '<img src="' + src + '" alt="">' : '<div style="aspect-ratio:4/3;background:#eee"></div>') +
+        '<div><blockquote>' + esc(t.text) + '</blockquote><cite>' + esc(t.name) + '</cite></div></figure>';
+    }).join("") + '</div></div></section>';
+
+  var faqs = '<section class="band band-cream"><div class="band-inner">' +
+    '<h2>Frequently Asked Questions</h2><div class="faq">' +
+    (c.faqs || []).map(function (f) {
+      return '<details><summary>' + esc(f.q) + '</summary><p>' + esc(f.a) + '</p></details>';
+    }).join("") + '</div></div></section>';
+
+  var footer = '<footer class="site-footer"><div class="footer-inner"><div>' +
+    '<h4>Paradream Events</h4><p>' + esc(c.site.tagline) + '</p></div>' +
+    '<div><h4>Get in touch</h4><p class="contact-line"><a href="#">' +
+    esc(c.site.phone_display) + '</a></p><p class="contact-line"><a href="#">' +
+    esc(c.site.email) + '</a></p></div></div></footer>';
+
+  return '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">' +
+    '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">' +
+    '<link rel="stylesheet" href="/styles.css"></head><body>' +
+    '<header class="site-header"><div class="header-inner">' +
+    '<span class="brand"><span class="brand-tag">' + esc(c.site.tagline) + '</span></span>' +
+    '<nav class="site-nav"><a href="#">Home</a><a href="#">Why Paradream?</a>' +
+    '<a href="#">Our Services</a><a href="#">Gallery</a><a href="#">Contact Us</a></nav>' +
+    '</div></header>' +
+    hero + ticker + counters + about + services + testimonials + faqs + footer +
+    '</body></html>';
+}
+
+function openPreview() {
+  var frame = document.getElementById("pv-frame");
+  document.getElementById("preview").hidden = false;
+  var doc = frame.contentDocument || frame.contentWindow.document;
+  doc.open();
+  doc.write(buildPreview());
+  doc.close();
+}
+
+document.getElementById("pv-close").addEventListener("click", function () {
+  document.getElementById("preview").hidden = true;
+});
+
 /* ── Crop dialog ───────────────────────────────── */
 var crop = { img: null, base: 1, zoom: 1, x: 0, y: 0, vw: 0, vh: 0, resolve: null };
 
@@ -695,6 +807,21 @@ function renderEditor() {
   h += '<details class="sec"><summary>About text</summary><div class="body">' +
     field("About Us paragraph", content.about, "about", true) + '</div></details>';
 
+  var an = content.analytics || (content.analytics = { provider: "", cloudflare_token: "", ga4_id: "" });
+  h += '<details class="sec"><summary>Visitor statistics</summary><div class="body">' +
+    '<div class="fld"><label>Provider</label>' +
+    '<select data-path="analytics.provider">' +
+      '<option value=""' + (an.provider === "" ? " selected" : "") + '>Off</option>' +
+      '<option value="cloudflare"' + (an.provider === "cloudflare" ? " selected" : "") + '>Cloudflare Web Analytics (free)</option>' +
+      '<option value="ga4"' + (an.provider === "ga4" ? " selected" : "") + '>Google Analytics 4 (free)</option>' +
+    '</select></div>' +
+    field("Cloudflare token", an.cloudflare_token, "analytics.cloudflare_token") +
+    field("Google Analytics ID (G-XXXXXXX)", an.ga4_id, "analytics.ga4_id") +
+    '<p class="muted" style="margin:0">Cloudflare: sign in at dash.cloudflare.com, Web Analytics, ' +
+    'add paradream-events.netlify.app, copy the token from the snippet it gives you. ' +
+    'No cookie banner needed. Google Analytics gives more detail but sets cookies.</p>' +
+    '</div></details>';
+
   SECTIONS.forEach(function (sec) {
     var list = content[sec.key] || [];
     h += '<details class="sec"><summary>' + sec.label + ' (' + list.length + ')</summary><div class="body">';
@@ -741,6 +868,15 @@ function setPath(obj, path, value) {
   var last = parts[parts.length - 1];
   ref[last] = (typeof ref[last] === "number") ? (parseFloat(value) || 0) : value;
 }
+
+document.addEventListener("change", function (e) {
+  if (e.target.tagName !== "SELECT") return;
+  var sp = e.target.dataset && e.target.dataset.path;
+  if (!sp || !content) return;
+  setPath(content, sp, e.target.value);
+  contentDirty = true;
+  refreshPublish();
+});
 
 document.addEventListener("input", function (e) {
   var p = e.target.dataset && e.target.dataset.path;
@@ -873,6 +1009,7 @@ $("#editor").addEventListener("click", async function (e) {
   }
 });
 
+$("#preview-btn").addEventListener("click", openPreview);
 $("#publish").addEventListener("click", publish);
 $("#reload").addEventListener("click", load);
 
