@@ -290,34 +290,44 @@ gallery_stamps = json.dumps({
     for p in sorted(_glob.glob(os.path.join(_img_dir, "gallery-*.jpg")))
 })
 
+def hero_bg(slide):
+    src = slide.get("image") or ""
+    if src.startswith("images/"):
+        return cdn(src, 2200, "&amp;q=90")
+    if slide.get("strikingly"):
+        return hero_img(slide["strikingly"])
+    return src
+
+def hero_slide_html(i, sl):
+    active = " active" if i == 0 else ""
+    bg = hero_bg(sl)
+    pos = sl.get("position", "center")
+    return (
+        '  <div class="slide' + active + '" style="background-image:url(&#39;' + bg + '&#39;);'
+        'background-position:' + pos + '">\n'
+        '    <div class="slide-inner">\n'
+        '      <h1>' + sl.get("title", "") + '</h1>\n'
+        '      <p>' + sl.get("text", "") + '</p>\n'
+        '      <a class="btn btn-solid" href="' + sl.get("link", "contact-us.html") + '">'
+        + sl.get("cta", "Book Now!") + '</a>\n'
+        '    </div>\n'
+        '  </div>'
+    )
+
+hero_slides = "\n".join(hero_slide_html(i, sl) for i, sl in enumerate(CONTENT["hero"]))
+
+hero_dots = "\n".join(
+    '    <button role="tab" aria-selected="' + ("true" if i == 0 else "false") +
+    '" aria-label="Slide ' + str(i + 1) + '"></button>'
+    for i in range(len(CONTENT["hero"]))
+)
+
 # ── Home ────────────────────────────────────────────────────
 home = f"""
 <section class="hero-slider">
-  <div class="slide active" style="background-image:url('{cdn("images/hero-zaffah.jpg", 1920, "&amp;q=92")}');background-position:center 38%">
-    <div class="slide-inner">
-      <h1>Book Your Dream Event Now!</h1>
-      <p>Your Dream Event Is One Click Away!</p>
-      <a class="btn btn-solid" href="contact-us.html">Book Now!</a>
-    </div>
-  </div>
-  <div class="slide" style="background-image:url('{hero_img("345364_832215")}')">
-    <div class="slide-inner">
-      <h1>Weddings, done your way</h1>
-      <p>Zaffah, parade and production, timed to the second.</p>
-      <a class="btn btn-solid" href="occasions.html#wedding">See weddings</a>
-    </div>
-  </div>
-  <div class="slide" style="background-image:url('{cdn("images/hero-christmas.jpg", 2200, "&amp;q=88")}');background-position:center 42%">
-    <div class="slide-inner">
-      <h1>Christmas is better together</h1>
-      <p>Mascots, music and mornings your family will keep talking about.</p>
-      <a class="btn btn-solid" href="occasions.html#christmas">See Christmas</a>
-    </div>
-  </div>
+{hero_slides}
   <div class="slider-dots" role="tablist" aria-label="Slides">
-    <button role="tab" aria-selected="true" aria-label="Slide 1"></button>
-    <button role="tab" aria-selected="false" aria-label="Slide 2"></button>
-    <button role="tab" aria-selected="false" aria-label="Slide 3"></button>
+{hero_dots}
   </div>
   <p class="scroll-cue">Scroll</p>
 </section>

@@ -681,9 +681,22 @@ function openCropper(img, ratioW, ratioH) {
     if (!isFinite(crop.base) || crop.base <= 0) crop.base = 1;
 
     var el = $("#crop-img");
-    el.src = img.src;
-    el.style.width = img.naturalWidth + "px";
-    el.style.height = img.naturalHeight + "px";
+
+    // Draw the photo into a canvas and preview from that. Independent of the
+    // original file reference, so nothing can blank it out.
+    var pw = img.naturalWidth, ph = img.naturalHeight;
+    var capped = Math.min(1, 1600 / Math.max(pw, ph));
+    var pc = document.createElement("canvas");
+    pc.width = Math.round(pw * capped);
+    pc.height = Math.round(ph * capped);
+    var pctx = pc.getContext("2d");
+    pctx.imageSmoothingEnabled = true;
+    pctx.imageSmoothingQuality = "high";
+    pctx.drawImage(img, 0, 0, pc.width, pc.height);
+
+    el.src = pc.toDataURL("image/jpeg", 0.85);
+    el.style.width = pw + "px";
+    el.style.height = ph + "px";
 
     // start centred
     crop.x = (crop.vw - img.naturalWidth * crop.base) / 2;
