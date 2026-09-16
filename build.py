@@ -561,7 +561,7 @@ page("our-services.html", "Our Services - Paradream Events",
   <p>Dive into Paradream's portfolio to know what your event will look like.</p>
 </section>
 
-<section class="band">
+<section class="band band-services">
   <div class="band-inner">
     <div class="tiles">
 {tiles}
