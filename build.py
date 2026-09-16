@@ -180,7 +180,6 @@ FOOTER = f"""<footer class="site-footer">
     <a href="privacy.html">Privacy Policy</a>
     <span class="spacer"></span>
     <a href="tel:+96181406046">Call Us</a>
-    <a href="mailto:paradedream@gmail.com">Contact</a>
   </div>
 </footer>
 

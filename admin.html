@@ -238,12 +238,20 @@ function say(msg) {
 
 /* ── Image processing (same as photo-prep) ─────── */
 function readImage(file) {
+  // NOTE: the object URL is deliberately kept alive — the crop dialog reuses
+  // this src on a second <img>. Releasing it here left a black preview.
   return new Promise(function (res, rej) {
     var im = new Image();
-    im.onload = function () { URL.revokeObjectURL(im.src); res(im); };
+    im.onload = function () { res(im); };
     im.onerror = rej;
     im.src = URL.createObjectURL(file);
   });
+}
+
+function releaseImage(im) {
+  if (im && im.src && im.src.indexOf("blob:") === 0) {
+    try { URL.revokeObjectURL(im.src); } catch (e) {}
+  }
 }
 
 function sharpen(ctx, w, h, amount) {
@@ -424,7 +432,7 @@ async function handle(files) {
     }
 
     var rect = await openCropper(img, target.w, target.h);
-    if (!rect) { slotTarget = null; photoTarget = null; continue; }
+    if (!rect) { releaseImage(img); slotTarget = null; photoTarget = null; continue; }
     var dataUrl = process(img, target.w, target.h, rect);
 
     var name;
@@ -437,6 +445,7 @@ async function handle(files) {
       contentDirty = true;
       photoTarget = null;
       queued.push({ name: name, dataUrl: dataUrl });
+      releaseImage(img);
       renderEditor();
       refreshPublish();
       continue;
@@ -449,6 +458,7 @@ async function handle(files) {
       name = tab + "-" + nextFree() + ".jpg";
     }
     queued.push({ name: name, dataUrl: dataUrl });
+    releaseImage(img);
     render();
     if (!slotTarget && tab === "service") break;  // one file per slot
   }
@@ -660,13 +670,15 @@ function openCropper(img, ratioW, ratioH) {
     $("#cropper").hidden = false;
 
     // viewport sized to the target aspect ratio
-    crop.vw = view.clientWidth;
+    crop.vw = view.clientWidth || Math.min(520, window.innerWidth - 80);
     crop.vh = Math.round(crop.vw * ratioH / ratioW);
     view.style.height = crop.vh + "px";
 
     crop.base = Math.max(crop.vw / img.naturalWidth, crop.vh / img.naturalHeight);
     crop.zoom = 1;
     $("#crop-zoom").value = 100;
+    // make sure the frame is filled even for very tall or very wide sources
+    if (!isFinite(crop.base) || crop.base <= 0) crop.base = 1;
 
     var el = $("#crop-img");
     el.src = img.src;
