@@ -95,8 +95,8 @@ def responsive(path, alt, sizes, widths, ratio_w, ratio_h, cls=""):
             f'           data-full="{cdn(path, 1600, "&amp;q=85")}"\n'
             f'           srcset="{srcset}"\n'
             f'           sizes="{sizes}"\n'
-            f'           width="{ratio_w}" height="{ratio_h}"\n'
-            f'           alt="{alt}" loading="lazy" decoding="async">')
+            + (f'           width="{ratio_w}" height="{ratio_h}"\n' if ratio_w else "")
+            + f'           alt="{alt}" loading="lazy" decoding="async">')
 
 NAV = [
     ("index.html", "Home"),
@@ -546,7 +546,7 @@ page("occasions.html", "Occasions We Cover - Paradream Events",
 # ── Our Services ────────────────────────────────────────────
 SERVICES = [(x["title"], x["text"], x.get("image", "")) for x in CONTENT["services"]]
 tiles = "\n".join(f"""      <a class="tile reveal" href="contact-us.html">
-{responsive(image, name, "(max-width:700px) 92vw, (max-width:1100px) 45vw, 360px", [400, 760, 1100], 1400, 1050) if image.startswith("images/") else f'      <img src="{image}" alt="{name}" loading="lazy">'}
+{responsive(image, name, "(max-width:700px) 92vw, (max-width:1100px) 45vw, 360px", [400, 760, 1100], 0, 0) if image.startswith("images/") else f'      <img src="{image}" alt="{name}" loading="lazy">'}
         <div class="tile-body">
           <h3>{name}</h3>
           <p>{desc}</p>

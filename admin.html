@@ -68,6 +68,10 @@ a{color:var(--red)}
 .crop-controls label{display:flex;align-items:center;gap:.6rem;font-size:.7rem;
   letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--ink)}
 .crop-controls input{flex:1;accent-color:var(--red);min-width:0}
+.crop-full{display:flex;align-items:center;gap:.6rem;margin-top:.9rem;font-size:.85rem;color:var(--ink)}
+.crop-full input{accent-color:var(--red)}
+.crop-view.nocrop{background:#f3f3f3}
+.crop-view.nocrop img{opacity:1}
 @media(max-width:520px){.crop-controls{grid-template-columns:1fr}}
 code{background:var(--cream);padding:.1rem .35rem;border-radius:2px;font-size:.9em}
 .sec{border:1px solid var(--line);border-radius:4px;margin-bottom:1rem;overflow:hidden}
@@ -185,6 +189,11 @@ button.danger{color:#B00;border-color:#B00}
       <label>Sharpness<input type="range" id="adj-sharp" min="0" max="100" value="38"></label>
     </div>
 
+    <label class="crop-full">
+      <input type="checkbox" id="crop-nocrop">
+      <span>Use the whole photo — don't crop it</span>
+    </label>
+
     <div class="row" style="margin-top:.9rem">
       <button class="ghost tiny" id="crop-rotate">Rotate 90&deg;</button>
       <button class="ghost tiny" id="crop-reset">Reset adjustments</button>
@@ -272,6 +281,24 @@ function sharpen(ctx, w, h, amount) {
 function process(img, tw, th, rect) {
   // If a framing was chosen, cut that piece out first and work from it.
   var sharpAmount = 0.38;
+
+  // Whole photo: no cropping, keep its own proportions, cap the long edge.
+  if (rect && rect.whole) {
+    var iw0 = img.naturalWidth || img.width, ih0 = img.naturalHeight || img.height;
+    var cap = Math.max(tw, th);
+    var k = Math.min(1, cap / Math.max(iw0, ih0));
+    var ow = Math.max(1, Math.round(iw0 * k)), oh = Math.max(1, Math.round(ih0 * k));
+    var wc = document.createElement("canvas");
+    wc.width = ow; wc.height = oh;
+    var wctx = wc.getContext("2d");
+    wctx.imageSmoothingEnabled = true;
+    wctx.imageSmoothingQuality = "high";
+    if (rect.filter) wctx.filter = rect.filter;
+    wctx.drawImage(img, 0, 0, ow, oh);
+    if (typeof rect.sharp === "number" && rect.sharp > 0) sharpen(wctx, ow, oh, rect.sharp);
+    return wc.toDataURL("image/jpeg", 0.92);
+  }
+
   if (rect) {
     var pre = document.createElement("canvas");
     pre.width = Math.max(1, Math.round(rect.sw));
@@ -701,6 +728,9 @@ function openCropper(img, ratioW, ratioH) {
     // start centred
     crop.x = (crop.vw - img.naturalWidth * crop.base) / 2;
     crop.y = (crop.vh - img.naturalHeight * crop.base) / 2;
+    $("#crop-nocrop").checked = false;
+    $("#crop-view").classList.remove("nocrop");
+    $("#crop-zoom").disabled = false;
     applyCrop();
     applyAdjust();
   });
@@ -758,6 +788,27 @@ function applyAdjust() {
   $("#" + id).addEventListener("input", applyAdjust);
 });
 
+$("#crop-nocrop").addEventListener("change", function () {
+  var whole = this.checked;
+  $("#crop-view").classList.toggle("nocrop", whole);
+  $("#crop-zoom").disabled = whole;
+  if (whole) {
+    // fit the entire photo inside the frame instead of filling it
+    crop.base = Math.min(crop.vw / crop.img.naturalWidth, crop.vh / crop.img.naturalHeight);
+    crop.zoom = 1;
+    $("#crop-zoom").value = 100;
+    crop.x = (crop.vw - crop.img.naturalWidth * crop.base) / 2;
+    crop.y = (crop.vh - crop.img.naturalHeight * crop.base) / 2;
+    $("#crop-img").style.transform =
+      "translate(" + crop.x + "px," + crop.y + "px) scale(" + crop.base + ")";
+  } else {
+    crop.base = Math.max(crop.vw / crop.img.naturalWidth, crop.vh / crop.img.naturalHeight);
+    crop.x = (crop.vw - crop.img.naturalWidth * crop.base) / 2;
+    crop.y = (crop.vh - crop.img.naturalHeight * crop.base) / 2;
+    applyCrop();
+  }
+});
+
 $("#crop-reset").addEventListener("click", function () {
   $("#adj-bright").value = 100;
   $("#adj-contrast").value = 100;
@@ -804,6 +855,17 @@ $("#crop-cancel").addEventListener("click", function () {
 });
 
 $("#crop-apply").addEventListener("click", function () {
+  if ($("#crop-nocrop").checked) {
+    var whole = {
+      whole: true,
+      filter: filterString(),
+      sharp: parseInt($("#adj-sharp").value, 10) / 100
+    };
+    $("#cropper").hidden = true;
+    if (crop.resolve) crop.resolve(whole);
+    crop.resolve = null;
+    return;
+  }
   var s = crop.base * crop.zoom;
   var rect = {
     sx: -crop.x / s,
