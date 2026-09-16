@@ -884,25 +884,37 @@ function photoFor(item) {
 
 function renderEditor() {
   if (!content) return;
+
+  // Keep the page where the user left it: which sections were open, and the
+  // scroll position. Rebuilding blindly was throwing them back to the top.
+  var wasOpen = {};
+  Array.prototype.forEach.call($("#editor").querySelectorAll("details[data-sec]"), function (d) {
+    wasOpen[d.dataset.sec] = d.open;
+  });
+  var scrollY = window.scrollY;
+  var focused = document.activeElement;
+  var focusPath = focused && focused.dataset ? focused.dataset.path : null;
+  var caret = focused && focused.selectionStart;
+
   var h = "";
 
-  h += '<details class="sec" open><summary>Contact details</summary><div class="body">' +
+  h += '<details class="sec" data-sec="contact" open><summary>Contact details</summary><div class="body">' +
     field("Phone (shown)", content.site.phone_display, "site.phone_display") +
     field("Phone (dial)", content.site.phone_tel, "site.phone_tel") +
     field("Email", content.site.email, "site.email") +
     field("Tagline", content.site.tagline, "site.tagline") +
     '</div></details>';
 
-  h += '<details class="sec"><summary>Social links</summary><div class="body">' +
+  h += '<details class="sec" data-sec="socials"><summary>Social links</summary><div class="body">' +
     Object.keys(content.socials).map(function (k) {
       return field(k + " (empty hides the icon)", content.socials[k], "socials." + k);
     }).join("") + '</div></details>';
 
-  h += '<details class="sec"><summary>About text</summary><div class="body">' +
+  h += '<details class="sec" data-sec="about"><summary>About text</summary><div class="body">' +
     field("About Us paragraph", content.about, "about", true) + '</div></details>';
 
   var an = content.analytics || (content.analytics = { provider: "", cloudflare_token: "", ga4_id: "" });
-  h += '<details class="sec"><summary>Visitor statistics</summary><div class="body">' +
+  h += '<details class="sec" data-sec="analytics"><summary>Visitor statistics</summary><div class="body">' +
     '<div class="fld"><label>Provider</label>' +
     '<select data-path="analytics.provider">' +
       '<option value=""' + (an.provider === "" ? " selected" : "") + '>Off</option>' +
@@ -918,7 +930,7 @@ function renderEditor() {
 
   SECTIONS.forEach(function (sec) {
     var list = content[sec.key] || [];
-    h += '<details class="sec"><summary>' + sec.label + ' (' + list.length + ')</summary><div class="body">';
+    h += '<details class="sec" data-sec="' + sec.key + '"><summary>' + sec.label + ' (' + list.length + ')</summary><div class="body">';
 
     h += list.map(function (item, i) {
       var body = sec.fields.map(function (f) {
@@ -954,6 +966,21 @@ function renderEditor() {
   });
 
   $("#editor").innerHTML = h;
+
+  Array.prototype.forEach.call($("#editor").querySelectorAll("details[data-sec]"), function (d) {
+    if (wasOpen[d.dataset.sec] !== undefined) d.open = wasOpen[d.dataset.sec];
+  });
+
+  if (focusPath) {
+    var again = $("#editor").querySelector('[data-path="' + focusPath + '"]');
+    if (again) {
+      again.focus();
+      if (caret != null && again.setSelectionRange) {
+        try { again.setSelectionRange(caret, caret); } catch (e) {}
+      }
+    }
+  }
+  window.scrollTo(0, scrollY);
 }
 
 function setPath(obj, path, value) {
@@ -977,7 +1004,7 @@ document.addEventListener("input", function (e) {
   if (!p || !content) return;
   setPath(content, p, e.target.value);
   contentDirty = true;
-  refreshPublish();
+  refreshPublish();   // deliberately no re-render: it would steal focus mid-typing
 });
 
 function refreshPublish() {
