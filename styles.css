@@ -139,7 +139,7 @@ h3{font-size:clamp(1.25rem,2.4vw,1.55rem)}
 }
 .tile:hover{border-color:var(--red);transform:translateY(-3px)}
 .tile img{
-  width:100%;height:auto;max-height:340px;object-fit:contain;
+  width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;
   background:var(--cream);display:block;
 }
 .tile-body{padding:1.2rem 1.3rem 1.5rem}

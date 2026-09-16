@@ -93,14 +93,14 @@ code{background:var(--cream);padding:.1rem .35rem;border-radius:2px;font-size:.9
   border-radius:4px;padding:.9rem;margin-bottom:.8rem;background:#fff;align-items:start}
 .slot-img{position:relative;aspect-ratio:4/3;background:var(--cream);border-radius:3px;
   overflow:hidden;display:grid;place-items:center}
-.slot-img img{width:100%;height:100%;object-fit:contain}
+.slot-img img{width:100%;height:100%;object-fit:cover}
 .slot-body .fld{margin-bottom:.6rem}
 @media(max-width:640px){.slot{grid-template-columns:1fr}}
 .item-row{display:grid;grid-template-columns:180px 1fr;gap:1rem;border:1px solid var(--line);
   border-radius:4px;padding:.9rem;margin-bottom:.8rem;background:#fff;align-items:start}
 .item-row:has(.item-body:only-child){grid-template-columns:1fr}
 .item-photo .slot-img{aspect-ratio:4/3;margin-bottom:.5rem}
-.item-photo .slot-img img{object-fit:contain}
+.item-photo .slot-img img{object-fit:cover}
 .item-tools{display:flex;gap:.4rem;margin-top:.3rem}
 button.danger{color:#B00;border-color:#B00}
 @media(max-width:640px){.item-row{grid-template-columns:1fr}}
@@ -176,7 +176,7 @@ button.danger{color:#B00;border-color:#B00}
 <div id="cropper" hidden>
   <div class="crop-box">
     <h3>Position and adjust</h3>
-    <p class="muted" id="crop-info">Drag to move. Everything updates live.</p>
+    <p class="muted" id="crop-info">Drag to choose what sits in the frame. This is exactly what appears on the site.</p>
 
     <div class="crop-view" id="crop-view">
       <img id="crop-img" alt="" draggable="false">
@@ -192,7 +192,7 @@ button.danger{color:#B00;border-color:#B00}
 
     <label class="crop-full">
       <input type="checkbox" id="crop-nocrop">
-      <span>Use the whole photo — untick to crop and zoom</span>
+      <span>Keep the whole photo instead (leaves space at the sides)</span>
     </label>
 
     <div class="row" style="margin-top:.9rem">
@@ -729,9 +729,9 @@ function openCropper(img, ratioW, ratioH) {
     // start centred
     crop.x = (crop.vw - img.naturalWidth * crop.base) / 2;
     crop.y = (crop.vh - img.naturalHeight * crop.base) / 2;
-    $("#crop-nocrop").checked = true;
-    $("#crop-view").classList.add("nocrop");
-    $("#crop-zoom").disabled = true;
+    $("#crop-nocrop").checked = false;
+    $("#crop-view").classList.remove("nocrop");
+    $("#crop-zoom").disabled = false;
     if ($("#crop-nocrop").checked) {
       crop.base = Math.min(crop.vw / img.naturalWidth, crop.vh / img.naturalHeight);
       crop.x = (crop.vw - img.naturalWidth * crop.base) / 2;

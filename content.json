@@ -18,29 +18,29 @@
   },
   "hero": [
     {
+      "image": "images/hero-zaffah.jpg",
+      "position": "center 38%",
+      "title": "Book Your Dream Event Now!",
+      "text": "Your Dream Event Is One Click Away!",
+      "cta": "Book Now!",
+      "link": "contact-us.html"
+    },
+    {
+      "image": "",
+      "strikingly": "345364_832215",
+      "position": "center",
+      "title": "Weddings, done your way",
+      "text": "Zaffah, parade and production, timed to the second.",
+      "cta": "See weddings",
+      "link": "occasions.html#wedding"
+    },
+    {
       "image": "images/hero-christmas.jpg",
       "position": "center 42%",
       "title": "Christmas is better together",
       "text": "Mascots, music and mornings your family will keep talking about.",
       "cta": "See Christmas",
       "link": "occasions.html#christmas"
-    },
-    {
-      "image": "images/hero-1789554922722.jpg",
-      "strikingly": "345364_832215",
-      "position": "center",
-      "title": "Weddings, Done your way",
-      "text": "We plan and tailor each Wedding Based on your Needs",
-      "cta": "See weddings",
-      "link": "occasions.html#wedding"
-    },
-    {
-      "image": "images/hero-1789555006971.jpg",
-      "position": "center 38%",
-      "title": "Book Your Dream Event Now!",
-      "text": "Your Dream Event Is One Click Away!",
-      "cta": "Book Now!",
-      "link": "contact-us.html"
     }
   ],
   "counters": [
@@ -70,47 +70,47 @@
     {
       "title": "Live Show Parade",
       "text": "A full parade built around your entrance — performers, music and movement.",
-      "image": "images/service-1789559465668.jpg"
+      "image": "images/service-1.jpg"
     },
     {
       "title": "Oriental Zaffah",
       "text": "The traditional zaffah, with drummers and dancers, timed to your moment.",
-      "image": "images/service-1789559479017.jpg"
+      "image": "images/service-2.jpg"
     },
     {
       "title": "Photo Booth & Entertainment",
       "text": "Props, prints and an attendant, so guests leave with something in hand.",
-      "image": "images/service-1789559488189.jpg"
+      "image": "images/service-3.jpg"
     },
     {
       "title": "Characters & Mascots",
       "text": "Costumed performers who keep children entertained throughout the event.",
-      "image": "images/service-1789559587387.jpg"
+      "image": "images/service-4.jpg"
     },
     {
       "title": "Circus Show",
       "text": "Acrobats, fire and LED acts for the part of the night people remember.",
-      "image": "images/service-1789559604397.jpg"
+      "image": "images/service-5.jpg"
     },
     {
       "title": "Inflatable Games",
       "text": "Slides, castles and obstacle courses, delivered, installed and supervised.",
-      "image": "images/service-1789559618732.jpg"
+      "image": "images/service-6.jpg"
     },
     {
       "title": "Table Decoration Set-Up",
       "text": "Centerpieces, linens and styling arranged before your guests arrive.",
-      "image": "images/service-1789559635760.jpg"
+      "image": "images/service-7.jpg"
     },
     {
       "title": "Catering Services",
       "text": "Menus, service staff and bar built around your guest count.",
-      "image": "images/service-1789559647871.jpg"
+      "image": "images/service-8.jpg"
     },
     {
       "title": "Christmas Mascots",
       "text": "Santa and friends, for home visits, offices and Christmas gatherings.",
-      "image": "images/service-1789559667037.jpg"
+      "image": "images/service-9.jpg"
     }
   ],
   "occasions": [
