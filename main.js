@@ -274,25 +274,46 @@ var PRICING = {
       return p[0] === p[1] ? money(p[0]) : money(p[0]) + "–" + money(p[1]);
     };
 
-    // Build the service options from PRICING so the two never drift apart
+    // Build the service options from PRICING so the two never drift apart.
+    // The quantity stepper sits outside the <label> so tapping - or + never
+    // toggles the checkbox by accident.
     optWrap.innerHTML = Object.keys(PRICING.services).map(function (key) {
       var s = PRICING.services[key];
-      // no prices on the tiles — only the quantity label where one applies
-      var sub = s.type === "unit"
-        ? '<small>' + s.unit.charAt(0).toUpperCase() + s.unit.slice(1) + '</small>'
+      var stepper = s.type === "unit"
+        ? '<div class="stepper" hidden>' +
+            '<button type="button" data-step="-1" aria-label="Fewer ' + s.unit + '">&minus;</button>' +
+            '<span class="stepper-val"><b data-qty="' + key + '">' + s.def + '</b> ' + s.unit + '</span>' +
+            '<button type="button" data-step="1" aria-label="More ' + s.unit + '">+</button>' +
+          '</div>'
         : "";
-      var qty = s.type === "unit"
-        ? '<input class="qty" type="number" min="1" max="' + s.max + '" value="' + s.def +
-          '" data-qty="' + key + '" aria-label="Number of ' + s.unit + '" hidden>'
-        : "";
-      return '<label class="opt">' +
-               '<input type="checkbox" value="' + key + '">' +
-               '<span>' + s.label + sub + qty + '</span>' +
-             '</label>';
+      return '<div class="opt" data-key="' + key + '">' +
+               '<label><input type="checkbox" value="' + key + '"><span>' + s.label + '</span></label>' +
+               stepper +
+             '</div>';
     }).join("");
 
     var opts = $$('input[type=checkbox]', optWrap);
-    var qtys = $$('.qty', optWrap);
+    var qtyOf = function (key) {
+      var s = PRICING.services[key];
+      var el = optWrap.querySelector('[data-qty="' + key + '"]');
+      var n = parseInt(el ? el.textContent : s.def, 10) || s.def;
+      return Math.min(s.max, Math.max(1, n));
+    };
+
+    // Mobile: a slim bar pinned to the bottom with the running total,
+    // shown only while the options are on screen and the full estimate isn't.
+    var out = $(".calc-out", calc);
+    var bar = document.createElement("button");
+    bar.type = "button";
+    bar.className = "est-bar";
+    bar.hidden = true;
+    bar.innerHTML = '<span class="est-bar-label">Your estimate</span>' +
+                    '<span class="est-bar-total"></span>' +
+                    '<span class="est-bar-go">See breakdown</span>';
+    document.body.appendChild(bar);
+    bar.addEventListener("click", function () {
+      out.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+    });
 
     var update = function () {
       var g = parseInt(guests.value, 10) || 0,
@@ -310,13 +331,14 @@ var PRICING = {
 
       opts.forEach(function (o) {
         var s = PRICING.services[o.value];
-        var qtyField = optWrap.querySelector('[data-qty="' + o.value + '"]');
-        o.parentNode.classList.toggle("on", o.checked);
-        if (qtyField) qtyField.hidden = !o.checked;
+        var tile = o.closest(".opt");
+        var step = $(".stepper", tile);
+        tile.classList.toggle("on", o.checked);
+        if (step) step.hidden = !o.checked;
         if (!o.checked) return;
 
         if (s.type === "unit") {
-          var n = Math.max(1, parseInt(qtyField.value, 10) || s.def);
+          var n = qtyOf(o.value);
           add(s.label + " × " + n + " " + s.unit, [s.price[0] * n, s.price[1] * n]);
         } else if (s.type === "guest") {
           add(s.label + " × " + g + " guests", [s.price[0] * g, s.price[1] * g]);
@@ -326,6 +348,7 @@ var PRICING = {
       });
 
       if (travel.checked) add("Outside Beirut", PRICING.outsideBeirut);
+      travel.closest(".opt").classList.toggle("on", travel.checked);
 
       // Coordination sits on top of everything above
       var c = PRICING.coordination;
@@ -335,6 +358,7 @@ var PRICING = {
 
       totalEl.innerHTML = show([lo, hi]) +
         "<small>What events like this usually come to. Yours is quoted individually.</small>";
+      $(".est-bar-total", bar).textContent = show([lo, hi]);
 
       linesEl.innerHTML = lines.map(function (l) {
         return "<li><span>" + l[0] + "</span><span>" + show(l[1]) + "</span></li>";
@@ -353,11 +377,33 @@ var PRICING = {
       el.addEventListener("change", update);
     });
     optWrap.addEventListener("change", update);
-    optWrap.addEventListener("input", update);
     optWrap.addEventListener("click", function (e) {
-      if (e.target.classList.contains("qty")) e.preventDefault();
+      var btn = e.target.closest("[data-step]");
+      if (!btn) return;
+      var key = btn.closest(".opt").dataset.key;
+      var s = PRICING.services[key];
+      var n = Math.min(s.max, Math.max(1, qtyOf(key) + parseInt(btn.dataset.step, 10)));
+      optWrap.querySelector('[data-qty="' + key + '"]').textContent = n;
+      update();
     });
     update();
+
+    if ("IntersectionObserver" in window) {
+      var panelIn = false, outIn = false;
+      var sync = function () {
+        var want = panelIn && !outIn && window.matchMedia("(max-width:860px)").matches;
+        if (bar.hidden === !want) return;
+        bar.hidden = !want;
+        document.dispatchEvent(new Event("pd:dock"));
+      };
+      new IntersectionObserver(function (en) {
+        panelIn = en[0].isIntersecting; sync();
+      }).observe($(".calc-panel", calc));
+      new IntersectionObserver(function (en) {
+        outIn = en[0].isIntersecting; sync();
+      }, { threshold: 0.25 }).observe(out);
+      window.addEventListener("resize", sync);
+    }
 
     var send = $("#calc-send", calc);
     if (send) {
@@ -417,17 +463,37 @@ var PRICING = {
     }
   }
 
+  /* ── Bottom dock: cookie bar, estimate bar, floating buttons ── */
+  // Anything pinned to the bottom pushes the WhatsApp / chat buttons up,
+  // so nothing ever sits on top of the Accept button or the estimate.
+  var dock = function () {
+    var used = 0;
+    var cookie = $("#cookie-bar");
+    if (cookie && !cookie.hidden) used += cookie.offsetHeight + 16;
+    var est = $(".est-bar");
+    if (est) {
+      est.style.bottom = used + "px";
+      if (!est.hidden) used += est.offsetHeight;
+      document.documentElement.classList.toggle("calc-active", !est.hidden);
+    }
+    document.documentElement.style.setProperty("--dock", used + "px");
+  };
+  document.addEventListener("pd:dock", dock);
+  window.addEventListener("resize", dock);
+
   /* ── Cookie notice ───────────────────────────── */
   try {
-    var bar = $("#cookie-bar");
-    if (bar && !localStorage.getItem("pd-cookies")) {
-      bar.hidden = false;
+    var cbar = $("#cookie-bar");
+    if (cbar && !localStorage.getItem("pd-cookies")) {
+      cbar.hidden = false;
       $("#cookie-accept").addEventListener("click", function () {
-        localStorage.setItem("pd-cookies", "1");
-        bar.hidden = true;
+        try { localStorage.setItem("pd-cookies", "1"); } catch (err) { /* ignore */ }
+        cbar.hidden = true;
+        dock();
       });
     }
   } catch (e) { /* storage blocked */ }
+  dock();
 
   /* ── Assistant ───────────────────────────────── */
   var panel = $("#assistant");

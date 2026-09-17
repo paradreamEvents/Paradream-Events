@@ -12,8 +12,8 @@ OUT = os.path.dirname(os.path.abspath(__file__))
 
 CDN = "https://custom-images.strikinglycdn.com/res/hrscywv4p/image/upload"
 LOGO = "images/logo-mark.png"
-FOOTER_LOGO = "images/logo.png"
-OG = f"{CDN}/c_limit,fl_lossy,h_630,w_1200,f_auto,q_auto/17545664/376585_257154.jpeg"
+FOOTER_LOGO = "images/logo-footer.png"
+OG = "https://paradreamlb.com/images/og-image.jpg"
 
 # ─────────────────────────────────────────────────────────────────────
 # SOCIAL LINKS — paste the real profile URL between the quotes.
@@ -431,7 +431,7 @@ home = f"""
         </div>
 
         <div class="calc-group">
-          <label class="opt" style="max-width:320px">
+          <label class="opt opt-travel">
             <input type="checkbox" id="calc-travel">
             <span>Event is outside Beirut<small>Travel supplement</small></span>
           </label>
@@ -442,7 +442,7 @@ home = f"""
         <h3>Your estimate</h3>
         <p class="calc-total" id="calc-total"></p>
         <ul class="calc-lines" id="calc-lines"></ul>
-        <a class="btn btn-solid" id="calc-send" href="#main">Send this to Paradream</a>
+        <a class="btn btn-solid" id="calc-send" href="contact-us.html">Send this to Paradream</a>
         <p class="calc-note">Indicative only. Final pricing depends on venue, date,
         timing and exactly what you want. We'll confirm on a call.</p>
       </aside>
