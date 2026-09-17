@@ -238,7 +238,15 @@
         }
       ],
       "calc_h": "What will it cost?",
-      "calc_p": "Pick what you're planning and get a rough range straight away. It's an estimate, not a quote — but it's a real starting point."
+      "calc_p": "Pick what you're planning and get a rough range straight away. It's an estimate, not a quote — but it's a real starting point.",
+      "sections": [
+        "hero",
+        "services_teaser",
+        "about",
+        "how",
+        "calculator",
+        "faq"
+      ]
     },
     "why-paradream": {
       "h1": "Our Success Story",
@@ -247,29 +255,49 @@
       "stat": "200+ celebrations brought to life with unforgettable moments across Lebanon.",
       "clients_h": "Here's What Our Clients Say About Paradream",
       "what_h": "What We Do",
-      "what_p": "Occasions we cover — proposal, engagement, bachelor, pre-wedding, wedding, baptism, first communion, gender reveal, birthdays and more."
+      "what_p": "Occasions we cover — proposal, engagement, bachelor, pre-wedding, wedding, baptism, first communion, gender reveal, birthdays and more.",
+      "sections": [
+        "intro",
+        "testimonials",
+        "what"
+      ]
     },
     "occasions": {
       "h1": "Occasions We Cover",
-      "sub": "Proposal, engagement, bachelor, pre-wedding, wedding, baptism, first communion, gender reveal, birthdays and more."
+      "sub": "Proposal, engagement, bachelor, pre-wedding, wedding, baptism, first communion, gender reveal, birthdays and more.",
+      "sections": [
+        "list"
+      ]
     },
     "our-services": {
       "h1": "Our Services",
-      "sub": "Dive into Paradream's portfolio to know what your event will look like."
+      "sub": "Dive into Paradream's portfolio to know what your event will look like.",
+      "sections": [
+        "list"
+      ]
     },
     "gallery": {
       "h1": "Gallery",
-      "sub": "Moments from events across Lebanon."
+      "sub": "Moments from events across Lebanon.",
+      "sections": [
+        "grid"
+      ]
     },
     "contact-us": {
       "h1": "Contact Us",
-      "sub": "Ready to plan your dream event? Tell us what you have in mind and we'll get back to you."
+      "sub": "Ready to plan your dream event? Tell us what you have in mind and we'll get back to you.",
+      "sections": [
+        "details_form"
+      ]
     },
     "join-us": {
       "h1": "Join the Paradream Family",
       "sub": "Be a part of the magic. Join the Paradream family and bring unforgettable moments to life.",
       "work_h": "Work with us",
-      "work_p": "We take on performers, dancers, drummers, mascot artists and service staff through the year. Tell us what you do and where you're based."
+      "work_p": "We take on performers, dancers, drummers, mascot artists and service staff through the year. Tell us what you do and where you're based.",
+      "sections": [
+        "intro_form"
+      ]
     },
     "thanks": {
       "h1": "Thank you!",
@@ -277,7 +305,11 @@
       "hurry_h": "In a hurry?",
       "hurry_p": "Call or WhatsApp us and we'll answer faster.",
       "wait_h": "While you wait",
-      "wait_p": "Have a look at what we've done for other people."
+      "wait_p": "Have a look at what we've done for other people.",
+      "sections": [
+        "hurry",
+        "wait"
+      ]
     }
   },
   "legal": {

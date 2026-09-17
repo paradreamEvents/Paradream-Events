@@ -56,7 +56,28 @@ a{color:var(--red)}
 .pv-bar button{background:#fff;color:var(--red);border-color:#fff}
 #pv-frame{flex:1;width:100%;border:0}
 #pages-view{margin-bottom:1rem}
-#pages-frame{width:100%;height:78vh;border:1px solid var(--line);border-radius:4px;background:#fff}
+#pd-shell{display:flex;gap:0;border:1px solid var(--line);border-radius:4px;overflow:hidden;height:78vh}
+#pd-sidebar{width:260px;flex:0 0 260px;background:#1B2733;color:#E7ECF1;padding:1rem;overflow-y:auto;
+  display:flex;flex-direction:column}
+#pd-sidebar select{width:100%;background:#0F1822;color:#fff;border:1px solid #33424F;border-radius:3px;
+  padding:.5rem .6rem;font-family:inherit;font-size:.88rem;margin-bottom:1rem}
+.pd-side-label{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:#8CA0B3;margin-bottom:.5rem}
+.pd-side-spacer{flex:1}
+#pd-section-list{display:flex;flex-direction:column;gap:.4rem}
+.pd-sec-row{display:flex;align-items:center;gap:.5rem;background:#25333F;border-radius:3px;padding:.55rem .6rem;
+  font-size:.82rem;cursor:grab;user-select:none;border:1px solid transparent}
+.pd-sec-row.dragging{opacity:.4}
+.pd-sec-row.drop-target{border-color:var(--red)}
+.pd-sec-row .grip{opacity:.5;font-size:.8rem}
+.pd-sec-row .lbl{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pd-sec-row button{background:none;border:0;color:#8CA0B3;padding:0 .2rem;font-size:.9rem;cursor:pointer}
+.pd-sec-row button:hover{color:#fff}
+#pd-add-menu{position:relative;background:#0F1822;border:1px solid #33424F;border-radius:3px;margin-top:.4rem;overflow:hidden}
+#pd-add-menu button{display:block;width:100%;text-align:left;background:none;border:0;color:#E7ECF1;
+  padding:.5rem .7rem;font-size:.8rem;cursor:pointer;text-transform:none;letter-spacing:0;font-weight:400}
+#pd-add-menu button:hover{background:#25333F}
+#pd-canvas{flex:1;min-width:0;background:#eee}
+#pages-frame{width:100%;height:100%;border:0;background:#fff;display:block}
 #cropper{position:fixed;inset:0;z-index:200;background:rgba(10,16,24,.9);display:grid;place-items:center;padding:1rem}
 #cropper[hidden]{display:none}
 .crop-box{background:#fff;border-radius:6px;padding:1.4rem;width:min(560px,94vw)}
@@ -141,11 +162,23 @@ button.danger{color:#B00;border-color:#B00}
     </div>
 
     <div id="pages-view">
-      <div class="row" style="margin-bottom:.9rem">
-        <select id="page-select" style="flex:1 1 220px"></select>
-        <span class="muted">Hover to find what's editable &middot; click text or a photo to change it</span>
+      <div id="pd-shell">
+        <aside id="pd-sidebar">
+          <div class="pd-side-label">Page</div>
+          <select id="page-select"></select>
+
+          <div class="pd-side-label">Sections</div>
+          <div id="pd-section-list"></div>
+          <button type="button" class="ghost" id="pd-add-section" style="width:100%;margin-top:.5rem">+ Add section</button>
+          <div id="pd-add-menu" hidden></div>
+
+          <div class="pd-side-spacer"></div>
+          <p class="muted" style="font-size:.78rem;margin:0 0 .6rem">Hover the page to see what's editable.</p>
+        </aside>
+        <div id="pd-canvas">
+          <iframe id="pages-frame" title="Live page editor"></iframe>
+        </div>
       </div>
-      <iframe id="pages-frame" title="Live page editor"></iframe>
     </div>
 
     <div id="editor" hidden></div>
@@ -789,103 +822,129 @@ function pdRepeat(sectionKey, itemHtmlFn) {
   }).join("\n");
 }
 
-function renderHomeBody() {
-  var P = content.pages.home;
-  var hero = (content.hero || []).map(function (s, i) {
-    var src = photoFor(s);
-    return '<div class="pd-item-wrap slide' + (i === 0 ? " active" : "") + '" style="position:relative;background-image:url(\'' +
-      (src || "") + "');background-position:" + (s.position || "center") + '">' +
-      removeBtn("hero." + i) +
-      '<span class="pd-imgtag" data-edit-photo="hero.' + i + '.image" style="position:absolute;top:8px;left:8px;opacity:1;cursor:pointer">Change photo</span>' +
-      '<div class="slide-inner">' +
-      ed("hero." + i + ".title", "h1", "", s.title) +
-      ed("hero." + i + ".text", "p", "", s.text) +
-      '<span class="btn btn-solid">' + ed("hero." + i + ".cta", "span", "", s.cta) + "</span></div></div>";
-  }).join("\n") + addTile("hero", "hero slide");
+var PD_SECTION_LABELS = {
+  "home": { hero: "Hero slider", services_teaser: "Services teaser", about: "About & counters",
+            how: "How it works", calculator: "Cost calculator", faq: "FAQs" },
+  "why-paradream": { intro: "Our story", testimonials: "Testimonials", what: "What we do" },
+  "occasions": { list: "Occasion cards" },
+  "our-services": { list: "Service tiles" },
+  "gallery": { grid: "Gallery grid" },
+  "contact-us": { details_form: "Contact details" },
+  "join-us": { intro_form: "Intro & form" },
+  "thanks": { hurry: "In a hurry", wait: "While you wait" },
+  "terms.html": {}, "privacy.html": {}
+};
 
-  var counters = pdRepeat("counters", function (c, i) {
-    return '<div class="counter"><b>' + ed("counters." + i + ".number", "span", "", c.number) +
-      ed("counters." + i + ".suffix", "span", "", c.suffix || "") + "</b>" +
-      ed("counters." + i + ".label", "span", "", c.label) + "</div>";
-  }) + addTile("counters", "number");
-
-  var steps = (P.how_steps || []).map(function (s, i) {
-    return '<div class="step"><p class="step-num">' + (i + 1) + "</p>" +
-      ed("pages.home.how_steps." + i + ".h", "h3", "", s.h) +
-      ed("pages.home.how_steps." + i + ".p", "p", "", s.p, true) + "</div>";
-  }).join("\n");
-
-  var faqs = pdRepeat("faqs", function (f, i) {
-    return "<details open>" + ed("faqs." + i + ".q", "summary", "", f.q) +
-      "<div>" + ed("faqs." + i + ".a", "p", "", f.a, true) + "</div></details>";
-  }) + addTile("faqs", "question");
-
-  return pdHeader("index.html") +
-    '<main><section class="hero-slider">' + hero + "</section>" +
-    '<section class="band"><div class="band-inner">' +
-    ed("pages.home.services_teaser_h", "h2", "", P.services_teaser_h) +
-    ed("pages.home.services_teaser_p", "p", "lede", P.services_teaser_p) + "</div></section>" +
-    '<section class="band about"><div class="band-inner"><h2>About Us</h2>' +
-    ed("about", "p", "", content.about, true) + "</div></section>" +
-    '<section class="band"><div class="band-inner"><div class="counters">' + counters + "</div></div></section>" +
-    '<section class="band band-cream"><div class="band-inner">' +
-    ed("pages.home.how_h", "h2", "", P.how_h) +
-    '<div class="steps">' + steps + "</div></div></section>" +
-    '<section class="band band-cream"><div class="band-inner">' +
-    ed("pages.home.calc_h", "h2", "", P.calc_h) +
-    ed("pages.home.calc_p", "p", "lede", P.calc_p) +
-    '<div class="pd-note">The quote calculator itself (sliders, live total) only runs on the ' +
-    "published site — this preview just shows its heading and prices. Edit prices under " +
-    '<a href="#" data-pd-goto="pricing">Pricing</a> below.</div></div></section>' +
-    '<section class="band"><div class="band-inner"><h2>Frequently Asked Questions</h2>' +
-    '<div class="faq">' + faqs + "</div></div></section></main>" +
-    pdRichSection("pricing") + pdFooter();
+function pdAssemble(pageKey, blocks) {
+  var order = content.pages[pageKey].sections || Object.keys(blocks);
+  return order.filter(function (k) { return blocks[k]; }).map(function (k) { return blocks[k](); }).join("\n");
 }
 
-function pdRichSection(kind) {
-  if (kind !== "pricing") return "";
-  var p = content.pricing;
-  var rows = p.services.map(function (s, i) {
-    return '<div class="pd-item-wrap" style="display:flex;gap:.6rem;align-items:center;border:1px solid #E3E6EA;border-radius:4px;padding:.6rem .8rem;margin-bottom:.5rem;background:#fff">' +
-      removeBtn("pricing.services." + i) +
-      '<b style="min-width:180px">' + ed("pricing.services." + i + ".label", "span", "", s.label) + "</b>" +
-      '<span>$</span>' + ed("pricing.services." + i + ".price_low", "span", "", s.price_low) +
-      "<span>&ndash;$</span>" + ed("pricing.services." + i + ".price_high", "span", "", s.price_high) +
-      '<span class="muted" style="margin-inline-start:auto">' + s.type + (s.unit ? " / " + s.unit : "") + "</span></div>";
-  }).join("\n");
-  return '<section class="band" id="pd-pricing"><div class="band-inner"><h2>Pricing (calculator inputs)</h2>' +
-    '<p class="muted">Staff rate $' + ed("pricing.staff_rate_low", "span", "", p.staff_rate_low) +
-    "&ndash;$" + ed("pricing.staff_rate_high", "span", "", p.staff_rate_high) + " per person, 1 per " +
-    ed("pricing.guests_per_staff", "span", "", p.guests_per_staff) + " guests. Coordination " +
-    ed("pricing.coordination_low", "span", "", Math.round(p.coordination_low * 100)) + "&ndash;" +
-    ed("pricing.coordination_high", "span", "", Math.round(p.coordination_high * 100)) +
-    "% of the rest. Outside Beirut supplement $" +
-    ed("pricing.outside_beirut_low", "span", "", p.outside_beirut_low) + "&ndash;$" +
-    ed("pricing.outside_beirut_high", "span", "", p.outside_beirut_high) + ".</p>" +
-    rows + "</div></section>";
+function homeBlocks() {
+  var P = content.pages.home;
+  return {
+    hero: function () {
+      var hero = (content.hero || []).map(function (s, i) {
+        var src = photoFor(s);
+        return '<div class="pd-item-wrap slide' + (i === 0 ? " active" : "") + '" style="position:relative;background-image:url(\'' +
+          (src || "") + "');background-position:" + (s.position || "center") + '">' +
+          removeBtn("hero." + i) +
+          '<span class="pd-imgtag" data-edit-photo="hero.' + i + '.image" style="position:absolute;top:8px;left:8px;opacity:1;cursor:pointer">Change photo</span>' +
+          '<div class="slide-inner">' +
+          ed("hero." + i + ".title", "h1", "", s.title) +
+          ed("hero." + i + ".text", "p", "", s.text) +
+          '<span class="btn btn-solid">' + ed("hero." + i + ".cta", "span", "", s.cta) + "</span></div></div>";
+      }).join("\n") + addTile("hero", "hero slide");
+      return '<section class="hero-slider">' + hero + "</section>";
+    },
+    services_teaser: function () {
+      return '<section class="band"><div class="band-inner">' +
+        ed("pages.home.services_teaser_h", "h2", "", P.services_teaser_h) +
+        ed("pages.home.services_teaser_p", "p", "lede", P.services_teaser_p) + "</div></section>";
+    },
+    about: function () {
+      var counters = pdRepeat("counters", function (c, i) {
+        return '<div class="counter"><b>' + ed("counters." + i + ".number", "span", "", c.number) +
+          ed("counters." + i + ".suffix", "span", "", c.suffix || "") + "</b>" +
+          ed("counters." + i + ".label", "span", "", c.label) + "</div>";
+      }) + addTile("counters", "number");
+      return '<section class="band about"><div class="band-inner"><h2>About Us</h2>' +
+        ed("about", "p", "", content.about, true) + "</div></section>" +
+        '<section class="band"><div class="band-inner"><div class="counters">' + counters + "</div></div></section>";
+    },
+    how: function () {
+      var steps = (P.how_steps || []).map(function (s, i) {
+        return '<div class="step"><p class="step-num">' + (i + 1) + "</p>" +
+          ed("pages.home.how_steps." + i + ".h", "h3", "", s.h) +
+          ed("pages.home.how_steps." + i + ".p", "p", "", s.p, true) + "</div>";
+      }).join("\n");
+      return '<section class="band band-cream"><div class="band-inner">' +
+        ed("pages.home.how_h", "h2", "", P.how_h) + '<div class="steps">' + steps + "</div></div></section>";
+    },
+    calculator: function () {
+      var p = content.pricing;
+      var rows = p.services.map(function (s, i) {
+        return '<div class="pd-item-wrap" style="display:flex;gap:.6rem;align-items:center;border:1px solid #E3E6EA;border-radius:4px;padding:.6rem .8rem;margin-bottom:.5rem;background:#fff">' +
+          removeBtn("pricing.services." + i) +
+          '<b style="min-width:180px">' + ed("pricing.services." + i + ".label", "span", "", s.label) + "</b>" +
+          '<span>$</span>' + ed("pricing.services." + i + ".price_low", "span", "", s.price_low) +
+          "<span>&ndash;$</span>" + ed("pricing.services." + i + ".price_high", "span", "", s.price_high) +
+          '<span class="muted" style="margin-inline-start:auto">' + s.type + (s.unit ? " / " + s.unit : "") + "</span></div>";
+      }).join("\n");
+      return '<section class="band band-cream"><div class="band-inner">' +
+        ed("pages.home.calc_h", "h2", "", P.calc_h) +
+        ed("pages.home.calc_p", "p", "lede", P.calc_p) +
+        '<div class="pd-note">The interactive calculator (sliders, live total) only runs on the published site — ' +
+        "this shows its heading and the prices it uses.</div>" + rows + "</div></section>";
+    },
+    faq: function () {
+      var faqs = pdRepeat("faqs", function (f, i) {
+        return "<details open>" + ed("faqs." + i + ".q", "summary", "", f.q) +
+          "<div>" + ed("faqs." + i + ".a", "p", "", f.a, true) + "</div></details>";
+      }) + addTile("faqs", "question");
+      return '<section class="band"><div class="band-inner"><h2>Frequently Asked Questions</h2>' +
+        '<div class="faq">' + faqs + "</div></div></section>";
+    }
+  };
+}
+
+function renderHomeBody() {
+  return pdHeader("index.html") + "<main>" + pdAssemble("home", homeBlocks()) + "</main>" + pdFooter();
+}
+
+function whyBlocks() {
+  var W = content.pages["why-paradream"];
+  return {
+    intro: function () {
+      return '<section class="band"><div class="band-inner">' +
+        edImg("images/why-team.png", LOGO_OR(existing, "why-team.png"), "", "Paradream team at work") +
+        ed("pages.why-paradream.story", "p", "lede", W.story, true) + "</div></section>";
+    },
+    testimonials: function () {
+      var quotes = pdRepeat("testimonials", function (t, i) {
+        return '<figure class="quote">' + edImg("testimonials." + i + ".image", photoFor(t), "", "") +
+          "<div>" + ed("testimonials." + i + ".text", "blockquote", "", t.text, true) +
+          ed("testimonials." + i + ".name", "cite", "", t.name) + "</div></figure>";
+      }) + addTile("testimonials", "testimonial");
+      return '<section class="band band-cream"><div class="band-inner">' +
+        ed("pages.why-paradream.stat", "p", "stat", W.stat) +
+        ed("pages.why-paradream.clients_h", "h2", "", W.clients_h) +
+        '<div class="quotes">' + quotes + "</div></div></section>";
+    },
+    what: function () {
+      return '<section class="band"><div class="band-inner">' +
+        ed("pages.why-paradream.what_h", "h2", "", W.what_h) +
+        ed("pages.why-paradream.what_p", "p", "lede", W.what_p) + "</div></section>";
+    }
+  };
 }
 
 function renderWhyBody() {
   var W = content.pages["why-paradream"];
-  var quotes = pdRepeat("testimonials", function (t, i) {
-    return '<figure class="quote">' + edImg("testimonials." + i + ".image", photoFor(t), "", "") +
-      "<div>" + ed("testimonials." + i + ".text", "blockquote", "", t.text, true) +
-      ed("testimonials." + i + ".name", "cite", "", t.name) + "</div></figure>";
-  }) + addTile("testimonials", "testimonial");
-
   return pdHeader("why-paradream.html") + "<main>" +
     '<section class="page-head">' + ed("pages.why-paradream.h1", "h1", "", W.h1) +
     ed("pages.why-paradream.sub", "p", "", W.sub) + "</section>" +
-    '<section class="band"><div class="band-inner">' +
-    edImg("images/why-team.png", LOGO_OR(existing, "why-team.png"), "", "Paradream team at work") +
-    ed("pages.why-paradream.story", "p", "lede", W.story, true) + "</div></section>" +
-    '<section class="band band-cream"><div class="band-inner">' +
-    ed("pages.why-paradream.stat", "p", "stat", W.stat) +
-    ed("pages.why-paradream.clients_h", "h2", "", W.clients_h) +
-    '<div class="quotes">' + quotes + "</div></div></section>" +
-    '<section class="band"><div class="band-inner">' +
-    ed("pages.why-paradream.what_h", "h2", "", W.what_h) +
-    ed("pages.why-paradream.what_p", "p", "lede", W.what_p) + "</div></section></main>" + pdFooter();
+    pdAssemble("why-paradream", whyBlocks()) + "</main>" + pdFooter();
 }
 
 function LOGO_OR(existingList, name) {
@@ -968,17 +1027,28 @@ function renderJoinBody() {
     "</section></main>" + pdFooter();
 }
 
+function thanksBlocks() {
+  var T = content.pages.thanks;
+  return {
+    hurry: function () {
+      return '<section class="band"><div class="band-inner">' +
+        ed("pages.thanks.hurry_h", "h2", "", T.hurry_h) +
+        ed("pages.thanks.hurry_p", "p", "lede", T.hurry_p) + "</div></section>";
+    },
+    wait: function () {
+      return '<section class="band band-cream"><div class="band-inner">' +
+        ed("pages.thanks.wait_h", "h2", "", T.wait_h) +
+        ed("pages.thanks.wait_p", "p", "lede", T.wait_p) + "</div></section>";
+    }
+  };
+}
+
 function renderThanksBody() {
   var T = content.pages.thanks;
   return pdHeader("index.html") + "<main>" +
     '<section class="page-head">' + ed("pages.thanks.h1", "h1", "", T.h1) +
     ed("pages.thanks.sub", "p", "", T.sub) + "</section>" +
-    '<section class="band"><div class="band-inner">' +
-    ed("pages.thanks.hurry_h", "h2", "", T.hurry_h) +
-    ed("pages.thanks.hurry_p", "p", "lede", T.hurry_p) + "</div></section>" +
-    '<section class="band band-cream"><div class="band-inner">' +
-    ed("pages.thanks.wait_h", "h2", "", T.wait_h) +
-    ed("pages.thanks.wait_p", "p", "lede", T.wait_p) + "</div></section></main>" + pdFooter();
+    pdAssemble("thanks", thanksBlocks()) + "</main>" + pdFooter();
 }
 
 function renderLegalBody(kind) {
@@ -1082,6 +1152,94 @@ function wirePdFrame() {
   });
 }
 
+var PD_CONTENT_KEY = {
+  "index.html": "home", "why-paradream.html": "why-paradream", "occasions.html": "occasions",
+  "our-services.html": "our-services", "gallery.html": "gallery", "contact-us.html": "contact-us",
+  "join-us.html": "join-us", "thanks.html": "thanks", "terms.html": null, "privacy.html": null
+};
+
+var PD_ALL_BLOCKS = {
+  "index.html": function () { return homeBlocks(); },
+  "why-paradream.html": function () { return whyBlocks(); },
+  "thanks.html": function () { return thanksBlocks(); }
+};
+
+function renderSectionList() {
+  var ck = PD_CONTENT_KEY[currentPage];
+  var list = $("#pd-section-list");
+  var addBtn = $("#pd-add-section");
+  var addMenu = $("#pd-add-menu");
+  addMenu.hidden = true;
+
+  if (!ck) {
+    list.innerHTML = '<p class="muted" style="font-size:.78rem">This page has one fixed block of text.</p>';
+    addBtn.hidden = true;
+    return;
+  }
+  addBtn.hidden = false;
+  var order = content.pages[ck].sections || [];
+  var labels = PD_SECTION_LABELS[ck] || {};
+
+  list.innerHTML = order.map(function (key) {
+    return '<div class="pd-sec-row" draggable="true" data-sec-key="' + key + '">' +
+      '<span class="grip">&#9776;</span><span class="lbl">' + (labels[key] || key) + "</span>" +
+      '<button type="button" data-sec-remove="' + key + '" title="Remove section">&times;</button></div>';
+  }).join("");
+
+  var haveBlocksFn = PD_ALL_BLOCKS[currentPage];
+  var allKeys = haveBlocksFn ? Object.keys(haveBlocksFn()) : [];
+  var missing = allKeys.filter(function (k) { return order.indexOf(k) === -1; });
+  addBtn.style.display = missing.length ? "" : "none";
+  addMenu.innerHTML = missing.map(function (k) {
+    return '<button type="button" data-sec-add="' + k + '">' + (labels[k] || k) + "</button>";
+  }).join("");
+
+  var dragKey = null;
+  Array.prototype.forEach.call(list.querySelectorAll(".pd-sec-row"), function (row) {
+    row.addEventListener("dragstart", function () {
+      dragKey = row.dataset.secKey;
+      row.classList.add("dragging");
+    });
+    row.addEventListener("dragend", function () { row.classList.remove("dragging"); });
+    row.addEventListener("dragover", function (e) {
+      e.preventDefault();
+      row.classList.add("drop-target");
+    });
+    row.addEventListener("dragleave", function () { row.classList.remove("drop-target"); });
+    row.addEventListener("drop", function (e) {
+      e.preventDefault();
+      row.classList.remove("drop-target");
+      var targetKey = row.dataset.secKey;
+      if (!dragKey || dragKey === targetKey) return;
+      var arr = content.pages[ck].sections;
+      var from = arr.indexOf(dragKey), to = arr.indexOf(targetKey);
+      arr.splice(from, 1);
+      arr.splice(to, 0, dragKey);
+      contentDirty = true;
+      refreshPublish();
+      renderPagesView();
+    });
+    var rmBtn = row.querySelector("[data-sec-remove]");
+    rmBtn.addEventListener("click", function () {
+      var arr = content.pages[ck].sections;
+      var i = arr.indexOf(rmBtn.dataset.secRemove);
+      if (i !== -1) arr.splice(i, 1);
+      contentDirty = true;
+      refreshPublish();
+      renderPagesView();
+    });
+  });
+
+  Array.prototype.forEach.call(addMenu.querySelectorAll("[data-sec-add]"), function (btn) {
+    btn.addEventListener("click", function () {
+      content.pages[ck].sections.push(btn.dataset.secAdd);
+      contentDirty = true;
+      refreshPublish();
+      renderPagesView();
+    });
+  });
+}
+
 function renderPagesView() {
   if (!content) return;
   var sel = $("#page-select");
@@ -1089,10 +1247,11 @@ function renderPagesView() {
     sel.innerHTML = PD_PAGES.map(function (p) {
       return '<option value="' + p[0] + '">' + p[1] + "</option>";
     }).join("");
-    sel.value = currentPage;
     sel.addEventListener("change", function () { currentPage = sel.value; renderPagesView(); });
   }
   sel.value = currentPage;
+
+  renderSectionList();
 
   var frame = $("#pages-frame");
   var fn = PD_RENDER[currentPage];
@@ -1641,6 +1800,9 @@ $("#editor").addEventListener("click", async function (e) {
 $("#preview-btn").addEventListener("click", openPreview);
 $("#publish").addEventListener("click", publish);
 $("#reload").addEventListener("click", load);
+$("#pd-add-section").addEventListener("click", function () {
+  $("#pd-add-menu").hidden = !$("#pd-add-menu").hidden;
+});
 
 if (token) {
   $("#token").value = token;

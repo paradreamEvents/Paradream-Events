@@ -362,8 +362,8 @@ how_steps_html = "\n".join(
       </div>""" for i, s in enumerate(PAGES["home"]["how_steps"]))
 
 # ── Home ────────────────────────────────────────────────────
-home = f"""
-<section class="hero-slider">
+HOME_BLOCKS = {
+"hero": f"""<section class="hero-slider">
 {hero_slides}
   <div class="slider-dots" role="tablist" aria-label="Slides">
 {hero_dots}
@@ -380,17 +380,17 @@ home = f"""
     <span>Baptism</span><span>First Communion</span><span>Gender Reveal</span>
     <span>Birthday</span><span>Christmas</span>
   </div>
-</div>
+</div>""",
 
-<section class="band">
+"services_teaser": f"""<section class="band">
   <div class="band-inner reveal">
     <h2>{PAGES["home"]["services_teaser_h"]}</h2>
     <p class="lede">{PAGES["home"]["services_teaser_p"]}</p>
     <a class="btn btn-outline" href="our-services.html">Our Services</a>
   </div>
-</section>
+</section>""",
 
-<section class="band about">
+"about": f"""<section class="band about">
   <div class="band-inner reveal">
     <h2>About Us</h2>
     <p>{CONTENT["about"]}</p>
@@ -404,18 +404,18 @@ home = f"""
     </div>
     </div>
   </div>
-</section>
+</section>""",
 
-<section class="band band-cream">
+"how": f"""<section class="band band-cream">
   <div class="band-inner reveal">
     <h2>{PAGES["home"]["how_h"]}</h2>
     <div class="steps">
 {how_steps_html}
     </div>
   </div>
-</section>
+</section>""",
 
-<section class="band band-cream">
+"calculator": f"""<section class="band band-cream">
   <div class="band-inner reveal">
     <h2>{PAGES["home"]["calc_h"]}</h2>
     <p class="lede">{PAGES["home"]["calc_p"]}</p>
@@ -466,17 +466,19 @@ home = f"""
       </aside>
     </div>
   </div>
-</section>
+</section>""",
 
-<section class="band">
+"faq": f"""<section class="band">
   <div class="band-inner reveal">
     <h2>Frequently Asked Questions</h2>
     <div class="faq">
 {faq_html}
     </div>
   </div>
-</section>
-"""
+</section>"""
+}
+
+home = "\n\n".join(HOME_BLOCKS[k] for k in PAGES["home"]["sections"] if k in HOME_BLOCKS)
 page("index.html", "Paradream Events",
      "Paradream Events — Lebanon's trusted event planning company with 12+ years of experience. We plan weddings, engagements, birthdays, baptisms, Christmas events, and more. Based in Beirut. Contact us today!",
      home)
@@ -494,20 +496,15 @@ quotes = "\n".join(f"""      <figure class="quote reveal">
       </figure>""" for src, name, text in TESTIMONIALS)
 
 WHY = PAGES["why-paradream"]
-why = f"""
-<section class="page-head">
-  <h1>{WHY["h1"]}</h1>
-  <p>{WHY["sub"]}</p>
-</section>
-
-<section class="band">
+WHY_BLOCKS = {
+"intro": f"""<section class="band">
   <div class="band-inner">
     <img src="{media("images/why-team.png", 900)}" alt="Paradream team at work" style="border-radius:3px;margin:0 auto 2.2rem">
     <p class="lede">{WHY["story"]}</p>
   </div>
-</section>
+</section>""",
 
-<section class="band band-cream">
+"testimonials": f"""<section class="band band-cream">
   <div class="band-inner">
     <p class="stat">{WHY["stat"]}</p>
     <h2>{WHY["clients_h"]}</h2>
@@ -515,16 +512,24 @@ why = f"""
 {quotes}
     </div>
   </div>
-</section>
+</section>""",
 
-<section class="band">
+"what": f"""<section class="band">
   <div class="band-inner">
     <h2>{WHY["what_h"]}</h2>
     <p class="lede">{WHY["what_p"]}</p>
     <a class="btn btn-outline" href="occasions.html">See all occasions</a>
   </div>
+</section>"""
+}
+
+why = f"""
+<section class="page-head">
+  <h1>{WHY["h1"]}</h1>
+  <p>{WHY["sub"]}</p>
 </section>
-"""
+
+""" + "\n\n".join(WHY_BLOCKS[k] for k in WHY["sections"] if k in WHY_BLOCKS)
 page("why-paradream.html", "Why Paradream? | Top Event Planner &amp; Parade Experts in Lebanon",
      "Discover why Paradream is Lebanon's top event planner. Unique parades, dazzling shows, and unforgettable zaffahs for every special occasion.",
      why)
@@ -753,15 +758,8 @@ page("join-us.html", "Join Our Team - Paradream Events",
 """, current="index.html")
 
 
-page("thanks.html", "Thank you - Paradream Events",
-     "Thanks for getting in touch with Paradream Events.",
-     f"""
-<section class="page-head">
-  <h1>{PAGES["thanks"]["h1"]}</h1>
-  <p>{PAGES["thanks"]["sub"]}</p>
-</section>
-
-<section class="band">
+THANKS_BLOCKS = {
+"hurry": f"""<section class="band">
   <div class="band-inner reveal">
     <h2>{PAGES["thanks"]["hurry_h"]}</h2>
     <p class="lede">{PAGES["thanks"]["hurry_p"]}</p>
@@ -770,16 +768,27 @@ page("thanks.html", "Thank you - Paradream Events",
       <a class="btn btn-outline" href="tel:{PHONE_TEL}" style="margin-inline-start:.6rem">+961 {PHONE_DISPLAY}</a>
     </p>
   </div>
-</section>
+</section>""",
 
-<section class="band band-cream">
+"wait": f"""<section class="band band-cream">
   <div class="band-inner reveal">
     <h2>{PAGES["thanks"]["wait_h"]}</h2>
     <p class="lede">{PAGES["thanks"]["wait_p"]}</p>
     <a class="btn btn-outline" href="gallery.html">See the gallery</a>
   </div>
+</section>"""
+}
+
+page("thanks.html", "Thank you - Paradream Events",
+     "Thanks for getting in touch with Paradream Events.",
+     f"""
+<section class="page-head">
+  <h1>{PAGES["thanks"]["h1"]}</h1>
+  <p>{PAGES["thanks"]["sub"]}</p>
 </section>
-""", current="index.html")
+
+""" + "\n\n".join(THANKS_BLOCKS[k] for k in PAGES["thanks"]["sections"] if k in THANKS_BLOCKS),
+     current="index.html")
 
 
 # ── Terms & Privacy ─────────────────────────────────────────
