@@ -483,7 +483,7 @@ why = f"""
 
 <section class="band">
   <div class="band-inner">
-    <img src="{img("159401_417278")}" alt="Paradream team at work" style="border-radius:3px;margin:0 auto 2.2rem">
+    <img src="{media("images/why-team.png", 900)}" alt="Paradream team at work" style="border-radius:3px;margin:0 auto 2.2rem">
     <p class="lede">Paradream was established in 2019, with a strong background in hospitality management
     and event planning. We have a fervent passion for turning dreams into reality. Driven by our love for
     music and hospitality, and commitment to excellence, we founded PARADREAM with a clear vision: to make
