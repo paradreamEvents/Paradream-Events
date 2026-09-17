@@ -773,6 +773,10 @@ var PD_STYLE = "" +
   ".pd-imgtag { position: absolute; inset: auto auto 8px 8px; background: #E4251B; color: #fff; font: 700 11px/1 Lato, sans-serif; " +
   "letter-spacing: .05em; text-transform: uppercase; padding: 5px 9px; border-radius: 2px; opacity: 0; transition: opacity .15s; pointer-events: none; }" +
   ".pd-imgwrap:hover .pd-imgtag { opacity: 1; }" +
+  ".pd-hero-photobtn { position: absolute; top: 12px; left: 12px; z-index: 4; background: #E4251B; color: #fff; " +
+  "font: 700 11px/1 Lato, sans-serif; letter-spacing: .05em; text-transform: uppercase; padding: 7px 11px; " +
+  "border-radius: 2px; cursor: pointer; }" +
+  ".pd-hero-photobtn:hover { background: #C11C13; }" +
   ".pd-add { border: 2px dashed #c9ccd1; border-radius: 6px; display: flex; align-items: center; justify-content: center; " +
   "min-height: 120px; cursor: pointer; color: #E4251B; font: 700 13px/1 Lato, sans-serif; letter-spacing: .04em; text-transform: uppercase; }" +
   ".pd-add:hover { background: rgba(228,37,27,.06); border-color: #E4251B; }" +
@@ -849,7 +853,7 @@ function homeBlocks() {
         return '<div class="pd-item-wrap slide' + (i === 0 ? " active" : "") + '" style="position:relative;background-image:url(\'' +
           (src || "") + "');background-position:" + (s.position || "center") + '">' +
           removeBtn("hero." + i) +
-          '<span class="pd-imgtag" data-edit-photo="hero.' + i + '.image" style="position:absolute;top:8px;left:8px;opacity:1;cursor:pointer">Change photo</span>' +
+          '<span class="pd-hero-photobtn" data-edit-photo="hero.' + i + '.image">Change photo</span>' +
           '<div class="slide-inner">' +
           ed("hero." + i + ".title", "h1", "", s.title) +
           ed("hero." + i + ".text", "p", "", s.text) +
