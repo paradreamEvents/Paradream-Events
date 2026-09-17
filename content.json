@@ -417,5 +417,14 @@
         "max": 5
       }
     ]
-  }
+  },
+  "gallery_albums": [
+    "Weddings",
+    "Zaffah & Parade",
+    "Characters & Mascots",
+    "Corporate Events",
+    "Christmas",
+    "Birthdays"
+  ],
+  "gallery_photo_albums": {}
 }

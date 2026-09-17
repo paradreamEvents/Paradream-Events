@@ -320,6 +320,14 @@ gallery_stamps = json.dumps({
     for p in sorted(_glob.glob(os.path.join(_img_dir, "gallery-*.jpg")))
 })
 
+GALLERY_ALBUMS = CONTENT.get("gallery_albums", [])
+GALLERY_PHOTO_ALBUMS = CONTENT.get("gallery_photo_albums", {})
+gallery_photo_albums_json = json.dumps(GALLERY_PHOTO_ALBUMS)
+gallery_tabs_html = "\n".join(
+    f'      <button type="button" class="gallery-tab{" active" if i == 0 else ""}" data-album="{"" if a == "All" else a}">{a}</button>'
+    for i, a in enumerate(["All"] + GALLERY_ALBUMS)
+)
+
 def hero_bg(slide):
     src = slide.get("image") or ""
     if src.startswith("images/"):
@@ -604,8 +612,11 @@ page("gallery.html", "Gallery - Paradream Events",
 
 <section class="band">
   <div class="band-inner">
+    <div class="gallery-tabs" id="gallery-tabs">
+{gallery_tabs_html}
+    </div>
     <div class="gallery-grid" id="gallery-grid" data-visible="{GALLERY_VISIBLE}"
-         data-stamps='{gallery_stamps}'></div>
+         data-stamps='{gallery_stamps}' data-albums='{gallery_photo_albums_json}'></div>
     <p class="gallery-empty" id="gallery-empty">Loading photos&hellip;</p>
     <p class="gallery-more" hidden><button class="btn btn-outline" id="gallery-more" type="button">Show more photos</button></p>
   </div>

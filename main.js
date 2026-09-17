@@ -149,6 +149,8 @@
 
     var STAMPS = {};
     try { STAMPS = JSON.parse(grid.dataset.stamps || "{}"); } catch (e) {}
+    var ALBUMS = {};
+    try { ALBUMS = JSON.parse(grid.dataset.albums || "{}"); } catch (e) {}
 
     var gsrc = function (n, w, q) {
       var v = STAMPS[n] ? "&v=" + STAMPS[n] : "";
@@ -168,6 +170,7 @@
     var tile = function (n, hidden) {
       var fig = document.createElement("figure");
       fig.className = "shot" + (hidden ? " extra" : "");
+      fig.dataset.album = ALBUMS[String(n)] || "";
       if (hidden) fig.hidden = true;
       var im = document.createElement("img");
       im.src = gsrc(n, 800);
@@ -206,6 +209,27 @@
         });
       }
       setupLightbox($$("img", grid));
+
+      var tabs = $$(".gallery-tab", $("#gallery-tabs"));
+      var shots = $$(".shot", grid);
+      tabs.forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          tabs.forEach(function (t) { t.classList.remove("active"); });
+          tab.classList.add("active");
+          var album = tab.dataset.album || "";
+          if (!album) {
+            shots.forEach(function (f) { f.classList.remove("filtered-out"); });
+            if (moreWrap) moreWrap.hidden = !extras.length;
+          } else {
+            shots.forEach(function (f) {
+              var match = f.dataset.album === album;
+              f.classList.toggle("filtered-out", !match);
+              if (match) f.hidden = false;
+            });
+            if (moreWrap) moreWrap.hidden = true;
+          }
+        });
+      });
     };
 
     var round = function () {

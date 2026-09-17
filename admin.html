@@ -45,6 +45,12 @@ input[type=password],input[type=text]{font-family:inherit;font-size:1rem;padding
 .log{font-size:.85rem;margin-top:1rem;padding:.8rem 1rem;border-radius:3px;background:var(--cream);
   border-inline-start:3px solid var(--red);white-space:pre-wrap;max-height:220px;overflow:auto}
 .log[hidden]{display:none}
+#album-manager{border:1px solid var(--line);border-radius:4px;padding:.9rem 1rem;margin-bottom:1rem;background:var(--cream)}
+#album-manager .pills{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.7rem}
+#album-manager .pill{display:flex;align-items:center;gap:.4rem;background:#fff;border:1px solid var(--line);
+  border-radius:20px;padding:.3rem .5rem .3rem .9rem;font-size:.8rem}
+#album-manager .pill button{background:none;border:0;color:var(--red);font-size:.9rem;cursor:pointer;padding:0 .2rem}
+#album-manager .row input{flex:1 1 240px}
 .bar{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);
   padding:1rem 0;margin-top:1.4rem;display:flex;gap:.8rem;align-items:center;flex-wrap:wrap}
 .muted{font-size:.85rem;opacity:.75}
@@ -182,6 +188,8 @@ button.danger{color:#B00;border-color:#B00}
     </div>
 
     <div id="editor" hidden></div>
+
+    <div id="album-manager" hidden></div>
 
     <div id="drop" tabindex="0" role="button" hidden>
       <strong>Drop photos here</strong>
@@ -427,6 +435,49 @@ function nextFree() {
   return n;
 }
 
+function renderAlbumManager() {
+  var box = $("#album-manager");
+  if (!content) { box.innerHTML = ""; return; }
+  if (!content.gallery_albums) content.gallery_albums = [];
+  var albums = content.gallery_albums;
+  box.innerHTML =
+    '<div class="pills" id="album-pills">' +
+    (albums.length ? albums.map(function (a) {
+      return '<span class="pill">' + a + '<button type="button" data-rm-album="' + a + '" title="Delete album">&times;</button></span>';
+    }).join("") : '<span class="muted" style="font-size:.85rem">No albums yet — add one below.</span>') +
+    '</div>' +
+    '<div class="row"><input type="text" id="new-album-name" placeholder="New album name">' +
+    '<button type="button" class="ghost tiny" id="add-album-btn">Add album</button></div>';
+
+  box.querySelectorAll("[data-rm-album]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var name = btn.dataset.rmAlbum;
+      if (!confirm('Delete album "' + name + '"? Photos in it become Uncategorized.')) return;
+      var i = content.gallery_albums.indexOf(name);
+      if (i !== -1) content.gallery_albums.splice(i, 1);
+      Object.keys(content.gallery_photo_albums || {}).forEach(function (id) {
+        if (content.gallery_photo_albums[id] === name) delete content.gallery_photo_albums[id];
+      });
+      contentDirty = true;
+      refreshPublish();
+      renderAlbumManager();
+      render();
+    });
+  });
+
+  $("#add-album-btn").addEventListener("click", function () {
+    var input = $("#new-album-name");
+    var name = input.value.trim();
+    if (!name || content.gallery_albums.indexOf(name) !== -1) return;
+    content.gallery_albums.push(name);
+    input.value = "";
+    contentDirty = true;
+    refreshPublish();
+    renderAlbumManager();
+    render();
+  });
+}
+
 function render() {
   var grid = $("#grid");
   grid.innerHTML = "";
@@ -467,11 +518,22 @@ function render() {
     var gone = deleting.indexOf(f.name) !== -1;
     var el = document.createElement("div");
     el.className = "item" + (gone ? " pending" : "");
+    var albumPicker = "";
+    if (tab === "gallery") {
+      var id = String(numOf(f.name));
+      var cur = (content.gallery_photo_albums || {})[id] || "";
+      var opts = '<option value="">Uncategorized</option>' +
+        (content.gallery_albums || []).map(function (a) {
+          return '<option value="' + a + '"' + (a === cur ? " selected" : "") + ">" + a + "</option>";
+        }).join("");
+      albumPicker = '<select class="tiny" data-album-for="' + id + '" style="width:100%;margin-top:.3rem;font-size:.72rem">' + opts + "</select>";
+    }
     el.innerHTML =
       (gone ? '<span class="badge">Removing</span>' : '') +
       '<img src="' + f.url + '" alt="" loading="lazy" style="' + (gone ? 'opacity:.35' : '') + '">' +
       '<div class="cap"><span>' + f.name.replace(".jpg", "") + '</span>' +
-      '<button class="ghost tiny" data-del="' + f.name + '">' + (gone ? "Undo" : "Remove") + '</button></div>';
+      '<button class="ghost tiny" data-del="' + f.name + '">' + (gone ? "Undo" : "Remove") + '</button></div>' +
+      albumPicker;
     grid.appendChild(el);
   });
 
@@ -1702,6 +1764,7 @@ document.querySelectorAll(".tabs button").forEach(function (b) {
     var isPages = tab === "pages";
     $("#pages-view").hidden = !isPages;
     $("#editor").hidden = !isText;
+    $("#album-manager").hidden = tab !== "gallery";
     $("#drop").hidden = isText || isPages || tab === "service";
     $("#grid").hidden = isText || isPages;
     $("#drop-hint").textContent = tab === "service"
@@ -1710,6 +1773,7 @@ document.querySelectorAll(".tabs button").forEach(function (b) {
     if (isPages) renderPagesView();
     else if (isText) renderEditor();
     else render();
+    if (tab === "gallery") renderAlbumManager();
   });
 });
 
@@ -1747,6 +1811,16 @@ $("#grid").addEventListener("click", function (e) {
     queued.splice(parseInt(dropIdx, 10), 1);
     render();
   }
+});
+
+$("#grid").addEventListener("change", function (e) {
+  var id = e.target.dataset && e.target.dataset.albumFor;
+  if (id === undefined) return;
+  if (!content.gallery_photo_albums) content.gallery_photo_albums = {};
+  if (e.target.value) content.gallery_photo_albums[id] = e.target.value;
+  else delete content.gallery_photo_albums[id];
+  contentDirty = true;
+  refreshPublish();
 });
 
 function secFor(key) {
