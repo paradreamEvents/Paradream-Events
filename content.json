@@ -419,17 +419,20 @@
     ]
   },
   "gallery_albums": [
+    "Proposal",
+    "Engagement",
+    "Bachelor",
     "Weddings",
+    "Birthdays",
+    "Christmas",
     "Zaffah & Parade",
     "Characters & Mascots",
-    "Corporate Events",
-    "Christmas",
-    "Birthdays"
+    "Corporate Events"
   ],
   "gallery_photo_albums": {
     "1 (1)": "Zaffah & Parade",
-    "2 (1)": "Weddings",
-    "3 (1)": "Weddings",
+    "2 (1)": "Bachelor",
+    "3 (1)": "Engagement",
     "4 (1)": "Corporate Events",
     "41": "Characters & Mascots",
     "42": "Characters & Mascots",
@@ -441,7 +444,7 @@
     "48": "Zaffah & Parade",
     "49": "Zaffah & Parade",
     "5 (1)": "Weddings",
-    "50": "Weddings",
+    "50": "Bachelor",
     "51": "Corporate Events",
     "6 (1)": "Zaffah & Parade",
     "7 (1)": "Weddings",
