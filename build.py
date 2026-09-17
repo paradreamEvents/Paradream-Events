@@ -31,6 +31,31 @@ PHONE_DISPLAY = SITE["phone_display"]
 PHONE_TEL     = SITE["phone_tel"]
 EMAIL         = SITE["email"]
 
+# The quote calculator (main.js) reads its numbers from window.PRICING, built
+# here from content.json so the admin panel can edit prices like everything else.
+def _pricing_js():
+    p = CONTENT["pricing"]
+    services = {}
+    for s in p["services"]:
+        entry = {"label": s["label"], "type": s["type"],
+                  "price": [s["price_low"], s["price_high"]]}
+        if s.get("unit"):
+            entry["unit"] = s["unit"]
+        if s["type"] == "unit":
+            entry["def"] = s["default"]
+            entry["max"] = s["max"]
+        services[s["key"]] = entry
+    return json.dumps({
+        "currency": p["currency"],
+        "staff": {"ratePerPerson": [p["staff_rate_low"], p["staff_rate_high"]],
+                  "guestsPerStaff": p["guests_per_staff"]},
+        "coordination": [p["coordination_low"], p["coordination_high"]],
+        "outsideBeirut": [p["outside_beirut_low"], p["outside_beirut_high"]],
+        "services": services
+    })
+
+PRICING_TAG = f'<script>var PRICING = {_pricing_js()};</script>'
+
 ICONS = {
  "instagram": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5.2"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.3" cy="6.7" r="1.15" fill="currentColor" stroke="none"/></svg>',
  "tiktok":    '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.1 2h-3.2v13.3a2.45 2.45 0 1 1-2.1-2.42v-3.2a5.6 5.6 0 1 0 5.3 5.59V9.2a7.5 7.5 0 0 0 4.1 1.22V7.2a4.35 4.35 0 0 1-4.1-4.3V2Z"/></svg>',
@@ -220,6 +245,7 @@ FOOTER = f"""<footer class="site-footer">
   </form>
 </div>
 
+{PRICING_TAG}
 <script src="main.js"></script>"""
 
 
@@ -318,6 +344,8 @@ def hero_slide_html(i, sl):
         '  </div>'
     )
 
+PAGES = CONTENT["pages"]
+
 hero_slides = "\n".join(hero_slide_html(i, sl) for i, sl in enumerate(CONTENT["hero"]))
 
 hero_dots = "\n".join(
@@ -325,6 +353,13 @@ hero_dots = "\n".join(
     '" aria-label="Slide ' + str(i + 1) + '"></button>'
     for i in range(len(CONTENT["hero"]))
 )
+
+how_steps_html = "\n".join(
+    f"""      <div class="step reveal{' reveal-d' + str(i) if i else ''}">
+        <p class="step-num">{i + 1}</p>
+        <h3>{s["h"]}</h3>
+        <p>{s["p"]}</p>
+      </div>""" for i, s in enumerate(PAGES["home"]["how_steps"]))
 
 # ── Home ────────────────────────────────────────────────────
 home = f"""
@@ -349,8 +384,8 @@ home = f"""
 
 <section class="band">
   <div class="band-inner reveal">
-    <h2>Discover Our Services</h2>
-    <p class="lede">Dive Into Paradream's Portfolio To Know What Your Event Will Look Like</p>
+    <h2>{PAGES["home"]["services_teaser_h"]}</h2>
+    <p class="lede">{PAGES["home"]["services_teaser_p"]}</p>
     <a class="btn btn-outline" href="our-services.html">Our Services</a>
   </div>
 </section>
@@ -373,34 +408,17 @@ home = f"""
 
 <section class="band band-cream">
   <div class="band-inner reveal">
-    <h2>How It Works</h2>
+    <h2>{PAGES["home"]["how_h"]}</h2>
     <div class="steps">
-      <div class="step reveal">
-        <p class="step-num">1</p>
-        <h3>Go to Why Paradream?</h3>
-        <p>Choose the <a href="contact-us.html">Contact Us</a> section to fill in your information.</p>
-      </div>
-      <div class="step reveal reveal-d1">
-        <p class="step-num">2</p>
-        <h3>Fill in the form</h3>
-        <p>Complete the form with all the required information. This will facilitate our ability to
-        process your request effectively and get back to you asap!</p>
-      </div>
-      <div class="step reveal reveal-d2">
-        <p class="step-num">3</p>
-        <h3>Trust the process</h3>
-        <p>Trust the process and the planner's workflow to ensure that all aspects of the event are
-        managed efficiently and effectively.</p>
-      </div>
+{how_steps_html}
     </div>
   </div>
 </section>
 
 <section class="band band-cream">
   <div class="band-inner reveal">
-    <h2>What will it cost?</h2>
-    <p class="lede">Pick what you're planning and get a rough range straight away.
-    It's an estimate, not a quote — but it's a real starting point.</p>
+    <h2>{PAGES["home"]["calc_h"]}</h2>
+    <p class="lede">{PAGES["home"]["calc_p"]}</p>
 
     <div class="calc" id="calc">
       <div class="calc-panel">
@@ -475,27 +493,24 @@ quotes = "\n".join(f"""      <figure class="quote reveal">
         </div>
       </figure>""" for src, name, text in TESTIMONIALS)
 
+WHY = PAGES["why-paradream"]
 why = f"""
 <section class="page-head">
-  <h1>Our Success Story</h1>
-  <p>How It Started</p>
+  <h1>{WHY["h1"]}</h1>
+  <p>{WHY["sub"]}</p>
 </section>
 
 <section class="band">
   <div class="band-inner">
     <img src="{media("images/why-team.png", 900)}" alt="Paradream team at work" style="border-radius:3px;margin:0 auto 2.2rem">
-    <p class="lede">Paradream was established in 2019, with a strong background in hospitality management
-    and event planning. We have a fervent passion for turning dreams into reality. Driven by our love for
-    music and hospitality, and commitment to excellence, we founded PARADREAM with a clear vision: to make
-    your dreams come true. Our guiding principle, 'YOUR DAY, OUR WAY!', reflects our commitment to bringing
-    your visions to life.</p>
+    <p class="lede">{WHY["story"]}</p>
   </div>
 </section>
 
 <section class="band band-cream">
   <div class="band-inner">
-    <p class="stat">200+ celebrations brought to life with unforgettable moments across Lebanon.</p>
-    <h2>Here's What Our Clients Say About Paradream</h2>
+    <p class="stat">{WHY["stat"]}</p>
+    <h2>{WHY["clients_h"]}</h2>
     <div class="quotes">
 {quotes}
     </div>
@@ -504,9 +519,8 @@ why = f"""
 
 <section class="band">
   <div class="band-inner">
-    <h2>What We Do</h2>
-    <p class="lede">Occasions we cover — proposal, engagement, bachelor, pre-wedding, wedding, baptism,
-    first communion, gender reveal, birthdays and more.</p>
+    <h2>{WHY["what_h"]}</h2>
+    <p class="lede">{WHY["what_p"]}</p>
     <a class="btn btn-outline" href="occasions.html">See all occasions</a>
   </div>
 </section>
@@ -532,9 +546,8 @@ page("occasions.html", "Occasions We Cover - Paradream Events",
      "Proposal, engagement, bachelor, wedding, baptism, first communion, gender reveal, birthday and Christmas celebrations across Lebanon.",
      f"""
 <section class="page-head">
-  <h1>Occasions We Cover</h1>
-  <p>Proposal, engagement, bachelor, pre-wedding, wedding, baptism, first communion,
-  gender reveal, birthdays and more.</p>
+  <h1>{PAGES["occasions"]["h1"]}</h1>
+  <p>{PAGES["occasions"]["sub"]}</p>
 </section>
 
 <section class="band">
@@ -561,8 +574,8 @@ page("our-services.html", "Our Services - Paradream Events",
      "Live show parades, oriental zaffah, photo booths, mascots, circus shows, inflatable games, table decoration, catering and Christmas mascots.",
      f"""
 <section class="page-head">
-  <h1>Our Services</h1>
-  <p>Dive into Paradream's portfolio to know what your event will look like.</p>
+  <h1>{PAGES["our-services"]["h1"]}</h1>
+  <p>{PAGES["our-services"]["sub"]}</p>
 </section>
 
 <section class="band band-services">
@@ -580,8 +593,8 @@ page("gallery.html", "Gallery - Paradream Events",
      "Photos from weddings, engagements, baptisms, birthdays and Christmas events by Paradream in Lebanon.",
      f"""
 <section class="page-head">
-  <h1>Gallery</h1>
-  <p>Moments from events across Lebanon.</p>
+  <h1>{PAGES["gallery"]["h1"]}</h1>
+  <p>{PAGES["gallery"]["sub"]}</p>
 </section>
 
 <section class="band">
@@ -604,8 +617,8 @@ page("contact-us.html", "Contact Paradream | Book the Best Event Entertainment i
      "Ready to plan your dream event? Contact Paradream for the best parades, zaffah, and entertainment services in Lebanon.",
      f"""
 <section class="page-head">
-  <h1>Contact Us</h1>
-  <p>Ready to plan your dream event? Tell us what you have in mind and we'll get back to you.</p>
+  <h1>{PAGES["contact-us"]["h1"]}</h1>
+  <p>{PAGES["contact-us"]["sub"]}</p>
 </section>
 
 
@@ -614,11 +627,11 @@ page("contact-us.html", "Contact Paradream | Book the Best Event Entertainment i
     <h2>Paradream Events</h2>
     <dl class="contact-details">
       <dt>Address</dt>
-      <dd>Furn El Chebbak, Beirut, Lebanon</dd>
+      <dd>{SITE["address_lines"][0]}, {SITE["address_lines"][1]}</dd>
       <dt>Phone</dt>
-      <dd><a href="tel:+96181406046">+961 81 406 046</a></dd>
+      <dd><a href="tel:{PHONE_TEL}">+961 {PHONE_DISPLAY}</a></dd>
       <dt>Email</dt>
-      <dd><a href="mailto:paradedream@gmail.com">paradedream@gmail.com</a></dd>
+      <dd><a href="mailto:{EMAIL}">{EMAIL}</a></dd>
     </dl>
   </div>
 
@@ -676,17 +689,16 @@ page("contact-us.html", "Contact Paradream | Book the Best Event Entertainment i
 # ── Join us ─────────────────────────────────────────────────
 page("join-us.html", "Join Our Team - Paradream Events",
      "Be a part of the magic. Join the Paradream family and bring unforgettable moments to life.",
-     """
+     f"""
 <section class="page-head">
-  <h1>Join the Paradream Family</h1>
-  <p>Be a part of the magic. Join the Paradream family and bring unforgettable moments to life.</p>
+  <h1>{PAGES["join-us"]["h1"]}</h1>
+  <p>{PAGES["join-us"]["sub"]}</p>
 </section>
 
 <section class="form-wrap">
   <div>
-    <h2>Work with us</h2>
-    <p>We take on performers, dancers, drummers, mascot artists and service staff through the year.
-    Tell us what you do and where you're based.</p>
+    <h2>{PAGES["join-us"]["work_h"]}</h2>
+    <p>{PAGES["join-us"]["work_p"]}</p>
   </div>
 
   <form class="form" name="join-us" method="POST" action="/thanks.html" enctype="multipart/form-data" data-netlify="true" netlify-honeypot="website">
@@ -743,28 +755,27 @@ page("join-us.html", "Join Our Team - Paradream Events",
 
 page("thanks.html", "Thank you - Paradream Events",
      "Thanks for getting in touch with Paradream Events.",
-     """
+     f"""
 <section class="page-head">
-  <h1>Thank you!</h1>
-  <p>We've got your message and someone from the team will come back to you shortly —
-  usually within a day.</p>
+  <h1>{PAGES["thanks"]["h1"]}</h1>
+  <p>{PAGES["thanks"]["sub"]}</p>
 </section>
 
 <section class="band">
   <div class="band-inner reveal">
-    <h2>In a hurry?</h2>
-    <p class="lede">Call or WhatsApp us and we'll answer faster.</p>
+    <h2>{PAGES["thanks"]["hurry_h"]}</h2>
+    <p class="lede">{PAGES["thanks"]["hurry_p"]}</p>
     <p>
       <a class="btn btn-solid" href="https://wa.me/96181406046">WhatsApp us</a>
-      <a class="btn btn-outline" href="tel:+96181406046" style="margin-inline-start:.6rem">+961 81 406 046</a>
+      <a class="btn btn-outline" href="tel:{PHONE_TEL}" style="margin-inline-start:.6rem">+961 {PHONE_DISPLAY}</a>
     </p>
   </div>
 </section>
 
 <section class="band band-cream">
   <div class="band-inner reveal">
-    <h2>While you wait</h2>
-    <p class="lede">Have a look at what we've done for other people.</p>
+    <h2>{PAGES["thanks"]["wait_h"]}</h2>
+    <p class="lede">{PAGES["thanks"]["wait_p"]}</p>
     <a class="btn btn-outline" href="gallery.html">See the gallery</a>
   </div>
 </section>
@@ -781,136 +792,9 @@ LEGAL_CONTACT = f"""
     <li>Lebanon</li>
   </ul>"""
 
-TERMS = """
-  <h2>1. Acceptance of Terms</h2>
-  <p>By accessing or using this website and our services, you agree to be bound by these
-  Terms and Conditions, our <a href="privacy.html">Privacy Policy</a>, and any additional
-  guidelines we provide. If you do not agree, please do not use our website or services.</p>
+TERMS = CONTENT["legal"]["terms_html"] + LEGAL_CONTACT
 
-  <h2>2. Services Offered</h2>
-  <p>Paradream provides entertainment and event planning services for occasions such as
-  weddings, engagements, proposals, bridal showers, birthdays, baptisms, first communions,
-  and holidays (e.g. Christmas).</p>
-  <p>Each booking is tailored to the client's preferences based on the categories listed on
-  our <a href="why-paradream.html">Why Paradream?</a> page.</p>
-
-  <h2>3. Booking &amp; Payment Terms</h2>
-  <ul>
-    <li>Bookings must be made through our official forms or via direct contact.</li>
-    <li>A deposit may be required to confirm your event, based on the selected package.</li>
-    <li>Full payment must be completed before the event date unless otherwise agreed in writing.</li>
-    <li>Prices may vary based on customization, location, timing, and specific requests.</li>
-  </ul>
-
-  <h2>4. Cancellation &amp; Refund Policy</h2>
-  <ul>
-    <li>Cancellations must be made at least 7 days before the scheduled event to be eligible
-    for a partial refund (minus administrative and non-refundable costs).</li>
-    <li>Events cancelled less than 7 days in advance may not be refunded unless due to force majeure.</li>
-    <li>Postponements can be discussed based on availability.</li>
-  </ul>
-
-  <h2>5. Client Responsibilities</h2>
-  <ul>
-    <li>Clients must provide accurate information on forms (event type, location, number of guests, etc.).</li>
-    <li>Any changes (venue, time, theme, etc.) must be communicated at least 72 hours in advance.</li>
-    <li>Clients must ensure proper access to the venue for setup and performers.</li>
-  </ul>
-
-  <h2>6. Paradream Responsibilities</h2>
-  <ul>
-    <li>We commit to delivering high-quality, professional performances as agreed upon in your booking.</li>
-    <li>In rare cases of force majeure (e.g. illness, accidents, weather conditions), Paradream will
-    notify the client and attempt to provide a suitable replacement or reschedule.</li>
-  </ul>
-
-  <h2>7. Liability</h2>
-  <ul>
-    <li>Paradream is not liable for venue issues, third-party vendors, or accidents caused by
-    conditions beyond our control.</li>
-    <li>We are not responsible for delays or service disruptions due to circumstances such as
-    electricity outages, severe weather, or traffic blockages.</li>
-  </ul>
-
-  <h2>8. Use of Website &amp; Content</h2>
-  <ul>
-    <li>All text, media, logos, and content on this website are the intellectual property of
-    Paradream unless otherwise noted.</li>
-    <li>You may not copy, use, or distribute our content without written permission.</li>
-  </ul>
-
-  <h2>9. Privacy</h2>
-  <p>We collect basic user data (names, contact info, event details) strictly to provide our
-  services. We do not sell or share your information with third parties unless required by law.
-  See our full <a href="privacy.html">Privacy Policy</a>.</p>
-
-  <h2>10. Amendments</h2>
-  <p>Paradream reserves the right to update these Terms and Conditions at any time. Changes will
-  be posted here and will take effect immediately upon posting.</p>
-""" + LEGAL_CONTACT
-
-PRIVACY = """
-  <h2>1. Introduction</h2>
-  <p>Paradream values your privacy and is committed to protecting your personal data. This
-  Privacy Policy explains how we collect, use, and protect your information when you visit our
-  website, submit a form, or contact us for services.</p>
-
-  <h2>2. What Information We Collect</h2>
-  <p>We collect the following information from you when you interact with our site or services:</p>
-  <ul>
-    <li>Full name (first and last)</li>
-    <li>Email address</li>
-    <li>Phone number</li>
-    <li>Event details (type, date, location, preferences, number of guests, etc.)</li>
-    <li>Messages or notes you submit in contact or booking forms</li>
-  </ul>
-  <p>We do not collect sensitive data (such as payment information) through our website.</p>
-
-  <h2>3. How We Use Your Information</h2>
-  <p>We use the information you provide to:</p>
-  <ul>
-    <li>Process your event inquiry or booking</li>
-    <li>Contact you regarding your event</li>
-    <li>Provide relevant service recommendations</li>
-    <li>Customize your entertainment package</li>
-    <li>Improve our services and customer experience</li>
-    <li>Respond to your messages or feedback</li>
-  </ul>
-
-  <h2>4. How We Store &amp; Protect Your Information</h2>
-  <p>Your information is securely stored and only accessible by authorized members of our team.
-  We take appropriate security measures to protect against unauthorized access, alteration, or
-  misuse of your personal information.</p>
-
-  <h2>5. Sharing of Information</h2>
-  <p>We do not sell, rent, or share your personal information with third parties for marketing
-  purposes. We may share your information only:</p>
-  <ul>
-    <li>With trusted vendors or performers strictly for the purpose of fulfilling your event needs</li>
-    <li>When required by Lebanese law or legal authorities</li>
-  </ul>
-
-  <h2>6. Cookies &amp; Tracking</h2>
-  <p>Our website may use basic cookies to understand how visitors use our site (e.g. via Google
-  Analytics), to improve user experience. You can choose to disable cookies through your browser
-  settings.</p>
-
-  <h2>7. Your Rights</h2>
-  <p>You have the right to:</p>
-  <ul>
-    <li>Request a copy of your data</li>
-    <li>Ask us to update your information</li>
-  </ul>
-  <p>To do so, contact us using the details below.</p>
-
-  <h2>8. External Links</h2>
-  <p>Our website may contain links to social media or external sites. We are not responsible for
-  the privacy practices of these third-party websites.</p>
-
-  <h2>9. Updates to This Policy</h2>
-  <p>We may update this Privacy Policy from time to time. Any changes will be posted on this page
-  with an updated effective date.</p>
-""" + LEGAL_CONTACT
+PRIVACY = CONTENT["legal"]["privacy_html"] + LEGAL_CONTACT
 
 for fn, h1, body, desc in [
     ("terms.html", "Terms &amp; Conditions", TERMS,

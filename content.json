@@ -217,5 +217,173 @@
     "provider": "",
     "cloudflare_token": "",
     "ga4_id": ""
+  },
+  "pages": {
+    "home": {
+      "services_teaser_h": "Discover Our Services",
+      "services_teaser_p": "Dive Into Paradream's Portfolio To Know What Your Event Will Look Like",
+      "how_h": "How It Works",
+      "how_steps": [
+        {
+          "h": "Go to Why Paradream?",
+          "p": "Choose the <a href=\"contact-us.html\">Contact Us</a> section to fill in your information."
+        },
+        {
+          "h": "Fill in the form",
+          "p": "Complete the form with all the required information. This will facilitate our ability to process your request effectively and get back to you asap!"
+        },
+        {
+          "h": "Trust the process",
+          "p": "Trust the process and the planner's workflow to ensure that all aspects of the event are managed efficiently and effectively."
+        }
+      ],
+      "calc_h": "What will it cost?",
+      "calc_p": "Pick what you're planning and get a rough range straight away. It's an estimate, not a quote — but it's a real starting point."
+    },
+    "why-paradream": {
+      "h1": "Our Success Story",
+      "sub": "How It Started",
+      "story": "Paradream was established in 2019, with a strong background in hospitality management and event planning. We have a fervent passion for turning dreams into reality. Driven by our love for music and hospitality, and commitment to excellence, we founded PARADREAM with a clear vision: to make your dreams come true. Our guiding principle, 'YOUR DAY, OUR WAY!', reflects our commitment to bringing your visions to life.",
+      "stat": "200+ celebrations brought to life with unforgettable moments across Lebanon.",
+      "clients_h": "Here's What Our Clients Say About Paradream",
+      "what_h": "What We Do",
+      "what_p": "Occasions we cover — proposal, engagement, bachelor, pre-wedding, wedding, baptism, first communion, gender reveal, birthdays and more."
+    },
+    "occasions": {
+      "h1": "Occasions We Cover",
+      "sub": "Proposal, engagement, bachelor, pre-wedding, wedding, baptism, first communion, gender reveal, birthdays and more."
+    },
+    "our-services": {
+      "h1": "Our Services",
+      "sub": "Dive into Paradream's portfolio to know what your event will look like."
+    },
+    "gallery": {
+      "h1": "Gallery",
+      "sub": "Moments from events across Lebanon."
+    },
+    "contact-us": {
+      "h1": "Contact Us",
+      "sub": "Ready to plan your dream event? Tell us what you have in mind and we'll get back to you."
+    },
+    "join-us": {
+      "h1": "Join the Paradream Family",
+      "sub": "Be a part of the magic. Join the Paradream family and bring unforgettable moments to life.",
+      "work_h": "Work with us",
+      "work_p": "We take on performers, dancers, drummers, mascot artists and service staff through the year. Tell us what you do and where you're based."
+    },
+    "thanks": {
+      "h1": "Thank you!",
+      "sub": "We've got your message and someone from the team will come back to you shortly — usually within a day.",
+      "hurry_h": "In a hurry?",
+      "hurry_p": "Call or WhatsApp us and we'll answer faster.",
+      "wait_h": "While you wait",
+      "wait_p": "Have a look at what we've done for other people."
+    }
+  },
+  "legal": {
+    "terms_html": "  <h2>1. Acceptance of Terms</h2>\n  <p>By accessing or using this website and our services, you agree to be bound by these\n  Terms and Conditions, our <a href=\"privacy.html\">Privacy Policy</a>, and any additional\n  guidelines we provide. If you do not agree, please do not use our website or services.</p>\n\n  <h2>2. Services Offered</h2>\n  <p>Paradream provides entertainment and event planning services for occasions such as\n  weddings, engagements, proposals, bridal showers, birthdays, baptisms, first communions,\n  and holidays (e.g. Christmas).</p>\n  <p>Each booking is tailored to the client's preferences based on the categories listed on\n  our <a href=\"why-paradream.html\">Why Paradream?</a> page.</p>\n\n  <h2>3. Booking &amp; Payment Terms</h2>\n  <ul>\n    <li>Bookings must be made through our official forms or via direct contact.</li>\n    <li>A deposit may be required to confirm your event, based on the selected package.</li>\n    <li>Full payment must be completed before the event date unless otherwise agreed in writing.</li>\n    <li>Prices may vary based on customization, location, timing, and specific requests.</li>\n  </ul>\n\n  <h2>4. Cancellation &amp; Refund Policy</h2>\n  <ul>\n    <li>Cancellations must be made at least 7 days before the scheduled event to be eligible\n    for a partial refund (minus administrative and non-refundable costs).</li>\n    <li>Events cancelled less than 7 days in advance may not be refunded unless due to force majeure.</li>\n    <li>Postponements can be discussed based on availability.</li>\n  </ul>\n\n  <h2>5. Client Responsibilities</h2>\n  <ul>\n    <li>Clients must provide accurate information on forms (event type, location, number of guests, etc.).</li>\n    <li>Any changes (venue, time, theme, etc.) must be communicated at least 72 hours in advance.</li>\n    <li>Clients must ensure proper access to the venue for setup and performers.</li>\n  </ul>\n\n  <h2>6. Paradream Responsibilities</h2>\n  <ul>\n    <li>We commit to delivering high-quality, professional performances as agreed upon in your booking.</li>\n    <li>In rare cases of force majeure (e.g. illness, accidents, weather conditions), Paradream will\n    notify the client and attempt to provide a suitable replacement or reschedule.</li>\n  </ul>\n\n  <h2>7. Liability</h2>\n  <ul>\n    <li>Paradream is not liable for venue issues, third-party vendors, or accidents caused by\n    conditions beyond our control.</li>\n    <li>We are not responsible for delays or service disruptions due to circumstances such as\n    electricity outages, severe weather, or traffic blockages.</li>\n  </ul>\n\n  <h2>8. Use of Website &amp; Content</h2>\n  <ul>\n    <li>All text, media, logos, and content on this website are the intellectual property of\n    Paradream unless otherwise noted.</li>\n    <li>You may not copy, use, or distribute our content without written permission.</li>\n  </ul>\n\n  <h2>9. Privacy</h2>\n  <p>We collect basic user data (names, contact info, event details) strictly to provide our\n  services. We do not sell or share your information with third parties unless required by law.\n  See our full <a href=\"privacy.html\">Privacy Policy</a>.</p>\n\n  <h2>10. Amendments</h2>\n  <p>Paradream reserves the right to update these Terms and Conditions at any time. Changes will\n  be posted here and will take effect immediately upon posting.</p>",
+    "privacy_html": "  <h2>1. Introduction</h2>\n  <p>Paradream values your privacy and is committed to protecting your personal data. This\n  Privacy Policy explains how we collect, use, and protect your information when you visit our\n  website, submit a form, or contact us for services.</p>\n\n  <h2>2. What Information We Collect</h2>\n  <p>We collect the following information from you when you interact with our site or services:</p>\n  <ul>\n    <li>Full name (first and last)</li>\n    <li>Email address</li>\n    <li>Phone number</li>\n    <li>Event details (type, date, location, preferences, number of guests, etc.)</li>\n    <li>Messages or notes you submit in contact or booking forms</li>\n  </ul>\n  <p>We do not collect sensitive data (such as payment information) through our website.</p>\n\n  <h2>3. How We Use Your Information</h2>\n  <p>We use the information you provide to:</p>\n  <ul>\n    <li>Process your event inquiry or booking</li>\n    <li>Contact you regarding your event</li>\n    <li>Provide relevant service recommendations</li>\n    <li>Customize your entertainment package</li>\n    <li>Improve our services and customer experience</li>\n    <li>Respond to your messages or feedback</li>\n  </ul>\n\n  <h2>4. How We Store &amp; Protect Your Information</h2>\n  <p>Your information is securely stored and only accessible by authorized members of our team.\n  We take appropriate security measures to protect against unauthorized access, alteration, or\n  misuse of your personal information.</p>\n\n  <h2>5. Sharing of Information</h2>\n  <p>We do not sell, rent, or share your personal information with third parties for marketing\n  purposes. We may share your information only:</p>\n  <ul>\n    <li>With trusted vendors or performers strictly for the purpose of fulfilling your event needs</li>\n    <li>When required by Lebanese law or legal authorities</li>\n  </ul>\n\n  <h2>6. Cookies &amp; Tracking</h2>\n  <p>Our website may use basic cookies to understand how visitors use our site (e.g. via Google\n  Analytics), to improve user experience. You can choose to disable cookies through your browser\n  settings.</p>\n\n  <h2>7. Your Rights</h2>\n  <p>You have the right to:</p>\n  <ul>\n    <li>Request a copy of your data</li>\n    <li>Ask us to update your information</li>\n  </ul>\n  <p>To do so, contact us using the details below.</p>\n\n  <h2>8. External Links</h2>\n  <p>Our website may contain links to social media or external sites. We are not responsible for\n  the privacy practices of these third-party websites.</p>\n\n  <h2>9. Updates to This Policy</h2>\n  <p>We may update this Privacy Policy from time to time. Any changes will be posted on this page\n  with an updated effective date.</p>"
+  },
+  "pricing": {
+    "currency": "$",
+    "staff_rate_low": 65,
+    "staff_rate_high": 65,
+    "guests_per_staff": 10,
+    "coordination_low": 0.3,
+    "coordination_high": 0.4,
+    "outside_beirut_low": 100,
+    "outside_beirut_high": 300,
+    "services": [
+      {
+        "key": "zaffah",
+        "label": "Oriental Zaffah",
+        "type": "unit",
+        "unit": "musicians",
+        "price_low": 65,
+        "price_high": 65,
+        "default": 6,
+        "max": 20
+      },
+      {
+        "key": "parade",
+        "label": "Live Show Parade",
+        "type": "unit",
+        "unit": "performers",
+        "price_low": 65,
+        "price_high": 65,
+        "default": 8,
+        "max": 25
+      },
+      {
+        "key": "catering",
+        "label": "Catering",
+        "type": "guest",
+        "unit": "",
+        "price_low": 65,
+        "price_high": 90,
+        "default": 0,
+        "max": 0
+      },
+      {
+        "key": "booth",
+        "label": "Photo Booth",
+        "type": "flat",
+        "unit": "",
+        "price_low": 500,
+        "price_high": 500,
+        "default": 0,
+        "max": 0
+      },
+      {
+        "key": "mascots",
+        "label": "Characters & Mascots",
+        "type": "unit",
+        "unit": "mascots",
+        "price_low": 120,
+        "price_high": 200,
+        "default": 2,
+        "max": 8
+      },
+      {
+        "key": "circus",
+        "label": "Circus Show",
+        "type": "unit",
+        "unit": "performers",
+        "price_low": 250,
+        "price_high": 250,
+        "default": 2,
+        "max": 8
+      },
+      {
+        "key": "inflate",
+        "label": "Inflatable Games",
+        "type": "unit",
+        "unit": "games",
+        "price_low": 200,
+        "price_high": 250,
+        "default": 2,
+        "max": 8
+      },
+      {
+        "key": "tables",
+        "label": "Table Decoration",
+        "type": "flat",
+        "unit": "",
+        "price_low": 500,
+        "price_high": 2000,
+        "default": 0,
+        "max": 0
+      },
+      {
+        "key": "santa",
+        "label": "Christmas Mascots",
+        "type": "unit",
+        "unit": "characters",
+        "price_low": 300,
+        "price_high": 400,
+        "default": 1,
+        "max": 5
+      }
+    ]
   }
 }

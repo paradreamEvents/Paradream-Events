@@ -3,43 +3,10 @@
    ========================================================= */
 
 /* ---------------------------------------------------------
-   1. PRICES — edit these. Everything in the calculator
-   reads from here. Figures are USD and are starting points,
-   not final quotes.
+   1. PRICES — sourced from content.json (edit via admin.html,
+   section "Pricing"). build.py injects `var PRICING = {...}`
+   right before this file loads on every page.
    --------------------------------------------------------- */
-/* ------------------------------------------------------------------
-   PARADREAM PRICING — real figures, USD.
-   [low, high] on everything; a single number means a fixed price.
-   Edit here and the calculator follows.
-------------------------------------------------------------------- */
-var PRICING = {
-  currency: "$",
-
-  // Staffing: roughly one crew member per 10 guests, at this rate each
-  staff: { ratePerPerson: [65, 65], guestsPerStaff: 10 },
-
-  // Planning & coordination, charged as a % of everything above it
-  coordination: [0.30, 0.40],
-
-  outsideBeirut: [100, 300],
-
-  /* unit  — priced per item, with a quantity picker
-     flat  — one price for the whole event
-     guest — multiplied by the guest count                            */
-  services: {
-    zaffah:   { label: "Oriental Zaffah",      type: "unit",  unit: "musicians", price: [65, 65],    def: 6,  max: 20 },
-    parade:   { label: "Live Show Parade",     type: "unit",  unit: "performers", price: [65, 65],   def: 8,  max: 25 },
-    catering: { label: "Catering",             type: "guest", price: [65, 90] },
-    booth:    { label: "Photo Booth",          type: "flat",  price: [500, 500] },
-    mascots:  { label: "Characters & Mascots", type: "unit",  unit: "mascots",   price: [120, 200],  def: 2,  max: 8 },
-    circus:   { label: "Circus Show",          type: "unit",  unit: "performers", price: [250, 250], def: 2,  max: 8 },
-    inflate:  { label: "Inflatable Games",     type: "unit",  unit: "games",     price: [200, 250],  def: 2,  max: 8 },
-    tables:   { label: "Table Decoration",     type: "flat",  price: [500, 2000] },
-    santa:    { label: "Christmas Mascots",    type: "unit",  unit: "characters", price: [300, 400], def: 1, max: 5 }
-  },
-
-  DRAFT: false
-};
 
 (function () {
   "use strict";
