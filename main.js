@@ -377,16 +377,43 @@ var PRICING = {
     } catch (e) { /* ignore */ }
   }
 
-  /* ── Preselect occasion from ?occasion= ──────── */
+  /* ── Preselect the occasion from the link ────── */
   var occParam = new URLSearchParams(location.search).get("occasion");
   if (occParam) {
     var sel = $("#occasion");
     if (sel) {
+      var norm = function (v) { return String(v).toLowerCase().replace(/[^a-z]/g, ""); };
+      var want = norm(occParam);
+      var hit = null;
+
+      // exact first
       Array.prototype.forEach.call(sel.options, function (o) {
-        var a = o.text.toLowerCase().replace(/[^a-z]/g, "");
-        var b = occParam.toLowerCase().replace(/[^a-z]/g, "");
-        if (a.indexOf(b) === 0 || b.indexOf(a) === 0) sel.value = o.value || o.text;
+        if (!hit && norm(o.text) === want) hit = o;
       });
+      // then either containing the other — catches "Your Big Day" -> "Wedding" style pairs
+      if (!hit) {
+        Array.prototype.forEach.call(sel.options, function (o) {
+          var a = norm(o.text);
+          if (!hit && (a.indexOf(want) !== -1 || want.indexOf(a) !== -1)) hit = o;
+        });
+      }
+
+      if (hit) {
+        sel.value = hit.value || hit.text;
+      } else {
+        // not in the list: add it so the enquiry still says what they wanted
+        var extra = document.createElement("option");
+        extra.textContent = occParam;
+        sel.appendChild(extra);
+        sel.value = occParam;
+      }
+
+      // make it obvious the choice carried across
+      sel.classList.add("preset");
+      var note = document.createElement("small");
+      note.className = "field-note";
+      note.textContent = "Chosen from the page you came from — change it if you like.";
+      sel.parentNode.appendChild(note);
     }
   }
 

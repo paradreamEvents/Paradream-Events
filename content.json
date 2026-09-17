@@ -18,15 +18,7 @@
   },
   "hero": [
     {
-      "image": "images/hero-christmas.jpg",
-      "position": "center 42%",
-      "title": "Christmas is better together",
-      "text": "Mascots, music and mornings your family will keep talking about.",
-      "cta": "See Christmas",
-      "link": "occasions.html#christmas"
-    },
-    {
-      "image": "images/hero-1789572530988.jpg",
+      "image": "images/hero-zaffah.jpg",
       "position": "center 38%",
       "title": "Book Your Dream Event Now!",
       "text": "Your Dream Event Is One Click Away!",
@@ -34,13 +26,21 @@
       "link": "contact-us.html"
     },
     {
-      "image": "images/hero-1789572462656.jpg",
+      "image": "",
       "strikingly": "345364_832215",
       "position": "center",
       "title": "Weddings, done your way",
       "text": "Zaffah, parade and production, timed to the second.",
       "cta": "See weddings",
       "link": "occasions.html#wedding"
+    },
+    {
+      "image": "images/hero-christmas.jpg",
+      "position": "center 42%",
+      "title": "Christmas is better together",
+      "text": "Mascots, music and mornings your family will keep talking about.",
+      "cta": "See Christmas",
+      "link": "occasions.html#christmas"
     }
   ],
   "counters": [
@@ -70,47 +70,47 @@
     {
       "title": "Live Show Parade",
       "text": "A full parade built around your entrance — performers, music and movement.",
-      "image": "images/service-1789568577487.jpg"
+      "image": "images/service-1.jpg"
     },
     {
       "title": "Oriental Zaffah",
       "text": "The traditional zaffah, with drummers and dancers, timed to your moment.",
-      "image": "images/service-1789568589669.jpg"
+      "image": "images/service-2.jpg"
     },
     {
       "title": "Photo Booth & Entertainment",
       "text": "Props, prints and an attendant, so guests leave with something in hand.",
-      "image": "images/service-1789568596942.jpg"
+      "image": "images/service-3.jpg"
     },
     {
       "title": "Characters & Mascots",
       "text": "Costumed performers who keep children entertained throughout the event.",
-      "image": "images/service-1789568606323.jpg"
+      "image": "images/service-4.jpg"
     },
     {
       "title": "Circus Show",
       "text": "Acrobats, fire and LED acts for the part of the night people remember.",
-      "image": "images/service-1789568617120.jpg"
+      "image": "images/service-5.jpg"
     },
     {
       "title": "Inflatable Games",
       "text": "Slides, castles and obstacle courses, delivered, installed and supervised.",
-      "image": "images/service-1789568631703.jpg"
+      "image": "images/service-6.jpg"
     },
     {
       "title": "Table Decoration Set-Up",
       "text": "Centerpieces, linens and styling arranged before your guests arrive.",
-      "image": "images/service-1789568643089.jpg"
+      "image": "images/service-7.jpg"
     },
     {
       "title": "Catering Services",
       "text": "Menus, service staff and bar built around your guest count.",
-      "image": "images/service-1789568648688.jpg"
+      "image": "images/service-8.jpg"
     },
     {
       "title": "Christmas Mascots",
       "text": "Santa and friends, for home visits, offices and Christmas gatherings.",
-      "image": "images/service-1789568662039.jpg"
+      "image": "images/service-9.jpg"
     }
   ],
   "occasions": [
@@ -129,13 +129,13 @@
     {
       "slug": "bachelor",
       "title": "Bachelor",
-      "image": "images/occasion-1789572700876.jpg",
+      "image": "https://custom-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,h_9000,w_1800,f_auto,q_auto:best/17545664/961079_835977.png",
       "text": "Experience an exceptional bachelor party with our elite planning services. We create sophisticated, tailored celebrations, handling every detail from curated activities to premium entertainment. Trust us to turn your dream into an unforgettable event that leaves a lasting impression."
     },
     {
       "slug": "wedding",
       "title": "Your Big Day",
-      "image": "images/occasion-1789572717085.jpg",
+      "image": "https://custom-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,h_9000,w_1800,f_auto,q_auto:best/17545664/345364_832215.png",
       "text": "Make your dream wedding come true with Paradream. Our expert planning transforms your vision into a flawlessly executed celebration that you'll treasure forever."
     },
     {
@@ -165,23 +165,23 @@
     {
       "slug": "christmas",
       "title": "Christmas",
-      "image": "images/occasion-1789572833100.jpg",
+      "image": "https://custom-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,h_9000,w_1800,f_auto,q_auto:best/17545664/443863_125203.jpg",
       "text": "Christmas is the dreaming season, and Christmas is better together! Music at Christmas time is like no other, enchanting hearts and weaving joy into the air. P.S: Ask Santa Claus for Paradream!"
     }
   ],
   "testimonials": [
     {
-      "image": "images/testimonial-1789571948366.jpg",
+      "image": "https://custom-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,h_9000,w_1800,f_auto,q_auto:best/17545664/327623_961035.jpg",
       "name": "Mitri & Sethrida's Wedding",
       "text": "From our proposal to our wedding, Paradream exceeded every expectation. We had a clear vision, and they brought it to life flawlessly—the mood board was executed exactly as we imagined. The atmosphere was electric, everyone was dancing and celebrating with joy. It truly felt like a dream. I confidently recommend Paradream to anyone planning a special event; they made our moments unforgettable."
     },
     {
-      "image": "images/testimonial-1789572238839.jpg",
+      "image": "https://custom-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,h_9000,w_1800,f_auto,q_auto:best/17545664/220930_341269.png",
       "name": "Jean-Marie & Lili's Engagement",
       "text": "I still get chills thinking about our engagement night—Paradream turned it into absolute MAGIC! From the moment we stepped in, it felt like we were living inside a fairytale. The setup was breathtaking, the entertainment was next-level, and the vibe? Unmatched. Every guest was blown away, and we were speechless. If you're planning an engagement, don't even think twice. Book Paradream now—they don't just plan events, they create unforgettable moments you'll cherish forever!"
     },
     {
-      "image": "images/testimonial-1789572116397.jpg",
+      "image": "https://custom-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,h_9000,w_1800,f_auto,q_auto:best/17545664/285581_545397.png",
       "name": "Bruna's Birthday",
       "text": "I honestly couldn't believe it—they actually made it happen! My birthday felt like a dream come true. Even though I was far away, Paradream showed up to celebrate with me, and turned a regular day into something unforgettable. It started as a surprise, but since then, they've become a part of every celebration in my life. Their energy, their team, their beautiful spirit—Paradream doesn't just show up, they light up the entire occasion. I wouldn't celebrate without them!"
     },

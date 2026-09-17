@@ -58,7 +58,7 @@ h3{font-size:clamp(1.25rem,2.4vw,1.55rem)}
   gap:1.5rem;padding:.7rem 0;
 }
 .brand{display:flex;align-items:center;gap:.8rem;text-decoration:none}
-.brand img{width:52px;height:52px;border-radius:50%;object-fit:cover}
+.brand img{width:52px;height:52px;object-fit:contain}
 .brand-tag{
   font-family:var(--sans);font-weight:900;font-size:.92rem;letter-spacing:.16em;
   text-transform:uppercase;color:var(--red);white-space:nowrap;
@@ -130,29 +130,28 @@ h3{font-size:clamp(1.25rem,2.4vw,1.55rem)}
 
 /* ── Services grid ───────────────────────────────── */
 .tiles{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:2.6rem 2rem;margin-top:2.6rem;
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:2.4rem 2rem;margin-top:2.6rem;
 }
+@media (max-width:900px){.tiles{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.tiles{grid-template-columns:1fr}}
 
-/* Service items: whole photo, centred, plain caption underneath.
-   Matching the original Strikingly layout — no cards, no cropping. */
+/* Every photo sits in an identical white frame and is shown whole.
+   Different shapes are centred inside it rather than cropped. */
 .tile{
   background:none;border:0;border-radius:0;overflow:visible;
   text-align:center;text-decoration:none;display:block;transition:none;
 }
 .tile:hover{border:0;transform:none}
 .tile img{
-  width:auto;max-width:100%;height:340px;object-fit:contain;
-  display:block;margin:0 auto;background:none;transition:transform .35s ease;
+  width:100%;aspect-ratio:1;object-fit:contain;
+  background:#fff;border-radius:3px;display:block;
+  padding:.7rem;transition:transform .35s ease;
 }
 .tile:hover img{transform:scale(1.02)}
 .tile-body{padding:1rem 0 0}
-.tile h3{
-  font-size:1.1rem;font-weight:700;margin:0;color:var(--ink);
-}
-.tile p{
-  margin:.4rem auto 0;font-size:.92rem;max-width:34ch;color:var(--body-grey);
-}
+.tile h3{font-size:1.1rem;font-weight:700;margin:0;color:var(--ink)}
+.tile p{margin:.4rem auto 0;font-size:.92rem;max-width:34ch;color:var(--body-grey)}
 
 /* ── Testimonials ────────────────────────────────── */
 .quotes{display:grid;gap:2.2rem;margin-top:2.8rem;text-align:left}
@@ -245,7 +244,7 @@ h3{font-size:clamp(1.25rem,2.4vw,1.55rem)}
 .footer-inner li{margin-bottom:.35rem}
 .footer-inner a{text-decoration:none;font-size:.95rem;color:#B9B9B9}
 .footer-inner a:hover{color:var(--red)}
-.footer-logo{width:76px;height:76px;border-radius:50%;object-fit:cover;margin-bottom:1rem}
+.footer-logo{width:110px;height:auto;object-fit:contain;margin-bottom:1rem}
 .footer-bottom{
   width:var(--page);margin:2.5rem auto 0;padding-top:1.4rem;
   border-top:1px solid rgba(255,255,255,.16);display:flex;flex-wrap:wrap;gap:1rem 2rem;
@@ -546,3 +545,6 @@ h3{font-size:clamp(1.25rem,2.4vw,1.55rem)}
 }
 .field input[type=file]::file-selector-button:hover{background:var(--red);color:#fff}
 .field-note{display:block;margin-top:.3rem;font-size:.8rem;color:var(--body-grey);opacity:.75}
+
+/* an occasion carried in from another page */
+.field select.preset{border-color:var(--red);background:#FFF8F7}

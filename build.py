@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Builds the Paradream static site. Run: python3 build.py"""
 import os, html, json
+from urllib.parse import quote
 
 # Everything editable lives in content.json — the admin panel writes to it.
 CONTENT = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -10,8 +11,8 @@ SITE = CONTENT["site"]
 OUT = os.path.dirname(os.path.abspath(__file__))
 
 CDN = "https://custom-images.strikinglycdn.com/res/hrscywv4p/image/upload"
-LOGO = f"{CDN}/c_limit,h_600,w_600,f_auto,q_auto:best/17545664/35175_467463.jpg"
-FOOTER_LOGO = f"{CDN}/c_limit,h_600,w_600,f_auto,q_auto:best/17545664/43580_800970.jpg"
+LOGO = "images/logo-mark.png"
+FOOTER_LOGO = "images/logo.png"
 OG = f"{CDN}/c_limit,fl_lossy,h_630,w_1200,f_auto,q_auto/17545664/376585_257154.jpeg"
 
 # ─────────────────────────────────────────────────────────────────────
@@ -249,7 +250,10 @@ def page(filename, title, description, body, current=None):
 <meta property="og:image" content="{OG}">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#ffffff">
-<link rel="icon" href="{LOGO}">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
@@ -520,7 +524,7 @@ occ_html = "\n".join(f"""      <article class="occasion reveal" id="{slug}">
         <div>
           <h3>{name}</h3>
           <p>{text}</p>
-          <a class="btn btn-outline" href="contact-us.html?occasion={slug}">Book Now</a>
+          <a class="btn btn-outline" href="contact-us.html?occasion={quote(name)}">Book Now</a>
         </div>
       </article>""" for slug, name, src, text in OCCASIONS)
 
@@ -591,10 +595,14 @@ page("gallery.html", "Gallery - Paradream Events",
 """)
 
 
+occasion_options = "\n".join(
+    f'          <option>{o["title"]}</option>' for o in CONTENT["occasions"]
+) + "\n          <option>Other</option>"
+
 # ── Contact ─────────────────────────────────────────────────
 page("contact-us.html", "Contact Paradream | Book the Best Event Entertainment in Lebanon",
      "Ready to plan your dream event? Contact Paradream for the best parades, zaffah, and entertainment services in Lebanon.",
-     """
+     f"""
 <section class="page-head">
   <h1>Contact Us</h1>
   <p>Ready to plan your dream event? Tell us what you have in mind and we'll get back to you.</p>
@@ -636,16 +644,7 @@ page("contact-us.html", "Contact Paradream | Book the Best Event Entertainment i
       <div class="field">
         <label for="occasion">Occasion</label>
         <select id="occasion" name="occasion">
-          <option>Proposal</option>
-          <option>Engagement</option>
-          <option>Bachelor</option>
-          <option>Wedding</option>
-          <option>Holy First Communion</option>
-          <option>Baptism</option>
-          <option>Gender Reveal</option>
-          <option>Birthday</option>
-          <option>Christmas</option>
-          <option>Other</option>
+{occasion_options}
         </select>
       </div>
       <div class="field">
