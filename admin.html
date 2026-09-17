@@ -55,6 +55,8 @@ a{color:var(--red)}
 .pv-bar .muted{color:#aaa;margin-inline-end:auto}
 .pv-bar button{background:#fff;color:var(--red);border-color:#fff}
 #pv-frame{flex:1;width:100%;border:0}
+#pages-view{margin-bottom:1rem}
+#pages-frame{width:100%;height:78vh;border:1px solid var(--line);border-radius:4px;background:#fff}
 #cropper{position:fixed;inset:0;z-index:200;background:rgba(10,16,24,.9);display:grid;place-items:center;padding:1rem}
 #cropper[hidden]{display:none}
 .crop-box{background:#fff;border-radius:6px;padding:1.4rem;width:min(560px,94vw)}
@@ -133,19 +135,28 @@ button.danger{color:#B00;border-color:#B00}
   <!-- ── Manager ─────────────────────────────────── -->
   <section id="manager" hidden>
     <div class="tabs">
-      <button data-tab="gallery" class="on">Gallery</button>
-      <button data-tab="content">Content &amp; text</button>
+      <button data-tab="pages" class="on">Edit pages</button>
+      <button data-tab="gallery">Gallery</button>
+      <button data-tab="content">All fields</button>
+    </div>
+
+    <div id="pages-view">
+      <div class="row" style="margin-bottom:.9rem">
+        <select id="page-select" style="flex:1 1 220px"></select>
+        <span class="muted">Hover to find what's editable &middot; click text or a photo to change it</span>
+      </div>
+      <iframe id="pages-frame" title="Live page editor"></iframe>
     </div>
 
     <div id="editor" hidden></div>
 
-    <div id="drop" tabindex="0" role="button">
+    <div id="drop" tabindex="0" role="button" hidden>
       <strong>Drop photos here</strong>
       <span id="drop-hint">They are resized and sharpened automatically before upload</span>
     </div>
     <input type="file" id="picker" accept="image/*" multiple hidden>
 
-    <div class="grid" id="grid"></div>
+    <div class="grid" id="grid" hidden></div>
 
     <p class="muted" style="margin:.4rem 0 0">
       Everything you change is published together in one deploy. Make all your
@@ -218,7 +229,7 @@ var PRESETS = {
 };
 
 var token = localStorage.getItem("pd-gh-token") || "";
-var tab = "gallery";
+var tab = "pages";
 var existing = [];   // {name, sha, url}
 var queued = [];     // {name, dataUrl, replaces}
 var deleting = [];   // names
@@ -474,7 +485,7 @@ async function handle(files) {
       photoTarget = null;
       queued.push({ name: name, dataUrl: dataUrl });
       releaseImage(img);
-      renderEditor();
+      if (tab === "pages") renderPagesView(); else renderEditor();
       refreshPublish();
       continue;
     }
@@ -678,6 +689,420 @@ function openPreview() {
 document.getElementById("pv-close").addEventListener("click", function () {
   document.getElementById("preview").hidden = true;
 });
+
+/* ── Edit pages: click directly on the live page to change it ─────
+   Renders whichever page is picked using the real stylesheet, from the
+   content you're editing (including anything still queued/unpublished).
+   Every piece of text or photo tied to content.json gets a data-edit
+   attribute; hover/click handling is wired after each render.
+   ------------------------------------------------------------------ */
+var PD_PAGES = [
+  ["index.html", "Home"],
+  ["why-paradream.html", "Why Paradream?"],
+  ["occasions.html", "Occasions"],
+  ["our-services.html", "Our Services"],
+  ["gallery.html", "Gallery"],
+  ["contact-us.html", "Contact Us"],
+  ["join-us.html", "Join Us"],
+  ["thanks.html", "Thank you page"],
+  ["terms.html", "Terms & Conditions"],
+  ["privacy.html", "Privacy Policy"]
+];
+var currentPage = "index.html";
+
+function ed(path, tag, cls, value, rich) {
+  var c = cls ? ' class="' + cls + '"' : "";
+  var inner = rich ? String(value == null ? "" : value) : esc(value);
+  return "<" + tag + c + ' data-edit="' + path + '"' + (rich ? ' data-rich="1"' : "") + ">" + inner + "</" + tag + ">";
+}
+
+function edImg(path, src, cls, alt) {
+  var c = cls ? ' class="' + cls + '"' : "";
+  return '<span class="pd-imgwrap" data-edit-photo="' + path + '">' +
+    '<img' + c + ' src="' + (src || "") + '" alt="' + esc(alt || "") + '">' +
+    '<span class="pd-imgtag">' + (src ? "Change photo" : "Add photo") + "</span></span>";
+}
+
+function addTile(sectionKey, label) {
+  return '<div class="pd-add" data-pd-add="' + sectionKey + '"><span>+ Add ' + label + "</span></div>";
+}
+
+function removeBtn(path) {
+  return '<button type="button" class="pd-remove" data-pd-remove="' + path + '" title="Remove">&times;</button>';
+}
+
+var PD_STYLE = "" +
+  "body.pd-editing [data-edit], body.pd-editing [data-edit-photo] { outline-offset: 2px; cursor: text; }" +
+  "body.pd-editing [data-edit]:hover, body.pd-editing [data-edit]:focus { outline: 2px dashed #E4251B; background: rgba(228,37,27,.06); }" +
+  "body.pd-editing [data-edit-photo] { cursor: pointer; }" +
+  ".pd-imgwrap { position: relative; display: block; }" +
+  ".pd-imgwrap:hover { outline: 2px dashed #E4251B; outline-offset: 2px; }" +
+  ".pd-imgtag { position: absolute; inset: auto auto 8px 8px; background: #E4251B; color: #fff; font: 700 11px/1 Lato, sans-serif; " +
+  "letter-spacing: .05em; text-transform: uppercase; padding: 5px 9px; border-radius: 2px; opacity: 0; transition: opacity .15s; pointer-events: none; }" +
+  ".pd-imgwrap:hover .pd-imgtag { opacity: 1; }" +
+  ".pd-add { border: 2px dashed #c9ccd1; border-radius: 6px; display: flex; align-items: center; justify-content: center; " +
+  "min-height: 120px; cursor: pointer; color: #E4251B; font: 700 13px/1 Lato, sans-serif; letter-spacing: .04em; text-transform: uppercase; }" +
+  ".pd-add:hover { background: rgba(228,37,27,.06); border-color: #E4251B; }" +
+  ".pd-item-wrap { position: relative; }" +
+  ".pd-remove { position: absolute; top: -10px; right: -10px; width: 26px; height: 26px; border-radius: 50%; border: 1px solid #E4251B; " +
+  "background: #fff; color: #E4251B; font-size: 16px; line-height: 1; cursor: pointer; z-index: 5; }" +
+  ".pd-item-wrap:hover .pd-remove { display: block; } .pd-remove { display: none; }" +
+  ".pd-note { max-width: 640px; margin: 1.4rem auto; padding: .9rem 1.1rem; background: #FFF7E6; border: 1px solid #F0D999; " +
+  "border-radius: 4px; font: 400 14px/1.5 Lato, sans-serif; color: #6b5a1e; }";
+
+function pdDoc(bodyHtml) {
+  return "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\">" +
+    "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" +
+    "<link href=\"https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap\" rel=\"stylesheet\">" +
+    "<link rel=\"stylesheet\" href=\"/styles.css\"><style>" + PD_STYLE + "</style></head>" +
+    "<body class=\"pd-editing\">" + bodyHtml + "</body></html>";
+}
+
+function pdHeader(current) {
+  var links = PD_PAGES.slice(0, 5).map(function (p) {
+    return '<a href="#"' + (p[0] === current ? ' aria-current="page"' : "") + ">" + p[1] + "</a>";
+  }).join("\n");
+  return '<header class="site-header"><div class="header-inner">' +
+    '<a class="brand" href="#"><img src="' + LOGO_SRC() + '" alt="Paradream Events">' +
+    '<span class="brand-tag">' + esc(content.site.tagline) + "</span></a>" +
+    '<nav class="site-nav">' + links + "</nav></div></header>";
+}
+
+function LOGO_SRC() {
+  var f = existing.filter(function (x) { return x.name === "logo-mark.png"; })[0];
+  return f ? f.url : "images/logo-mark.png";
+}
+
+function pdFooter() {
+  return '<footer class="site-footer"><div class="footer-inner"><div>' +
+    "<h4>Paradream Events</h4><p>" + esc(content.site.address_lines.join(" ")) + "</p></div>" +
+    "<div><h4>Get in touch</h4>" +
+    '<p class="contact-line">' + ed("site.phone_display", "a", "", content.site.phone_display) + "</p>" +
+    '<p class="contact-line">' + ed("site.email", "a", "", content.site.email) + "</p></div></div>" +
+    '<div class="footer-bottom"><span>&copy; Paradream Events</span></div></footer>';
+}
+
+function pdRepeat(sectionKey, itemHtmlFn) {
+  var list = content[sectionKey] || [];
+  return list.map(function (item, i) {
+    return '<div class="pd-item-wrap">' + removeBtn(sectionKey + "." + i) + itemHtmlFn(item, i) + "</div>";
+  }).join("\n");
+}
+
+function renderHomeBody() {
+  var P = content.pages.home;
+  var hero = (content.hero || []).map(function (s, i) {
+    var src = photoFor(s);
+    return '<div class="pd-item-wrap slide' + (i === 0 ? " active" : "") + '" style="position:relative;background-image:url(\'' +
+      (src || "") + "');background-position:" + (s.position || "center") + '">' +
+      removeBtn("hero." + i) +
+      '<span class="pd-imgtag" data-edit-photo="hero.' + i + '.image" style="position:absolute;top:8px;left:8px;opacity:1;cursor:pointer">Change photo</span>' +
+      '<div class="slide-inner">' +
+      ed("hero." + i + ".title", "h1", "", s.title) +
+      ed("hero." + i + ".text", "p", "", s.text) +
+      '<span class="btn btn-solid">' + ed("hero." + i + ".cta", "span", "", s.cta) + "</span></div></div>";
+  }).join("\n") + addTile("hero", "hero slide");
+
+  var counters = pdRepeat("counters", function (c, i) {
+    return '<div class="counter"><b>' + ed("counters." + i + ".number", "span", "", c.number) +
+      ed("counters." + i + ".suffix", "span", "", c.suffix || "") + "</b>" +
+      ed("counters." + i + ".label", "span", "", c.label) + "</div>";
+  }) + addTile("counters", "number");
+
+  var steps = (P.how_steps || []).map(function (s, i) {
+    return '<div class="step"><p class="step-num">' + (i + 1) + "</p>" +
+      ed("pages.home.how_steps." + i + ".h", "h3", "", s.h) +
+      ed("pages.home.how_steps." + i + ".p", "p", "", s.p, true) + "</div>";
+  }).join("\n");
+
+  var faqs = pdRepeat("faqs", function (f, i) {
+    return "<details open>" + ed("faqs." + i + ".q", "summary", "", f.q) +
+      "<div>" + ed("faqs." + i + ".a", "p", "", f.a, true) + "</div></details>";
+  }) + addTile("faqs", "question");
+
+  return pdHeader("index.html") +
+    '<main><section class="hero-slider">' + hero + "</section>" +
+    '<section class="band"><div class="band-inner">' +
+    ed("pages.home.services_teaser_h", "h2", "", P.services_teaser_h) +
+    ed("pages.home.services_teaser_p", "p", "lede", P.services_teaser_p) + "</div></section>" +
+    '<section class="band about"><div class="band-inner"><h2>About Us</h2>' +
+    ed("about", "p", "", content.about, true) + "</div></section>" +
+    '<section class="band"><div class="band-inner"><div class="counters">' + counters + "</div></div></section>" +
+    '<section class="band band-cream"><div class="band-inner">' +
+    ed("pages.home.how_h", "h2", "", P.how_h) +
+    '<div class="steps">' + steps + "</div></div></section>" +
+    '<section class="band band-cream"><div class="band-inner">' +
+    ed("pages.home.calc_h", "h2", "", P.calc_h) +
+    ed("pages.home.calc_p", "p", "lede", P.calc_p) +
+    '<div class="pd-note">The quote calculator itself (sliders, live total) only runs on the ' +
+    "published site — this preview just shows its heading and prices. Edit prices under " +
+    '<a href="#" data-pd-goto="pricing">Pricing</a> below.</div></div></section>' +
+    '<section class="band"><div class="band-inner"><h2>Frequently Asked Questions</h2>' +
+    '<div class="faq">' + faqs + "</div></div></section></main>" +
+    pdRichSection("pricing") + pdFooter();
+}
+
+function pdRichSection(kind) {
+  if (kind !== "pricing") return "";
+  var p = content.pricing;
+  var rows = p.services.map(function (s, i) {
+    return '<div class="pd-item-wrap" style="display:flex;gap:.6rem;align-items:center;border:1px solid #E3E6EA;border-radius:4px;padding:.6rem .8rem;margin-bottom:.5rem;background:#fff">' +
+      removeBtn("pricing.services." + i) +
+      '<b style="min-width:180px">' + ed("pricing.services." + i + ".label", "span", "", s.label) + "</b>" +
+      '<span>$</span>' + ed("pricing.services." + i + ".price_low", "span", "", s.price_low) +
+      "<span>&ndash;$</span>" + ed("pricing.services." + i + ".price_high", "span", "", s.price_high) +
+      '<span class="muted" style="margin-inline-start:auto">' + s.type + (s.unit ? " / " + s.unit : "") + "</span></div>";
+  }).join("\n");
+  return '<section class="band" id="pd-pricing"><div class="band-inner"><h2>Pricing (calculator inputs)</h2>' +
+    '<p class="muted">Staff rate $' + ed("pricing.staff_rate_low", "span", "", p.staff_rate_low) +
+    "&ndash;$" + ed("pricing.staff_rate_high", "span", "", p.staff_rate_high) + " per person, 1 per " +
+    ed("pricing.guests_per_staff", "span", "", p.guests_per_staff) + " guests. Coordination " +
+    ed("pricing.coordination_low", "span", "", Math.round(p.coordination_low * 100)) + "&ndash;" +
+    ed("pricing.coordination_high", "span", "", Math.round(p.coordination_high * 100)) +
+    "% of the rest. Outside Beirut supplement $" +
+    ed("pricing.outside_beirut_low", "span", "", p.outside_beirut_low) + "&ndash;$" +
+    ed("pricing.outside_beirut_high", "span", "", p.outside_beirut_high) + ".</p>" +
+    rows + "</div></section>";
+}
+
+function renderWhyBody() {
+  var W = content.pages["why-paradream"];
+  var quotes = pdRepeat("testimonials", function (t, i) {
+    return '<figure class="quote">' + edImg("testimonials." + i + ".image", photoFor(t), "", "") +
+      "<div>" + ed("testimonials." + i + ".text", "blockquote", "", t.text, true) +
+      ed("testimonials." + i + ".name", "cite", "", t.name) + "</div></figure>";
+  }) + addTile("testimonials", "testimonial");
+
+  return pdHeader("why-paradream.html") + "<main>" +
+    '<section class="page-head">' + ed("pages.why-paradream.h1", "h1", "", W.h1) +
+    ed("pages.why-paradream.sub", "p", "", W.sub) + "</section>" +
+    '<section class="band"><div class="band-inner">' +
+    edImg("images/why-team.png", LOGO_OR(existing, "why-team.png"), "", "Paradream team at work") +
+    ed("pages.why-paradream.story", "p", "lede", W.story, true) + "</div></section>" +
+    '<section class="band band-cream"><div class="band-inner">' +
+    ed("pages.why-paradream.stat", "p", "stat", W.stat) +
+    ed("pages.why-paradream.clients_h", "h2", "", W.clients_h) +
+    '<div class="quotes">' + quotes + "</div></div></section>" +
+    '<section class="band"><div class="band-inner">' +
+    ed("pages.why-paradream.what_h", "h2", "", W.what_h) +
+    ed("pages.why-paradream.what_p", "p", "lede", W.what_p) + "</div></section></main>" + pdFooter();
+}
+
+function LOGO_OR(existingList, name) {
+  var f = existingList.filter(function (x) { return x.name === name; })[0];
+  return f ? f.url : "";
+}
+
+function renderOccasionsBody() {
+  var O = content.pages.occasions;
+  var cards = pdRepeat("occasions", function (o, i) {
+    return '<article class="occasion">' + edImg("occasions." + i + ".image", photoFor(o), "occasion-img", o.title) +
+      "<div>" + ed("occasions." + i + ".title", "h3", "", o.title) +
+      ed("occasions." + i + ".text", "p", "", o.text, true) + "</div></article>";
+  }) + addTile("occasions", "occasion");
+
+  return pdHeader("occasions.html") + "<main>" +
+    '<section class="page-head">' + ed("pages.occasions.h1", "h1", "", O.h1) +
+    ed("pages.occasions.sub", "p", "", O.sub) + "</section>" +
+    '<section class="band"><div class="band-inner"><div class="occasions">' + cards +
+    "</div></div></section></main>" + pdFooter();
+}
+
+function renderServicesBody() {
+  var S = content.pages["our-services"];
+  var tiles = pdRepeat("services", function (s, i) {
+    return '<span class="tile">' + edImg("services." + i + ".image", photoFor(s), "", s.title) +
+      '<div class="tile-body">' + ed("services." + i + ".title", "h3", "", s.title) +
+      ed("services." + i + ".text", "p", "", s.text, true) + "</div></span>";
+  }) + addTile("services", "service");
+
+  return pdHeader("our-services.html") + "<main>" +
+    '<section class="page-head">' + ed("pages.our-services.h1", "h1", "", S.h1) +
+    ed("pages.our-services.sub", "p", "", S.sub) + "</section>" +
+    '<section class="band band-services"><div class="band-inner"><div class="tiles">' + tiles +
+    "</div></div></section></main>" + pdFooter();
+}
+
+function renderGalleryBody() {
+  var G = content.pages.gallery;
+  var photos = existing.filter(function (f) { return f.name.indexOf("gallery-") === 0; })
+    .sort(function (a, b) { return numOf(a.name) - numOf(b.name); }).slice(0, 12);
+  var grid = photos.map(function (f) {
+    return '<div class="occasion-img" style="aspect-ratio:1;background:url(\'' + f.url + '\') center/cover"></div>';
+  }).join("\n");
+  return pdHeader("gallery.html") + "<main>" +
+    '<section class="page-head">' + ed("pages.gallery.h1", "h1", "", G.h1) +
+    ed("pages.gallery.sub", "p", "", G.sub) + "</section>" +
+    '<section class="band"><div class="band-inner">' +
+    '<div class="pd-note">Add, remove and reorder gallery photos from the <a href="#" data-pd-tab="gallery">Gallery tab</a> — ' +
+    "shown below is a preview of the first photos.</div>" +
+    '<div class="occasions" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem">' +
+    grid + "</div></div></section></main>" + pdFooter();
+}
+
+function renderContactBody() {
+  var C = content.pages["contact-us"];
+  return pdHeader("contact-us.html") + "<main>" +
+    '<section class="page-head">' + ed("pages.contact-us.h1", "h1", "", C.h1) +
+    ed("pages.contact-us.sub", "p", "", C.sub) + "</section>" +
+    '<section class="form-wrap"><div><h2>Paradream Events</h2><dl class="contact-details">' +
+    "<dt>Address</dt><dd>" + ed("site.address_lines.0", "span", "", content.site.address_lines[0]) + ", " +
+    ed("site.address_lines.1", "span", "", content.site.address_lines[1]) + "</dd>" +
+    "<dt>Phone</dt><dd>" + ed("site.phone_display", "span", "", content.site.phone_display) + "</dd>" +
+    "<dt>Email</dt><dd>" + ed("site.email", "span", "", content.site.email) + "</dd></dl></div>" +
+    '<div class="pd-note">The enquiry form itself (fields, Send button) is not editable here — ' +
+    "it's wired to Netlify's form handling and email notifications.</div>" +
+    "</section></main>" + pdFooter();
+}
+
+function renderJoinBody() {
+  var J = content.pages["join-us"];
+  return pdHeader("index.html") + "<main>" +
+    '<section class="page-head">' + ed("pages.join-us.h1", "h1", "", J.h1) +
+    ed("pages.join-us.sub", "p", "", J.sub) + "</section>" +
+    '<section class="form-wrap"><div>' +
+    ed("pages.join-us.work_h", "h2", "", J.work_h) +
+    ed("pages.join-us.work_p", "p", "", J.work_p, true) + "</div>" +
+    '<div class="pd-note">The application form itself is not editable here — ' +
+    "it's wired to Netlify's form handling and email notifications.</div>" +
+    "</section></main>" + pdFooter();
+}
+
+function renderThanksBody() {
+  var T = content.pages.thanks;
+  return pdHeader("index.html") + "<main>" +
+    '<section class="page-head">' + ed("pages.thanks.h1", "h1", "", T.h1) +
+    ed("pages.thanks.sub", "p", "", T.sub) + "</section>" +
+    '<section class="band"><div class="band-inner">' +
+    ed("pages.thanks.hurry_h", "h2", "", T.hurry_h) +
+    ed("pages.thanks.hurry_p", "p", "lede", T.hurry_p) + "</div></section>" +
+    '<section class="band band-cream"><div class="band-inner">' +
+    ed("pages.thanks.wait_h", "h2", "", T.wait_h) +
+    ed("pages.thanks.wait_p", "p", "lede", T.wait_p) + "</div></section></main>" + pdFooter();
+}
+
+function renderLegalBody(kind) {
+  var path = kind === "terms" ? "legal.terms_html" : "legal.privacy_html";
+  var title = kind === "terms" ? "Terms &amp; Conditions" : "Privacy Policy";
+  return pdHeader("index.html") + "<main>" +
+    '<section class="page-head"><h1>' + title + "</h1></section>" +
+    '<section class="band"><div class="legal">' +
+    ed(path, "div", "", content.legal[kind + "_html"], true) +
+    "</div></section></main>" + pdFooter();
+}
+
+var PD_RENDER = {
+  "index.html": renderHomeBody,
+  "why-paradream.html": renderWhyBody,
+  "occasions.html": renderOccasionsBody,
+  "our-services.html": renderServicesBody,
+  "gallery.html": renderGalleryBody,
+  "contact-us.html": renderContactBody,
+  "join-us.html": renderJoinBody,
+  "thanks.html": renderThanksBody,
+  "terms.html": function () { return renderLegalBody("terms"); },
+  "privacy.html": function () { return renderLegalBody("privacy"); }
+};
+
+function pdSetPath(path, value) {
+  var parts = path.split(".");
+  var ref = content;
+  for (var i = 0; i < parts.length - 1; i++) ref = ref[parts[i]];
+  var last = parts[parts.length - 1];
+  ref[last] = (typeof ref[last] === "number") ? (parseFloat(value) || 0) : value;
+}
+
+function wirePdFrame() {
+  var frame = $("#pages-frame");
+  var doc = frame.contentDocument;
+
+  Array.prototype.forEach.call(doc.querySelectorAll("[data-edit]"), function (el) {
+    el.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (el.isContentEditable) return;
+      el.contentEditable = "true";
+      el.focus();
+      var sel = doc.getSelection(); sel.removeAllRanges();
+      var r = doc.createRange(); r.selectNodeContents(el); sel.addRange(r);
+    });
+    var commit = function () {
+      var path = el.dataset.edit;
+      var val = el.dataset.rich ? el.innerHTML : el.textContent;
+      pdSetPath(path, val);
+      contentDirty = true;
+      refreshPublish();
+    };
+    el.addEventListener("blur", commit);
+    el.addEventListener("input", function () {
+      var path = el.dataset.edit;
+      pdSetPath(path, el.dataset.rich ? el.innerHTML : el.textContent);
+      contentDirty = true;
+      refreshPublish();
+    });
+  });
+
+  Array.prototype.forEach.call(doc.querySelectorAll("[data-edit-photo]"), function (el) {
+    el.addEventListener("click", function (e) {
+      e.preventDefault();
+      photoTarget = el.dataset.editPhoto;
+      picker.click();
+    });
+  });
+
+  Array.prototype.forEach.call(doc.querySelectorAll("[data-pd-add]"), function (el) {
+    el.addEventListener("click", function (e) {
+      e.preventDefault();
+      var sec = secFor(el.dataset.pdAdd);
+      if (!sec) return;
+      content[sec.key].push(sec.blank());
+      contentDirty = true;
+      refreshPublish();
+      renderPagesView();
+    });
+  });
+
+  Array.prototype.forEach.call(doc.querySelectorAll("[data-pd-remove]"), function (el) {
+    el.addEventListener("click", function (e) {
+      e.preventDefault();
+      var p = el.dataset.pdRemove.split(".");
+      if (!doc.defaultView.confirm("Remove this item from the site?")) return;
+      var list = content[p[0]];
+      list.splice(parseInt(p[1], 10), 1);
+      contentDirty = true;
+      refreshPublish();
+      renderPagesView();
+    });
+  });
+
+  Array.prototype.forEach.call(doc.querySelectorAll("[data-pd-tab]"), function (el) {
+    el.addEventListener("click", function (e) {
+      e.preventDefault();
+      document.querySelector('.tabs button[data-tab="' + el.dataset.pdTab + '"]').click();
+    });
+  });
+}
+
+function renderPagesView() {
+  if (!content) return;
+  var sel = $("#page-select");
+  if (!sel.options.length) {
+    sel.innerHTML = PD_PAGES.map(function (p) {
+      return '<option value="' + p[0] + '">' + p[1] + "</option>";
+    }).join("");
+    sel.value = currentPage;
+    sel.addEventListener("change", function () { currentPage = sel.value; renderPagesView(); });
+  }
+  sel.value = currentPage;
+
+  var frame = $("#pages-frame");
+  var fn = PD_RENDER[currentPage];
+  var html = pdDoc(fn ? fn() : "<p>Not available</p>");
+  var doc = frame.contentDocument || frame.contentWindow.document;
+  doc.open();
+  doc.write(html);
+  doc.close();
+  wirePdFrame();
+}
 
 /* ── Crop dialog ───────────────────────────────── */
 var crop = { img: null, base: 1, zoom: 1, x: 0, y: 0, vw: 0, vh: 0, resolve: null };
@@ -899,6 +1324,7 @@ function loadContent() {
     contentDirty = false;
     renderEditor();
     if (tab === "service") render();
+    if (tab === "pages") renderPagesView();
   });
 }
 
@@ -1110,13 +1536,17 @@ document.querySelectorAll(".tabs button").forEach(function (b) {
     b.classList.add("on");
     tab = b.dataset.tab;
     var isText = tab === "content";
+    var isPages = tab === "pages";
+    $("#pages-view").hidden = !isPages;
     $("#editor").hidden = !isText;
-    $("#drop").hidden = isText || tab === "service";
-    $("#grid").hidden = isText;
+    $("#drop").hidden = isText || isPages || tab === "service";
+    $("#grid").hidden = isText || isPages;
     $("#drop-hint").textContent = tab === "service"
       ? "Service tiles are 4:3 — name order sets which service they belong to"
       : "They are resized and sharpened automatically before upload";
-    if (isText) renderEditor(); else render();
+    if (isPages) renderPagesView();
+    else if (isText) renderEditor();
+    else render();
   });
 });
 
