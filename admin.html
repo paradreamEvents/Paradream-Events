@@ -860,6 +860,7 @@ var PD_STYLE = "" +
   "min-height: 120px; cursor: pointer; color: #E4251B; font: 700 13px/1 Lato, sans-serif; letter-spacing: .04em; text-transform: uppercase; }" +
   ".pd-add:hover { background: rgba(228,37,27,.06); border-color: #E4251B; }" +
   ".pd-item-wrap { position: relative; }" +
+  ".pd-item-wrap.slide { position: absolute; }" +
   ".pd-remove { position: absolute; top: -10px; right: -10px; width: 26px; height: 26px; border-radius: 50%; border: 1px solid #E4251B; " +
   "background: #fff; color: #E4251B; font-size: 16px; line-height: 1; cursor: pointer; z-index: 5; }" +
   ".pd-item-wrap:hover .pd-remove { display: block; } .pd-remove { display: none; }" +
@@ -929,7 +930,7 @@ function homeBlocks() {
     hero: function () {
       var hero = (content.hero || []).map(function (s, i) {
         var src = photoFor(s);
-        return '<div class="pd-item-wrap slide' + (i === 0 ? " active" : "") + '" data-hero-idx="' + i + '" style="position:relative;background-image:url(\'' +
+        return '<div class="pd-item-wrap slide' + (i === 0 ? " active" : "") + '" data-hero-idx="' + i + '" style="background-image:url(\'' +
           (src || "") + "');background-position:" + (s.position || "center") + '">' +
           removeBtn("hero." + i) +
           '<span class="pd-hero-photobtn" data-edit-photo="hero.' + i + '.image">Change photo</span>' +
