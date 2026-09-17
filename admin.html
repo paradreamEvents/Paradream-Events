@@ -851,6 +851,10 @@ var PD_STYLE = "" +
   ".pd-hero-dots button { border: 1px solid #fff; background: rgba(0,0,0,.35); color: #fff; font: 700 10px/1 Lato, sans-serif; " +
   "letter-spacing: .04em; padding: 5px 9px; border-radius: 20px; cursor: pointer; }" +
   ".pd-hero-dots button.on { background: #E4251B; border-color: #E4251B; }" +
+  ".pd-hero-dots button[draggable] { cursor: grab; }" +
+  ".pd-hero-dots button.dragging { opacity: .4; }" +
+  ".pd-hero-dots button.drop-target { outline: 2px dashed #fff; }" +
+  ".pd-hero-add { background: transparent !important; border-style: dashed !important; }" +
   ".pd-hero-arrow { position: absolute; z-index: 6; top: 50%; transform: translateY(-50%); " +
   "width: 44px; height: 44px; border-radius: 50%; border: 1px solid #fff; background: rgba(0,0,0,.35); " +
   "color: #fff; font-size: 22px; line-height: 1; cursor: pointer; }" +
@@ -928,7 +932,8 @@ function homeBlocks() {
   var P = content.pages.home;
   return {
     hero: function () {
-      var hero = (content.hero || []).map(function (s, i) {
+      var list = content.hero || [];
+      var hero = list.map(function (s, i) {
         var src = photoFor(s);
         return '<div class="pd-item-wrap slide' + (i === 0 ? " active" : "") + '" data-hero-idx="' + i + '" style="background-image:url(\'' +
           (src || "") + "');background-position:" + (s.position || "center") + '">' +
@@ -938,15 +943,14 @@ function homeBlocks() {
           ed("hero." + i + ".title", "h1", "", s.title) +
           ed("hero." + i + ".text", "p", "", s.text) +
           '<span class="btn btn-solid">' + ed("hero." + i + ".cta", "span", "", s.cta) + "</span></div></div>";
-      }).join("\n") + addTile("hero", "hero slide");
-      var nav = "";
-      if ((content.hero || []).length > 1) {
-        nav = '<button type="button" class="pd-hero-arrow prev" data-hero-arrow="-1">&#8249;</button>' +
-          '<button type="button" class="pd-hero-arrow next" data-hero-arrow="1">&#8250;</button>' +
-          '<div class="pd-hero-dots">' + (content.hero || []).map(function (s, i) {
-            return '<button type="button" data-hero-dot="' + i + '"' + (i === 0 ? ' class="on"' : '') + '>Slide ' + (i + 1) + '</button>';
-          }).join("") + '</div>';
-      }
+      }).join("\n");
+      var nav = list.length > 1
+        ? '<button type="button" class="pd-hero-arrow prev" data-hero-arrow="-1">&#8249;</button>' +
+          '<button type="button" class="pd-hero-arrow next" data-hero-arrow="1">&#8250;</button>'
+        : "";
+      nav += '<div class="pd-hero-dots">' + list.map(function (s, i) {
+          return '<button type="button" draggable="true" data-hero-dot="' + i + '"' + (i === 0 ? ' class="on"' : '') + '>Slide ' + (i + 1) + '</button>';
+        }).join("") + '<button type="button" class="pd-hero-add" data-pd-add="hero">+ Add slide</button></div>';
       return '<section class="hero-slider">' + hero + nav + "</section>";
     },
     services_teaser: function () {
@@ -1234,6 +1238,30 @@ function wirePdFrame() {
         var n = heroSlides.length;
         var current = parseInt(doc.querySelector(".slide.active").dataset.heroIdx, 10);
         goToHero((current + parseInt(arrow.dataset.heroArrow, 10) + n) % n);
+      });
+    });
+
+    // Drag a "Slide N" pill onto another to reorder content.hero.
+    var dragFrom = null;
+    Array.prototype.forEach.call(heroDots, function (dot) {
+      dot.addEventListener("dragstart", function () {
+        dragFrom = parseInt(dot.dataset.heroDot, 10);
+        dot.classList.add("dragging");
+      });
+      dot.addEventListener("dragend", function () { dot.classList.remove("dragging"); });
+      dot.addEventListener("dragover", function (e) { e.preventDefault(); dot.classList.add("drop-target"); });
+      dot.addEventListener("dragleave", function () { dot.classList.remove("drop-target"); });
+      dot.addEventListener("drop", function (e) {
+        e.preventDefault();
+        dot.classList.remove("drop-target");
+        var to = parseInt(dot.dataset.heroDot, 10);
+        if (dragFrom === null || dragFrom === to) return;
+        var item = content.hero.splice(dragFrom, 1)[0];
+        content.hero.splice(to, 0, item);
+        dragFrom = null;
+        contentDirty = true;
+        refreshPublish();
+        renderPagesView();
       });
     });
   }
