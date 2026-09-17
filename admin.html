@@ -851,6 +851,11 @@ var PD_STYLE = "" +
   ".pd-hero-dots button { border: 1px solid #fff; background: rgba(0,0,0,.35); color: #fff; font: 700 10px/1 Lato, sans-serif; " +
   "letter-spacing: .04em; padding: 5px 9px; border-radius: 20px; cursor: pointer; }" +
   ".pd-hero-dots button.on { background: #E4251B; border-color: #E4251B; }" +
+  ".pd-hero-arrow { position: absolute; z-index: 6; top: 50%; transform: translateY(-50%); " +
+  "width: 44px; height: 44px; border-radius: 50%; border: 1px solid #fff; background: rgba(0,0,0,.35); " +
+  "color: #fff; font-size: 22px; line-height: 1; cursor: pointer; }" +
+  ".pd-hero-arrow:hover { background: #E4251B; border-color: #E4251B; }" +
+  ".pd-hero-arrow.prev { left: 14px; } .pd-hero-arrow.next { right: 14px; }" +
   ".pd-add { border: 2px dashed #c9ccd1; border-radius: 6px; display: flex; align-items: center; justify-content: center; " +
   "min-height: 120px; cursor: pointer; color: #E4251B; font: 700 13px/1 Lato, sans-serif; letter-spacing: .04em; text-transform: uppercase; }" +
   ".pd-add:hover { background: rgba(228,37,27,.06); border-color: #E4251B; }" +
@@ -933,12 +938,15 @@ function homeBlocks() {
           ed("hero." + i + ".text", "p", "", s.text) +
           '<span class="btn btn-solid">' + ed("hero." + i + ".cta", "span", "", s.cta) + "</span></div></div>";
       }).join("\n") + addTile("hero", "hero slide");
-      var dots = (content.hero || []).length > 1
-        ? '<div class="pd-hero-dots">' + (content.hero || []).map(function (s, i) {
+      var nav = "";
+      if ((content.hero || []).length > 1) {
+        nav = '<button type="button" class="pd-hero-arrow prev" data-hero-arrow="-1">&#8249;</button>' +
+          '<button type="button" class="pd-hero-arrow next" data-hero-arrow="1">&#8250;</button>' +
+          '<div class="pd-hero-dots">' + (content.hero || []).map(function (s, i) {
             return '<button type="button" data-hero-dot="' + i + '"' + (i === 0 ? ' class="on"' : '') + '>Slide ' + (i + 1) + '</button>';
-          }).join("") + '</div>'
-        : '';
-      return '<section class="hero-slider">' + hero + dots + "</section>";
+          }).join("") + '</div>';
+      }
+      return '<section class="hero-slider">' + hero + nav + "</section>";
     },
     services_teaser: function () {
       return '<section class="band"><div class="band-inner">' +
@@ -1204,16 +1212,27 @@ function wirePdFrame() {
 
   // Hero slides 2+ are invisible/unclickable by default (the real slider's
   // CSS only shows .active — main.js normally rotates that, but it doesn't
-  // run in this static preview), so wire dots to swap which one is active.
+  // run in this static preview), so wire dots + arrows to swap which one is active.
+  var heroSlides = doc.querySelectorAll("[data-hero-idx]");
   var heroDots = doc.querySelectorAll("[data-hero-dot]");
-  if (heroDots.length) {
-    var heroSlides = doc.querySelectorAll("[data-hero-idx]");
+  if (heroSlides.length) {
+    var goToHero = function (idx) {
+      idx = String(idx);
+      Array.prototype.forEach.call(heroSlides, function (s) { s.classList.toggle("active", s.dataset.heroIdx === idx); });
+      Array.prototype.forEach.call(heroDots, function (d) { d.classList.toggle("on", d.dataset.heroDot === idx); });
+    };
     Array.prototype.forEach.call(heroDots, function (dot) {
       dot.addEventListener("click", function (e) {
         e.preventDefault();
-        var idx = dot.dataset.heroDot;
-        Array.prototype.forEach.call(heroSlides, function (s) { s.classList.toggle("active", s.dataset.heroIdx === idx); });
-        Array.prototype.forEach.call(heroDots, function (d) { d.classList.toggle("on", d === dot); });
+        goToHero(dot.dataset.heroDot);
+      });
+    });
+    Array.prototype.forEach.call(doc.querySelectorAll("[data-hero-arrow]"), function (arrow) {
+      arrow.addEventListener("click", function (e) {
+        e.preventDefault();
+        var n = heroSlides.length;
+        var current = parseInt(doc.querySelector(".slide.active").dataset.heroIdx, 10);
+        goToHero((current + parseInt(arrow.dataset.heroArrow, 10) + n) % n);
       });
     });
   }
