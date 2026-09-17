@@ -140,64 +140,53 @@
     });
   }
 
-  /* Gallery: work out which photos actually exist in images/ */
+  /* Gallery: build.py hands over the real list of photos in images/ —
+     no more guessing by probing sequential numbers and stopping at the
+     first gap, which used to empty the whole gallery the moment a low
+     number was deleted but a higher one survived. */
   var grid = $("#gallery-grid");
   if (grid) {
     var VISIBLE = parseInt(grid.dataset.visible, 10) || 12;
-    var BATCH = 6;
-    var CAP = 200;
 
+    var FILES = [];
+    try { FILES = JSON.parse(grid.dataset.files || "[]"); } catch (e) {}
     var STAMPS = {};
     try { STAMPS = JSON.parse(grid.dataset.stamps || "{}"); } catch (e) {}
     var ALBUMS = {};
     try { ALBUMS = JSON.parse(grid.dataset.albums || "{}"); } catch (e) {}
 
-    var gsrc = function (n, w, q) {
-      var v = STAMPS[n] ? "&v=" + STAMPS[n] : "";
-      return "/.netlify/images?url=/images/gallery-" + n + ".jpg&w=" + w +
+    var gsrc = function (id, w, q) {
+      var v = STAMPS[id] ? "&v=" + STAMPS[id] : "";
+      return "/.netlify/images?url=/images/gallery-" + id + ".jpg&w=" + w +
              "&fit=cover&q=" + (q || 90) + v;
     };
 
-    var probe = function (n) {
-      return new Promise(function (resolve) {
-        var t = new Image();
-        t.onload = function () { resolve(n); };
-        t.onerror = function () { resolve(null); };
-        t.src = gsrc(n, 80);
-      });
-    };
-
-    var tile = function (n, hidden) {
+    var tile = function (id, hidden) {
       var fig = document.createElement("figure");
       fig.className = "shot" + (hidden ? " extra" : "");
-      fig.dataset.album = ALBUMS[String(n)] || "";
+      fig.dataset.album = ALBUMS[id] || "";
       if (hidden) fig.hidden = true;
       var im = document.createElement("img");
-      im.src = gsrc(n, 800);
-      im.srcset = gsrc(n, 500) + " 500w, " + gsrc(n, 800) + " 800w, " + gsrc(n, 1200) + " 1200w";
+      im.src = gsrc(id, 800);
+      im.srcset = gsrc(id, 500) + " 500w, " + gsrc(id, 800) + " 800w, " + gsrc(id, 1200) + " 1200w";
       im.sizes = "(max-width:640px) 46vw, (max-width:1100px) 31vw, 360px";
       im.width = 800;
       im.height = 800;
       im.loading = "lazy";
       im.decoding = "async";
-      im.alt = "Paradream event photo " + n;
-      im.dataset.full = gsrc(n, 1600, 88);
+      im.alt = "Paradream event photo " + id;
+      im.dataset.full = gsrc(id, 1600, 88);
       fig.appendChild(im);
       return fig;
     };
 
-    var found = [], next = 1;
-
-    var finish = function () {
-      var empty = $("#gallery-empty");
-      if (!found.length) {
-        if (empty) empty.textContent = "Photos coming soon.";
-        return;
-      }
+    var empty = $("#gallery-empty");
+    if (!FILES.length) {
+      if (empty) empty.textContent = "Photos coming soon.";
+    } else {
       if (empty) empty.remove();
 
-      found.sort(function (a, b) { return a - b; });
-      found.forEach(function (n, i) { grid.appendChild(tile(n, i >= VISIBLE)); });
+      FILES.forEach(function (id, i) { grid.appendChild(tile(id, i >= VISIBLE)); });
 
       var moreWrap = $(".gallery-more"), moreBtn = $("#gallery-more");
       var extras = $$(".shot.extra", grid);
@@ -230,21 +219,7 @@
           }
         });
       });
-    };
-
-    var round = function () {
-      var jobs = [];
-      for (var i = 0; i < BATCH && next + i <= CAP; i++) jobs.push(probe(next + i));
-      next += BATCH;
-      Promise.all(jobs).then(function (res) {
-        var hits = res.filter(Boolean);
-        found = found.concat(hits);
-        if (hits.length === BATCH && next <= CAP) round();
-        else finish();
-      });
-    };
-
-    round();
+    }
   }
 
   /* ── Quote calculator ────────────────────────── */

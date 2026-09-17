@@ -426,6 +426,13 @@ function numOf(name) {
   return m ? parseInt(m[1], 10) : 0;
 }
 
+// The id build.py/main.js use for a gallery file: same derivation as build.py's
+// glob scan (strip "gallery-" and ".jpg"), so files like "gallery-1 (1).jpg"
+// get their own key instead of colliding with others under numOf()'s regex.
+function galleryId(name) {
+  return name.replace(/^gallery-/, "").replace(/\.jpg$/i, "");
+}
+
 function nextFree() {
   var used = existing.filter(function (f) { return f.name.indexOf(tab + "-") === 0; })
                      .map(function (f) { return numOf(f.name); });
@@ -520,7 +527,7 @@ function render() {
     el.className = "item" + (gone ? " pending" : "");
     var albumPicker = "";
     if (tab === "gallery") {
-      var id = String(numOf(f.name));
+      var id = galleryId(f.name);
       var cur = (content.gallery_photo_albums || {})[id] || "";
       var opts = '<option value="">Uncategorized</option>' +
         (content.gallery_albums || []).map(function (a) {

@@ -312,13 +312,21 @@ counters_html = "\n".join(
     f'data-suffix="{c.get("suffix","")}">0</b><span>{c["label"]}</span></div>'
     for c in CONTENT["counters"])
 
-# Stamps for whatever gallery photos exist at build time
+# The definitive list of gallery photos, straight from the images folder.
+# main.js used to guess this by probing sequential numbers (gallery-1.jpg,
+# gallery-2.jpg, ...) and stopping at the first miss — which silently emptied
+# the whole gallery the moment a low number was deleted but a higher one
+# survived. Handing over the real list removes that whole failure mode.
 import glob as _glob
 _img_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "images")
+_gallery_ids = sorted(
+    os.path.basename(p).replace("gallery-", "").replace(".jpg", "")
+    for p in _glob.glob(os.path.join(_img_dir, "gallery-*.jpg"))
+)
 gallery_stamps = json.dumps({
-    os.path.basename(p).replace("gallery-", "").replace(".jpg", ""): stamp("images/" + os.path.basename(p))
-    for p in sorted(_glob.glob(os.path.join(_img_dir, "gallery-*.jpg")))
+    gid: stamp("images/gallery-" + gid + ".jpg") for gid in _gallery_ids
 })
+gallery_ids_json = json.dumps(_gallery_ids)
 
 GALLERY_ALBUMS = CONTENT.get("gallery_albums", [])
 GALLERY_PHOTO_ALBUMS = CONTENT.get("gallery_photo_albums", {})
@@ -616,7 +624,7 @@ page("gallery.html", "Gallery - Paradream Events",
 {gallery_tabs_html}
     </div>
     <div class="gallery-grid" id="gallery-grid" data-visible="{GALLERY_VISIBLE}"
-         data-stamps='{gallery_stamps}' data-albums='{gallery_photo_albums_json}'></div>
+         data-files='{gallery_ids_json}' data-stamps='{gallery_stamps}' data-albums='{gallery_photo_albums_json}'></div>
     <p class="gallery-empty" id="gallery-empty">Loading photos&hellip;</p>
     <p class="gallery-more" hidden><button class="btn btn-outline" id="gallery-more" type="button">Show more photos</button></p>
   </div>
