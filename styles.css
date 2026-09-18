@@ -245,13 +245,13 @@ h3{font-size:clamp(1.25rem,2.4vw,1.55rem)}
   padding:clamp(4.5rem,11vw,7rem) 1.2rem;
 }
 .page-head.has-photo .ph-bg{
-  position:absolute;inset:-3%;background-size:cover;z-index:0;
-  animation:ph-zoom 16s ease-in-out infinite alternate;
+  position:absolute;inset:-6%;background-size:cover;z-index:0;
+  animation:ph-zoom 9s ease-in-out infinite alternate;
 }
 .page-head.has-photo::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.6))}
 .page-head.has-photo h1{position:relative;z-index:2;color:#fff;animation:rise .8s cubic-bezier(.22,.8,.3,1) both}
 .page-head.has-photo p{position:relative;z-index:2;color:rgba(255,255,255,.92);animation:rise .8s cubic-bezier(.22,.8,.3,1) .12s both}
-@keyframes ph-zoom{from{transform:scale(1)}to{transform:scale(1.1)}}
+@keyframes ph-zoom{from{transform:scale(1)}to{transform:scale(1.18)}}
 @media (prefers-reduced-motion: reduce){
   .page-head.has-photo .ph-bg{animation:none}
   .page-head.has-photo h1,.page-head.has-photo p{animation:none}
@@ -337,8 +337,8 @@ h3{font-size:clamp(1.25rem,2.4vw,1.55rem)}
   padding:clamp(4rem,10vw,7rem) 1.2rem;color:#fff;overflow:hidden;
   opacity:0;transition:opacity .75s ease;pointer-events:none;
 }
-.hero-bg{position:absolute;inset:-3%;background-position:center;background-size:cover;z-index:0;
-  animation:ph-zoom 20s ease-in-out infinite alternate}
+.hero-bg{position:absolute;inset:-6%;background-position:center;background-size:cover;z-index:0;
+  animation:ph-zoom 11s ease-in-out infinite alternate}
 .slide::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.68))}
 .slide.active{opacity:1;pointer-events:auto}
 .slide-inner{position:relative;z-index:2;max-width:46ch}
