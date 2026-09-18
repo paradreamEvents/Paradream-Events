@@ -576,7 +576,7 @@ h3{font-size:clamp(1.25rem,2.4vw,1.55rem)}
 .field-checks input{width:17px;height:17px;margin:0;accent-color:var(--red);flex:none}
 .field-required{color:var(--red)}
 .phone-field{display:grid;grid-template-columns:110px 1fr;gap:.5rem}
-.form-note{max-width:60ch;margin:0 0 .6rem;color:var(--body-grey)}
+.form-note{max-width:60ch;margin:0 auto 1.4rem;color:var(--body-grey);text-align:center}
 
 
 /* ── Calculator v2: tiles, steppers, mobile estimate bar ── */
