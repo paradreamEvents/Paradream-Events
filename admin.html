@@ -939,8 +939,8 @@ function homeBlocks() {
       var list = content.hero || [];
       var hero = list.map(function (s, i) {
         var src = photoFor(s);
-        return '<div class="pd-item-wrap slide' + (i === 0 ? " active" : "") + '" data-hero-idx="' + i + '" style="background-image:url(\'' +
-          (src || "") + "');background-position:" + (s.position || "center") + '">' +
+        return '<div class="pd-item-wrap slide' + (i === 0 ? " active" : "") + '" data-hero-idx="' + i + '">' +
+          '<div class="hero-bg" style="background-image:url(\'' + (src || "") + "');background-position:" + (s.position || "center") + '"></div>' +
           removeBtn("hero." + i) +
           '<span class="pd-hero-photobtn" data-edit-photo="hero.' + i + '.image">Change photo</span>' +
           '<div class="slide-inner">' +

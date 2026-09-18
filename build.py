@@ -349,8 +349,9 @@ def hero_slide_html(i, sl):
     bg = hero_bg(sl)
     pos = sl.get("position", "center")
     return (
-        '  <div class="slide' + active + '" style="background-image:url(&#39;' + bg + '&#39;);'
-        'background-position:' + pos + '">\n'
+        '  <div class="slide' + active + '">\n'
+        '    <div class="hero-bg" style="background-image:url(&#39;' + bg + '&#39;);'
+        'background-position:' + pos + '"></div>\n'
         '    <div class="slide-inner">\n'
         '      <h1>' + sl.get("title", "") + '</h1>\n'
         '      <p>' + sl.get("text", "") + '</p>\n'
@@ -755,7 +756,8 @@ def occasion_page_head(slug, title, sub=""):
     if img:
         bg = media(img, 1800) if img.startswith("images/") else img
         pos = OCCASION_HEAD_POSITION.get(slug, "center")
-        return f"""<section class="page-head has-photo" style="background-image:url('{bg}');background-position:{pos}">
+        return f"""<section class="page-head has-photo">
+  <div class="ph-bg" style="background-image:url('{bg}');background-position:{pos}"></div>
   <h1>{title}</h1>{sub_html}
 </section>"""
     return f"""<section class="page-head">
