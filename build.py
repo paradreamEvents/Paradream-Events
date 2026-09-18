@@ -554,12 +554,17 @@ page("why-paradream.html", "Why Paradream? | Top Event Planner &amp; Parade Expe
 # ── Occasions ───────────────────────────────────────────────
 OCCASIONS = [(x["slug"], x["title"], x["image"], x["text"]) for x in CONTENT["occasions"]]
 
+# Occasions with their own dedicated booking form; everyone else still
+# lands on the generic contact form until theirs is built.
+DEDICATED_FORMS = {"proposal": "proposal.html", "engagement": "engagement.html",
+                    "bachelor": "bachelor.html", "wedding": "wedding.html"}
+
 occ_html = "\n".join(f"""      <article class="occasion reveal" id="{slug}">
         <img class="occasion-img" src="{media(src, 1200)}" alt="{name}" loading="lazy">
         <div>
           <h3>{name}</h3>
           <p>{text}</p>
-          <a class="btn btn-outline" href="contact-us.html?occasion={quote(name)}">Book Now</a>
+          <a class="btn btn-outline" href="{DEDICATED_FORMS.get(slug, 'contact-us.html?occasion=' + quote(name))}">Book Now</a>
         </div>
       </article>""" for slug, name, src, text in OCCASIONS)
 
@@ -636,6 +641,149 @@ occasion_options = "\n".join(
     f'          <option>{o["title"]}</option>' for o in CONTENT["occasions"]
 ) + "\n          <option>Other</option>"
 
+# ── Shared building blocks for the occasion-specific booking forms ──
+def name_fields():
+    return """    <div class="field">
+      <label>Name <span class="field-required">*</span></label>
+      <div class="field-row">
+        <input name="first_name" type="text" placeholder="First Name" required autocomplete="given-name">
+        <input name="last_name" type="text" placeholder="Last Name" required autocomplete="family-name">
+      </div>
+    </div>"""
+
+def select_field(label, name, options, required=False, field_id=None, placeholder="Select an option"):
+    fid = field_id or name
+    req_attr = " required" if required else ""
+    star = ' <span class="field-required">*</span>' if required else ""
+    opts_html = "\n".join(f"        <option>{o}</option>" for o in options)
+    return f"""    <div class="field">
+      <label for="{fid}">{label}{star}</label>
+      <select id="{fid}" name="{name}"{req_attr}>
+        <option value="" selected disabled>{placeholder}</option>
+{opts_html}
+      </select>
+    </div>"""
+
+def field_group(label, options, name, kind="checkbox", hint="Feel free to choose all options that apply.", required=False):
+    star = ' <span class="field-required">*</span>' if required else ""
+    hint_html = f'\n    <p class="fg-hint">{hint}</p>' if hint else ""
+    # Native "required" on a radio group genuinely enforces one selection.
+    # Checkboxes have no such group-level equivalent in plain HTML, so a
+    # required checkbox group is marked visually only.
+    req_attr = " required" if (required and kind == "radio") else ""
+    items = "\n".join(f'      <label><input type="{kind}" name="{name}" value="{opt}"{req_attr}>{opt}</label>' for opt in options)
+    return f"""  <div class="field-group">
+    <p class="fg-label">{label}{star}</p>{hint_html}
+    <div class="field-checks">
+{items}
+    </div>
+  </div>"""
+
+def phone_field(name="phone", label="Phone", required=True, field_id=None):
+    fid = field_id or name
+    req_attr = " required" if required else ""
+    star = ' <span class="field-required">*</span>' if required else ""
+    return f"""    <div class="field">
+      <label for="{fid}">{label}{star}</label>
+      <div class="phone-field">
+        <select name="{name}_code" aria-label="Country code">
+          <option value="+961" selected>LB +961</option>
+          <option value="+971">AE +971</option>
+          <option value="+966">SA +966</option>
+          <option value="+33">FR +33</option>
+          <option value="+1">US/CA +1</option>
+          <option value="+44">UK +44</option>
+        </select>
+        <input id="{fid}" name="{name}" type="tel"{req_attr} autocomplete="tel">
+      </div>
+    </div>"""
+
+def venue_address_block():
+    return """  <div class="field-group">
+    <p class="fg-label">Venue Address</p>
+    <div class="field">
+      <label for="venue_street">Street Address</label>
+      <input id="venue_street" name="venue_street" type="text">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="venue_city">City</label>
+        <input id="venue_city" name="venue_city" type="text">
+      </div>
+      <div class="field">
+        <label for="venue_state">State/Province</label>
+        <input id="venue_state" name="venue_state" type="text">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="venue_zip">ZIP/Postal</label>
+        <input id="venue_zip" name="venue_zip" type="text">
+      </div>
+      <div class="field">
+        <label for="venue_country">Country/Region</label>
+        <select id="venue_country" name="venue_country">
+          <option value="" selected>Select country/region</option>
+          <option>Lebanon</option>
+          <option>United Arab Emirates</option>
+          <option>Saudi Arabia</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+  </div>"""
+
+RESPONSE_NOTE = ('We will receive your form submission shortly, and our team will carefully review the details. '
+                  'You can expect a response from us within <strong>24 to 48 hours</strong>.<br>'
+                  'If your request is urgent, feel free to contact us directly via phone or email.')
+
+GUESTS_OPTIONS = ["Under 20", "20-50", "50-100", "100-200", "200-300", "300+"]
+BUDGET_OPTIONS = ["Under $500", "$500-$1,000", "$1,000-$2,500", "$2,500-$5,000", "$5,000+", "Not sure yet"]
+CATERING_OPTIONS = ["Not needed", "Light snacks", "Full meal", "Buffet", "Other"]
+ENTERTAINMENT_OPTIONS = ["Live Show Parade", "Live Show Zaffah", "Customized Music Show", "Glitter Show",
+    "Glow In the Dark", "Bar Show", "Dj Show", "Firework", "Phone Recorder", "360° Photo Booth",
+    "Mirror Photo Booth", "Sign In Board", "Slipper Stand", "Fans", "Sparks", "Coffee Station", "Ring The Bell", "Other"]
+
+def occasion_form(slug, title, chocolate_options, extra_top=""):
+    return f"""
+<section class="page-head">
+  <h1>{title}</h1>
+</section>
+
+<section class="form-wrap" style="grid-template-columns:1fr;max-width:760px">
+  <div>
+    <p class="form-note">{RESPONSE_NOTE}</p>
+    <form class="form" name="{slug}-enquiry" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="website">
+      <input type="hidden" name="form-name" value="{slug}-enquiry">
+      <p class="hp"><label>Leave empty <input name="website"></label></p>
+
+{name_fields()}
+      <div class="field">
+        <label for="{slug}-date">Date <span class="field-required">*</span></label>
+        <input id="{slug}-date" name="date" type="date" required>
+      </div>
+{venue_address_block()}
+{select_field("Estimated Guests", "guests", GUESTS_OPTIONS, required=True, field_id=slug + "-guests")}
+{extra_top}
+{field_group("Chocolate and Decoration", chocolate_options, "chocolate_decoration")}
+{field_group("Entertainment", ENTERTAINMENT_OPTIONS, "entertainment")}
+{select_field("Catering Selection", "catering", CATERING_OPTIONS, field_id=slug + "-catering")}
+{select_field("Budget Range", "budget", BUDGET_OPTIONS, required=True, field_id=slug + "-budget")}
+      <div class="field">
+        <label for="{slug}-email">Email</label>
+        <input id="{slug}-email" name="email" type="email" autocomplete="email">
+      </div>
+{phone_field(field_id=slug + "-phone")}
+      <div class="field">
+        <label for="{slug}-notes">Special Instructions</label>
+        <textarea id="{slug}-notes" name="notes" rows="4"></textarea>
+      </div>
+      <button class="btn btn-solid" type="submit">Send</button>
+    </form>
+  </div>
+</section>
+"""
+
 # ── Contact ─────────────────────────────────────────────────
 page("contact-us.html", "Contact Paradream | Book the Best Event Entertainment in Lebanon",
      "Ready to plan your dream event? Contact Paradream for the best parades, zaffah, and entertainment services in Lebanon.",
@@ -710,7 +858,113 @@ page("contact-us.html", "Contact Paradream | Book the Best Event Entertainment i
 """)
 
 
+# ── Occasion-specific booking forms ──────────────────────────
+PROPOSAL_CHOCOLATE = ["Will You Marry me signs", "Stands", "Balloons", "Flowers", "Customized set-Up",
+    "Milk chocolate", "Dark Chocolate", "White Chocolate", "Dubai Chocolate", "Customized Chocolate", "Other"]
+ENGAGEMENT_CHOCOLATE = ["Signs & Stands", "Balloons", "Flowers", "Customized Set-Up", "Milk Chocolate",
+    "Dark Chocolate", "White Chocolate", "Dubai Chocolate", "Customized Chocolate", "Other"]
+
+page("proposal.html", "Plan Your Proposal - Paradream Events",
+     "Tell us about the proposal you're planning and Paradream will help bring it to life.",
+     occasion_form("proposal", "Proposal", PROPOSAL_CHOCOLATE,
+         extra_top=field_group("Surprise or Planned", ["Surprise", "Planned"], "surprise_or_planned", hint="")),
+     current="occasions.html")
+
+page("engagement.html", "Plan Your Engagement - Paradream Events",
+     "Tell us about the engagement celebration you're planning and Paradream will help bring it to life.",
+     occasion_form("engagement", "Engagement", ENGAGEMENT_CHOCOLATE),
+     current="occasions.html")
+
+page("bachelor.html", "Plan Your Bachelor Party - Paradream Events",
+     "Tell us about the bachelor party you're planning and Paradream will help bring it to life.",
+     occasion_form("bachelor", "Bachelor", ENGAGEMENT_CHOCOLATE),
+     current="occasions.html")
+
+
+# ── Wedding booking form ──────────────────────────────────────
+WEDDING_ENTERTAINMENT = ["Live Show Parade", "Live Show Zaffah", "Playback Show", "Tabl Show", "Darbuka Show",
+    "Violin Show", "Wind Instrument Show (Trumpet, Saxophone, Trombone)", "Piano Show", "Glitter Show", "Dj Show",
+    "Bar Show", "Customized Dancers Show", "Glow In The Dark", "Firework", "Phone Recorder", "360° Photo Booth",
+    "Mirror Photo Booth", "Sign In Board", "Slipper Stand", "Fans", "Sparks", "Coffee Station", "Ring The Bell", "Other"]
+WEDDING_CHOCOLATE = ["Silver Package (50-100 pers)", "Bronze Package (100-200 pers)", "Gold Package (200-300 pers)",
+    "Platinum Package (300+)", "Fake Cake", "Milk Chocolate", "Dark Chocolate", "White Chocolate", "Dubai Chocolate",
+    "Customized Chocolate", "Other"]
+WEDDING_CARDS = ["Electronic Card", "Plexi Card", "Board Card", "Thank You Card", "Customized Card",
+    "Cadeaux De Retour", "Other"]
+
+wedding_body = f"""
+<section class="page-head">
+  <h1>Your Big Day</h1>
+</section>
+
+<section class="form-wrap" style="grid-template-columns:1fr;max-width:760px">
+  <div>
+    <p class="form-note">{RESPONSE_NOTE}</p>
+    <form class="form" name="wedding-enquiry" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="website">
+      <input type="hidden" name="form-name" value="wedding-enquiry">
+      <p class="hp"><label>Leave empty <input name="website"></label></p>
+
+{name_fields()}
+      <div class="field">
+        <label for="wedding-date">Date <span class="field-required">*</span></label>
+        <input id="wedding-date" name="date" type="date" required>
+      </div>
+{venue_address_block()}
+{select_field("Estimated Guests", "guests", GUESTS_OPTIONS, required=True, field_id="wedding-guests")}
+      <div class="field-row">
+        <div class="field">
+          <label for="groom-name">Groom Name</label>
+          <input id="groom-name" name="groom_name" type="text">
+        </div>
+        <div class="field">
+          <label for="bride-name">Bride Name</label>
+          <input id="bride-name" name="bride_name" type="text">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="groom-age">Groom Age</label>
+          <input id="groom-age" name="groom_age" type="number" min="1">
+        </div>
+        <div class="field">
+          <label for="bride-age">Bride Age</label>
+          <input id="bride-age" name="bride_age" type="number" min="1">
+        </div>
+      </div>
+{field_group("Booked A Venue?", ["Yes", "Still Looking", "We Need Help"], "booked_venue", hint="")}
+{field_group("Venue Preferences", ["Indoor", "Outdoor", "Panoramic Mountain View", "Beach Sunset", "Private Venue", "Other"], "venue_preferences")}
+{field_group("Entertainment", WEDDING_ENTERTAINMENT, "entertainment")}
+{field_group("Chocolate And Decoration", WEDDING_CHOCOLATE, "chocolate_decoration")}
+{select_field("Catering Selection", "catering", CATERING_OPTIONS, field_id="wedding-catering")}
+{field_group("Cards", WEDDING_CARDS, "cards")}
+      <div class="field">
+        <label for="wedding-email">Email <span class="field-required">*</span></label>
+        <input id="wedding-email" name="email" type="email" required autocomplete="email">
+      </div>
+{phone_field(field_id="wedding-phone")}
+      <div class="field">
+        <label for="wedding-notes">Special Instructions</label>
+        <textarea id="wedding-notes" name="notes" rows="4"></textarea>
+      </div>
+      <button class="btn btn-solid" type="submit">Send</button>
+    </form>
+  </div>
+</section>
+"""
+page("wedding.html", "Plan Your Wedding - Paradream Events",
+     "Tell us about the wedding you're planning and Paradream will help bring it to life.",
+     wedding_body, current="occasions.html")
+
+
 # ── Join us ─────────────────────────────────────────────────
+INSTRUMENT_OPTIONS = ["Trumpet", "Saxophone", "Trombone", "Tuba", "Clarinet", "Clairon", "Darbuka", "Tabl",
+    "Bass Drum", "Snare Drum", "Mizmar", "Mejwiz", "Other"]
+POSITION_OPTIONS = ["Performer / Dancer", "Drummer", "Mascot Artist", "Photo Booth Attendant", "Service Staff", "Other"]
+EXPERIENCE_OPTIONS = ["Beginner", "1 - 3 Years", "3 - 5 Years", "5+ Years", "No experience, but passionate to learn"]
+LOCATION_OPTIONS = ["Beirut", "Mount Lebanon", "North Lebanon", "South Lebanon", "Bekaa", "Other"]
+AVAILABILITY_OPTIONS = ["Weekdays", "Weekends", "Both", "Specific dates only"]
+HEARD_OPTIONS = ["Instagram", "Facebook", "TikTok", "A friend", "At an event", "Other"]
+
 page("join-us.html", "Join Our Team - Paradream Events",
      "Be a part of the magic. Join the Paradream family and bring unforgettable moments to life.",
      f"""
@@ -719,60 +973,47 @@ page("join-us.html", "Join Our Team - Paradream Events",
   <p>{PAGES["join-us"]["sub"]}</p>
 </section>
 
-<section class="form-wrap">
+<section class="form-wrap" style="grid-template-columns:1fr;max-width:760px">
   <div>
     <h2>{PAGES["join-us"]["work_h"]}</h2>
     <p>{PAGES["join-us"]["work_p"]}</p>
+
+    <form class="form" name="join-us" method="POST" action="/thanks.html" enctype="multipart/form-data" data-netlify="true" netlify-honeypot="website">
+      <input type="hidden" name="form-name" value="join-us">
+      <p class="hp"><label>Leave empty <input name="website"></label></p>
+
+{name_fields()}
+      <div class="field">
+        <label for="jemail">Email <span class="field-required">*</span></label>
+        <input id="jemail" name="email" type="email" required autocomplete="email">
+      </div>
+{phone_field(field_id="jphone")}
+{select_field("Position you're applying for:", "position", POSITION_OPTIONS, required=True, field_id="jposition")}
+{field_group("Instrument You Play", INSTRUMENT_OPTIONS, "instrument", required=True, hint="")}
+{field_group("Years Of Experience", EXPERIENCE_OPTIONS, "experience", kind="radio", required=True, hint="")}
+      <div class="field">
+        <label for="why">Tell us about your experience <span class="field-required">*</span></label>
+        <textarea id="why" name="experience_details" rows="4" required></textarea>
+      </div>
+{select_field("Preferred Location:", "preferred_location", LOCATION_OPTIONS, required=True, field_id="jlocation")}
+{select_field("Availability:", "availability", AVAILABILITY_OPTIONS, required=True, field_id="javailability")}
+      <div class="field">
+        <label for="cv">Attach Your Portfolio / Resume <span class="field-required">*</span></label>
+        <input id="cv" name="cv" type="file" required accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+        <small class="field-note">Link to your CV or social media profile &middot; up to 20 MB</small>
+      </div>
+      <div class="field">
+        <label for="motivation">Why do you want to join Paradream?</label>
+        <textarea id="motivation" name="motivation" rows="4"></textarea>
+      </div>
+{select_field("Where Did You Hear About Us", "heard", HEARD_OPTIONS, required=True, field_id="jheard")}
+      <div class="field">
+        <label for="extra">Anything else you'd like to add? <span class="field-required">*</span></label>
+        <textarea id="extra" name="extra" rows="3" required></textarea>
+      </div>
+      <button class="btn btn-solid" type="submit">Apply Now</button>
+    </form>
   </div>
-
-  <form class="form" name="join-us" method="POST" action="/thanks.html" enctype="multipart/form-data" data-netlify="true" netlify-honeypot="website">
-    <input type="hidden" name="form-name" value="join-us">
-    <p class="hp"><label>Leave empty <input name="website"></label></p>
-
-    <div class="field">
-      <label for="jname">Full name</label>
-      <input id="jname" name="name" type="text" required autocomplete="name">
-    </div>
-    <div class="field-row">
-      <div class="field">
-        <label for="jemail">Email</label>
-        <input id="jemail" name="email" type="email" autocomplete="email">
-      </div>
-      <div class="field">
-        <label for="jphone">Phone / WhatsApp</label>
-        <input id="jphone" name="phone" type="tel" required autocomplete="tel">
-      </div>
-    </div>
-    <div class="field">
-      <label for="role">What do you do?</label>
-      <input id="role" name="role" type="text" placeholder="Dancer, drummer, mascot artist, service staff...">
-    </div>
-    <div class="field">
-      <label for="why">Why do you want to join Paradream?</label>
-      <textarea id="why" name="why" rows="4"></textarea>
-    </div>
-    <div class="field">
-      <label for="heard">Where did you hear about us?</label>
-      <select id="heard" name="heard">
-        <option>Instagram</option>
-        <option>Facebook</option>
-        <option>A friend</option>
-        <option>At an event</option>
-        <option>Other</option>
-      </select>
-    </div>
-    <div class="field">
-      <label for="extra">Anything else you'd like to add?</label>
-      <textarea id="extra" name="extra" rows="3"></textarea>
-    </div>
-
-    <div class="field">
-      <label for="cv">Attach your CV</label>
-      <input id="cv" name="cv" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-      <small class="field-note">PDF or Word, up to 8 MB. Optional, but it helps.</small>
-    </div>
-    <button class="btn btn-solid" type="submit">Apply Now</button>
-  </form>
 </section>
 """, current="index.html")
 

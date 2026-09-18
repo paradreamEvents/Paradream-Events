@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Join Our Team - Paradream Events</title>
-<meta name="description" content="Be a part of the magic. Join the Paradream family and bring unforgettable moments to life.">
-<meta property="og:title" content="Join Our Team - Paradream Events">
-<meta property="og:description" content="Be a part of the magic. Join the Paradream family and bring unforgettable moments to life.">
+<title>Plan Your Proposal - Paradream Events</title>
+<meta name="description" content="Tell us about the proposal you're planning and Paradream will help bring it to life.">
+<meta property="og:title" content="Plan Your Proposal - Paradream Events">
+<meta property="og:description" content="Tell us about the proposal you're planning and Paradream will help bring it to life.">
 <meta property="og:image" content="https://paradreamlb.com/images/og-image.jpg">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#ffffff">
@@ -30,7 +30,7 @@
     </a>
     <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">&#9776;</button>
     <nav class="site-nav" id="site-nav" aria-label="Main">
-      <a href="index.html" aria-current="page">Home</a>
+      <a href="index.html">Home</a>
       <a href="why-paradream.html">Why Paradream?</a>
       <a href="our-services.html">Our Services</a>
       <a href="gallery.html">Gallery</a>
@@ -41,17 +41,14 @@
 <main id="main">
 
 <section class="page-head">
-  <h1>Join the Paradream Family</h1>
-  <p>Be a part of the magic. Join the Paradream family and bring unforgettable moments to life.</p>
+  <h1>Proposal</h1>
 </section>
 
 <section class="form-wrap" style="grid-template-columns:1fr;max-width:760px">
   <div>
-    <h2>Work with us</h2>
-    <p>We take on performers, dancers, drummers, mascot artists and service staff through the year. Tell us what you do and where you're based.</p>
-
-    <form class="form" name="join-us" method="POST" action="/thanks.html" enctype="multipart/form-data" data-netlify="true" netlify-honeypot="website">
-      <input type="hidden" name="form-name" value="join-us">
+    <p class="form-note">We will receive your form submission shortly, and our team will carefully review the details. You can expect a response from us within <strong>24 to 48 hours</strong>.<br>If your request is urgent, feel free to contact us directly via phone or email.</p>
+    <form class="form" name="proposal-enquiry" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="website">
+      <input type="hidden" name="form-name" value="proposal-enquiry">
       <p class="hp"><label>Leave empty <input name="website"></label></p>
 
     <div class="field">
@@ -62,11 +59,131 @@
       </div>
     </div>
       <div class="field">
-        <label for="jemail">Email <span class="field-required">*</span></label>
-        <input id="jemail" name="email" type="email" required autocomplete="email">
+        <label for="proposal-date">Date <span class="field-required">*</span></label>
+        <input id="proposal-date" name="date" type="date" required>
+      </div>
+  <div class="field-group">
+    <p class="fg-label">Venue Address</p>
+    <div class="field">
+      <label for="venue_street">Street Address</label>
+      <input id="venue_street" name="venue_street" type="text">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="venue_city">City</label>
+        <input id="venue_city" name="venue_city" type="text">
+      </div>
+      <div class="field">
+        <label for="venue_state">State/Province</label>
+        <input id="venue_state" name="venue_state" type="text">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="venue_zip">ZIP/Postal</label>
+        <input id="venue_zip" name="venue_zip" type="text">
+      </div>
+      <div class="field">
+        <label for="venue_country">Country/Region</label>
+        <select id="venue_country" name="venue_country">
+          <option value="" selected>Select country/region</option>
+          <option>Lebanon</option>
+          <option>United Arab Emirates</option>
+          <option>Saudi Arabia</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+  </div>
+    <div class="field">
+      <label for="proposal-guests">Estimated Guests <span class="field-required">*</span></label>
+      <select id="proposal-guests" name="guests" required>
+        <option value="" selected disabled>Select an option</option>
+        <option>Under 20</option>
+        <option>20-50</option>
+        <option>50-100</option>
+        <option>100-200</option>
+        <option>200-300</option>
+        <option>300+</option>
+      </select>
+    </div>
+  <div class="field-group">
+    <p class="fg-label">Surprise or Planned</p>
+    <div class="field-checks">
+      <label><input type="checkbox" name="surprise_or_planned" value="Surprise">Surprise</label>
+      <label><input type="checkbox" name="surprise_or_planned" value="Planned">Planned</label>
+    </div>
+  </div>
+  <div class="field-group">
+    <p class="fg-label">Chocolate and Decoration</p>
+    <p class="fg-hint">Feel free to choose all options that apply.</p>
+    <div class="field-checks">
+      <label><input type="checkbox" name="chocolate_decoration" value="Will You Marry me signs">Will You Marry me signs</label>
+      <label><input type="checkbox" name="chocolate_decoration" value="Stands">Stands</label>
+      <label><input type="checkbox" name="chocolate_decoration" value="Balloons">Balloons</label>
+      <label><input type="checkbox" name="chocolate_decoration" value="Flowers">Flowers</label>
+      <label><input type="checkbox" name="chocolate_decoration" value="Customized set-Up">Customized set-Up</label>
+      <label><input type="checkbox" name="chocolate_decoration" value="Milk chocolate">Milk chocolate</label>
+      <label><input type="checkbox" name="chocolate_decoration" value="Dark Chocolate">Dark Chocolate</label>
+      <label><input type="checkbox" name="chocolate_decoration" value="White Chocolate">White Chocolate</label>
+      <label><input type="checkbox" name="chocolate_decoration" value="Dubai Chocolate">Dubai Chocolate</label>
+      <label><input type="checkbox" name="chocolate_decoration" value="Customized Chocolate">Customized Chocolate</label>
+      <label><input type="checkbox" name="chocolate_decoration" value="Other">Other</label>
+    </div>
+  </div>
+  <div class="field-group">
+    <p class="fg-label">Entertainment</p>
+    <p class="fg-hint">Feel free to choose all options that apply.</p>
+    <div class="field-checks">
+      <label><input type="checkbox" name="entertainment" value="Live Show Parade">Live Show Parade</label>
+      <label><input type="checkbox" name="entertainment" value="Live Show Zaffah">Live Show Zaffah</label>
+      <label><input type="checkbox" name="entertainment" value="Customized Music Show">Customized Music Show</label>
+      <label><input type="checkbox" name="entertainment" value="Glitter Show">Glitter Show</label>
+      <label><input type="checkbox" name="entertainment" value="Glow In the Dark">Glow In the Dark</label>
+      <label><input type="checkbox" name="entertainment" value="Bar Show">Bar Show</label>
+      <label><input type="checkbox" name="entertainment" value="Dj Show">Dj Show</label>
+      <label><input type="checkbox" name="entertainment" value="Firework">Firework</label>
+      <label><input type="checkbox" name="entertainment" value="Phone Recorder">Phone Recorder</label>
+      <label><input type="checkbox" name="entertainment" value="360° Photo Booth">360° Photo Booth</label>
+      <label><input type="checkbox" name="entertainment" value="Mirror Photo Booth">Mirror Photo Booth</label>
+      <label><input type="checkbox" name="entertainment" value="Sign In Board">Sign In Board</label>
+      <label><input type="checkbox" name="entertainment" value="Slipper Stand">Slipper Stand</label>
+      <label><input type="checkbox" name="entertainment" value="Fans">Fans</label>
+      <label><input type="checkbox" name="entertainment" value="Sparks">Sparks</label>
+      <label><input type="checkbox" name="entertainment" value="Coffee Station">Coffee Station</label>
+      <label><input type="checkbox" name="entertainment" value="Ring The Bell">Ring The Bell</label>
+      <label><input type="checkbox" name="entertainment" value="Other">Other</label>
+    </div>
+  </div>
+    <div class="field">
+      <label for="proposal-catering">Catering Selection</label>
+      <select id="proposal-catering" name="catering">
+        <option value="" selected disabled>Select an option</option>
+        <option>Not needed</option>
+        <option>Light snacks</option>
+        <option>Full meal</option>
+        <option>Buffet</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="proposal-budget">Budget Range <span class="field-required">*</span></label>
+      <select id="proposal-budget" name="budget" required>
+        <option value="" selected disabled>Select an option</option>
+        <option>Under $500</option>
+        <option>$500-$1,000</option>
+        <option>$1,000-$2,500</option>
+        <option>$2,500-$5,000</option>
+        <option>$5,000+</option>
+        <option>Not sure yet</option>
+      </select>
+    </div>
+      <div class="field">
+        <label for="proposal-email">Email</label>
+        <input id="proposal-email" name="email" type="email" autocomplete="email">
       </div>
     <div class="field">
-      <label for="jphone">Phone <span class="field-required">*</span></label>
+      <label for="proposal-phone">Phone <span class="field-required">*</span></label>
       <div class="phone-field">
         <select name="phone_code" aria-label="Country code">
           <option value="+961" selected>LB +961</option>
@@ -76,101 +193,14 @@
           <option value="+1">US/CA +1</option>
           <option value="+44">UK +44</option>
         </select>
-        <input id="jphone" name="phone" type="tel" required autocomplete="tel">
+        <input id="proposal-phone" name="phone" type="tel" required autocomplete="tel">
       </div>
-    </div>
-    <div class="field">
-      <label for="jposition">Position you're applying for: <span class="field-required">*</span></label>
-      <select id="jposition" name="position" required>
-        <option value="" selected disabled>Select an option</option>
-        <option>Performer / Dancer</option>
-        <option>Drummer</option>
-        <option>Mascot Artist</option>
-        <option>Photo Booth Attendant</option>
-        <option>Service Staff</option>
-        <option>Other</option>
-      </select>
-    </div>
-  <div class="field-group">
-    <p class="fg-label">Instrument You Play <span class="field-required">*</span></p>
-    <div class="field-checks">
-      <label><input type="checkbox" name="instrument" value="Trumpet">Trumpet</label>
-      <label><input type="checkbox" name="instrument" value="Saxophone">Saxophone</label>
-      <label><input type="checkbox" name="instrument" value="Trombone">Trombone</label>
-      <label><input type="checkbox" name="instrument" value="Tuba">Tuba</label>
-      <label><input type="checkbox" name="instrument" value="Clarinet">Clarinet</label>
-      <label><input type="checkbox" name="instrument" value="Clairon">Clairon</label>
-      <label><input type="checkbox" name="instrument" value="Darbuka">Darbuka</label>
-      <label><input type="checkbox" name="instrument" value="Tabl">Tabl</label>
-      <label><input type="checkbox" name="instrument" value="Bass Drum">Bass Drum</label>
-      <label><input type="checkbox" name="instrument" value="Snare Drum">Snare Drum</label>
-      <label><input type="checkbox" name="instrument" value="Mizmar">Mizmar</label>
-      <label><input type="checkbox" name="instrument" value="Mejwiz">Mejwiz</label>
-      <label><input type="checkbox" name="instrument" value="Other">Other</label>
-    </div>
-  </div>
-  <div class="field-group">
-    <p class="fg-label">Years Of Experience <span class="field-required">*</span></p>
-    <div class="field-checks">
-      <label><input type="radio" name="experience" value="Beginner" required>Beginner</label>
-      <label><input type="radio" name="experience" value="1 - 3 Years" required>1 - 3 Years</label>
-      <label><input type="radio" name="experience" value="3 - 5 Years" required>3 - 5 Years</label>
-      <label><input type="radio" name="experience" value="5+ Years" required>5+ Years</label>
-      <label><input type="radio" name="experience" value="No experience, but passionate to learn" required>No experience, but passionate to learn</label>
-    </div>
-  </div>
-      <div class="field">
-        <label for="why">Tell us about your experience <span class="field-required">*</span></label>
-        <textarea id="why" name="experience_details" rows="4" required></textarea>
-      </div>
-    <div class="field">
-      <label for="jlocation">Preferred Location: <span class="field-required">*</span></label>
-      <select id="jlocation" name="preferred_location" required>
-        <option value="" selected disabled>Select an option</option>
-        <option>Beirut</option>
-        <option>Mount Lebanon</option>
-        <option>North Lebanon</option>
-        <option>South Lebanon</option>
-        <option>Bekaa</option>
-        <option>Other</option>
-      </select>
-    </div>
-    <div class="field">
-      <label for="javailability">Availability: <span class="field-required">*</span></label>
-      <select id="javailability" name="availability" required>
-        <option value="" selected disabled>Select an option</option>
-        <option>Weekdays</option>
-        <option>Weekends</option>
-        <option>Both</option>
-        <option>Specific dates only</option>
-      </select>
     </div>
       <div class="field">
-        <label for="cv">Attach Your Portfolio / Resume <span class="field-required">*</span></label>
-        <input id="cv" name="cv" type="file" required accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-        <small class="field-note">Link to your CV or social media profile &middot; up to 20 MB</small>
+        <label for="proposal-notes">Special Instructions</label>
+        <textarea id="proposal-notes" name="notes" rows="4"></textarea>
       </div>
-      <div class="field">
-        <label for="motivation">Why do you want to join Paradream?</label>
-        <textarea id="motivation" name="motivation" rows="4"></textarea>
-      </div>
-    <div class="field">
-      <label for="jheard">Where Did You Hear About Us <span class="field-required">*</span></label>
-      <select id="jheard" name="heard" required>
-        <option value="" selected disabled>Select an option</option>
-        <option>Instagram</option>
-        <option>Facebook</option>
-        <option>TikTok</option>
-        <option>A friend</option>
-        <option>At an event</option>
-        <option>Other</option>
-      </select>
-    </div>
-      <div class="field">
-        <label for="extra">Anything else you'd like to add? <span class="field-required">*</span></label>
-        <textarea id="extra" name="extra" rows="3" required></textarea>
-      </div>
-      <button class="btn btn-solid" type="submit">Apply Now</button>
+      <button class="btn btn-solid" type="submit">Send</button>
     </form>
   </div>
 </section>
