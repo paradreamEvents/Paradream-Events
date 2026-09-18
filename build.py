@@ -379,10 +379,15 @@ how_steps_html = "\n".join(
       </div>""" for i, s in enumerate(PAGES["home"]["how_steps"]))
 
 # ── Home ────────────────────────────────────────────────────
+hero_arrows = ""
+if len(CONTENT["hero"]) > 1:
+    hero_arrows = ('  <button type="button" class="hero-arrow prev" aria-label="Previous slide">&#8249;</button>\n'
+                   '  <button type="button" class="hero-arrow next" aria-label="Next slide">&#8250;</button>\n')
+
 HOME_BLOCKS = {
 "hero": f"""<section class="hero-slider">
 {hero_slides}
-  <div class="slider-dots" role="tablist" aria-label="Slides">
+{hero_arrows}  <div class="slider-dots" role="tablist" aria-label="Slides">
 {hero_dots}
   </div>
   <p class="scroll-cue">Scroll</p>

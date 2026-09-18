@@ -71,6 +71,9 @@
     dots.forEach(function (d, k) {
       d.addEventListener("click", function () { go(k); play(); });
     });
+    var prevBtn = $(".hero-arrow.prev", slider), nextBtn = $(".hero-arrow.next", slider);
+    if (prevBtn) prevBtn.addEventListener("click", function () { go(i - 1); play(); });
+    if (nextBtn) nextBtn.addEventListener("click", function () { go(i + 1); play(); });
     slider.addEventListener("mouseenter", function () { clearInterval(timer); });
     slider.addEventListener("mouseleave", play);
     go(0); play();
