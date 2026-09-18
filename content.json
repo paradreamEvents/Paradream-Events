@@ -128,8 +128,9 @@
     {
       "slug": "bachelor",
       "title": "Bachelor",
-      "image": "images/occasion-bachelor.png",
-      "text": "Experience an exceptional bachelor party with our elite planning services. We create sophisticated, tailored celebrations, handling every detail from curated activities to premium entertainment. Trust us to turn your dream into an unforgettable event that leaves a lasting impression."
+      "image": "images/occasion-bachelor.jpg",
+      "text": "Experience an exceptional bachelor party with our elite planning services. We create sophisticated, tailored celebrations, handling every detail from curated activities to premium entertainment. Trust us to turn your dream into an unforgettable event that leaves a lasting impression.",
+      "head_position": "center 32%"
     },
     {
       "slug": "wedding",

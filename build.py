@@ -745,16 +745,17 @@ ENTERTAINMENT_OPTIONS = ["Live Show Parade", "Live Show Zaffah", "Customized Mus
     "Mirror Photo Booth", "Sign In Board", "Slipper Stand", "Fans", "Sparks", "Coffee Station", "Ring The Bell", "Other"]
 
 OCCASION_IMAGE = {o["slug"]: o["image"] for o in CONTENT["occasions"]}
+OCCASION_HEAD_POSITION = {o["slug"]: o.get("head_position", "center") for o in CONTENT["occasions"]}
 
 def occasion_page_head(slug, title, sub=""):
     img = OCCASION_IMAGE.get(slug, "")
+    sub_html = f"\n  <p>{sub}</p>" if sub else ""
     if img:
         bg = media(img, 1800) if img.startswith("images/") else img
-        sub_html = f"\n  <p>{sub}</p>" if sub else ""
-        return f"""<section class="page-head has-photo" style="background-image:url('{bg}')">
+        pos = OCCASION_HEAD_POSITION.get(slug, "center")
+        return f"""<section class="page-head has-photo" style="background-image:url('{bg}');background-position:{pos}">
   <h1>{title}</h1>{sub_html}
 </section>"""
-    sub_html = f"\n  <p>{sub}</p>" if sub else ""
     return f"""<section class="page-head">
   <h1>{title}</h1>{sub_html}
 </section>"""
