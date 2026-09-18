@@ -160,9 +160,9 @@ FOOTER = f"""<footer class="site-footer">
     <div>
       <h4>Events</h4>
       <ul>
-        <li><a href="occasions.html#engagement">Engagement</a></li>
-        <li><a href="occasions.html#bachelor">Bachelor</a></li>
-        <li><a href="occasions.html#wedding">Wedding</a></li>
+        <li><a href="engagement.html">Engagement</a></li>
+        <li><a href="bachelor.html">Bachelor</a></li>
+        <li><a href="wedding.html">Wedding</a></li>
         <li><a href="occasions.html#communion">Holy First Communion</a></li>
         <li><a href="occasions.html#baptism">Baptism</a></li>
         <li><a href="occasions.html#birthday">Birthday</a></li>
@@ -744,11 +744,24 @@ ENTERTAINMENT_OPTIONS = ["Live Show Parade", "Live Show Zaffah", "Customized Mus
     "Glow In the Dark", "Bar Show", "Dj Show", "Firework", "Phone Recorder", "360° Photo Booth",
     "Mirror Photo Booth", "Sign In Board", "Slipper Stand", "Fans", "Sparks", "Coffee Station", "Ring The Bell", "Other"]
 
+OCCASION_IMAGE = {o["slug"]: o["image"] for o in CONTENT["occasions"]}
+
+def occasion_page_head(slug, title, sub=""):
+    img = OCCASION_IMAGE.get(slug, "")
+    if img:
+        bg = media(img, 1800) if img.startswith("images/") else img
+        sub_html = f"\n  <p>{sub}</p>" if sub else ""
+        return f"""<section class="page-head has-photo" style="background-image:url('{bg}')">
+  <h1>{title}</h1>{sub_html}
+</section>"""
+    sub_html = f"\n  <p>{sub}</p>" if sub else ""
+    return f"""<section class="page-head">
+  <h1>{title}</h1>{sub_html}
+</section>"""
+
 def occasion_form(slug, title, chocolate_options, extra_top=""):
     return f"""
-<section class="page-head">
-  <h1>{title}</h1>
-</section>
+{occasion_page_head(slug, title)}
 
 <section class="form-wrap" style="grid-template-columns:1fr;max-width:760px">
   <div>
@@ -893,9 +906,7 @@ WEDDING_CARDS = ["Electronic Card", "Plexi Card", "Board Card", "Thank You Card"
     "Cadeaux De Retour", "Other"]
 
 wedding_body = f"""
-<section class="page-head">
-  <h1>Your Big Day</h1>
-</section>
+{occasion_page_head("wedding", "Your Big Day")}
 
 <section class="form-wrap" style="grid-template-columns:1fr;max-width:760px">
   <div>
