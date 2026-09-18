@@ -161,13 +161,15 @@
       "slug": "birthday",
       "title": "Birthday",
       "image": "images/occasion-birthday.png",
-      "text": "Choose Paradream to make your birthday truly unforgettable, ensuring a seamless and exceptional experience that will leave a lasting impression on you and your guests."
+      "text": "Choose Paradream to make your birthday truly unforgettable, ensuring a seamless and exceptional experience that will leave a lasting impression on you and your guests.",
+      "head_position": "center 30%"
     },
     {
       "slug": "christmas",
       "title": "Christmas",
       "image": "images/occasion-christmas.jpg",
-      "text": "Christmas is the dreaming season, and Christmas is better together! Music at Christmas time is like no other, enchanting hearts and weaving joy into the air. P.S: Ask Santa Claus for Paradream!"
+      "text": "Christmas is the dreaming season, and Christmas is better together! Music at Christmas time is like no other, enchanting hearts and weaving joy into the air. P.S: Ask Santa Claus for Paradream!",
+      "head_position": "center 28%"
     }
   ],
   "testimonials": [

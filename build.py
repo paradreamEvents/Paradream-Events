@@ -163,10 +163,10 @@ FOOTER = f"""<footer class="site-footer">
         <li><a href="engagement.html">Engagement</a></li>
         <li><a href="bachelor.html">Bachelor</a></li>
         <li><a href="wedding.html">Wedding</a></li>
-        <li><a href="occasions.html#communion">Holy First Communion</a></li>
-        <li><a href="occasions.html#baptism">Baptism</a></li>
-        <li><a href="occasions.html#birthday">Birthday</a></li>
-        <li><a href="occasions.html#christmas">Christmas</a></li>
+        <li><a href="communion.html">Holy First Communion</a></li>
+        <li><a href="baptism.html">Baptism</a></li>
+        <li><a href="birthday.html">Birthday</a></li>
+        <li><a href="christmas.html">Christmas</a></li>
       </ul>
     </div>
     <div>
@@ -557,7 +557,9 @@ OCCASIONS = [(x["slug"], x["title"], x["image"], x["text"], x.get("head_position
 # Occasions with their own dedicated booking form; everyone else still
 # lands on the generic contact form until theirs is built.
 DEDICATED_FORMS = {"proposal": "proposal.html", "engagement": "engagement.html",
-                    "bachelor": "bachelor.html", "wedding": "wedding.html"}
+                    "bachelor": "bachelor.html", "wedding": "wedding.html",
+                    "communion": "communion.html", "baptism": "baptism.html",
+                    "birthday": "birthday.html", "christmas": "christmas.html"}
 
 occ_html = "\n".join(f"""      <article class="occasion reveal" id="{slug}">
         <img class="occasion-img" style="object-position:{pos}" src="{media(src, 1200)}" alt="{name}" loading="lazy">
@@ -892,6 +894,26 @@ page("engagement.html", "Plan Your Engagement - Paradream Events",
 page("bachelor.html", "Plan Your Bachelor Party - Paradream Events",
      "Tell us about the bachelor party you're planning and Paradream will help bring it to life.",
      occasion_form("bachelor", "Bachelor", ENGAGEMENT_CHOCOLATE),
+     current="occasions.html")
+
+page("communion.html", "Plan Your Holy First Communion - Paradream Events",
+     "Tell us about the Holy First Communion you're planning and Paradream will help bring it to life.",
+     occasion_form("communion", "Holy First Communion", ENGAGEMENT_CHOCOLATE),
+     current="occasions.html")
+
+page("baptism.html", "Plan Your Baptism - Paradream Events",
+     "Tell us about the baptism you're planning and Paradream will help bring it to life.",
+     occasion_form("baptism", "Baptism", ENGAGEMENT_CHOCOLATE),
+     current="occasions.html")
+
+page("birthday.html", "Plan Your Birthday - Paradream Events",
+     "Tell us about the birthday you're planning and Paradream will help bring it to life.",
+     occasion_form("birthday", "Birthday", ENGAGEMENT_CHOCOLATE),
+     current="occasions.html")
+
+page("christmas.html", "Plan Your Christmas Event - Paradream Events",
+     "Tell us about the Christmas event you're planning and Paradream will help bring it to life.",
+     occasion_form("christmas", "Christmas", ENGAGEMENT_CHOCOLATE),
      current="occasions.html")
 
 
