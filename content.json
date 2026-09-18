@@ -136,7 +136,8 @@
       "slug": "wedding",
       "title": "Your Big Day",
       "image": "images/occasion-wedding.png",
-      "text": "Make your dream wedding come true with Paradream. Our expert planning transforms your vision into a flawlessly executed celebration that you'll treasure forever."
+      "text": "Make your dream wedding come true with Paradream. Our expert planning transforms your vision into a flawlessly executed celebration that you'll treasure forever.",
+      "head_position": "center 30%"
     },
     {
       "slug": "communion",
