@@ -855,6 +855,10 @@ var PD_STYLE = "" +
   ".pd-hero-dots button.dragging { opacity: .4; }" +
   ".pd-hero-dots button.drop-target { outline: 2px dashed #fff; }" +
   ".pd-hero-add { background: transparent !important; border-style: dashed !important; }" +
+  ".pd-cta-wrap { position: relative; display: inline-block; }" +
+  ".pd-link-btn { position: absolute; top: -10px; right: -10px; width: 26px; height: 26px; border-radius: 50%; " +
+  "border: 1px solid #E4251B; background: #fff; color: #E4251B; font-size: 13px; line-height: 1; cursor: pointer; z-index: 5; }" +
+  ".pd-link-btn:hover { background: #E4251B; color: #fff; }" +
   ".pd-hero-arrow { position: absolute; z-index: 6; top: 50%; transform: translateY(-50%); " +
   "width: 44px; height: 44px; border-radius: 50%; border: 1px solid #fff; background: rgba(0,0,0,.35); " +
   "color: #fff; font-size: 22px; line-height: 1; cursor: pointer; }" +
@@ -942,7 +946,9 @@ function homeBlocks() {
           '<div class="slide-inner">' +
           ed("hero." + i + ".title", "h1", "", s.title) +
           ed("hero." + i + ".text", "p", "", s.text) +
-          '<span class="btn btn-solid">' + ed("hero." + i + ".cta", "span", "", s.cta) + "</span></div></div>";
+          '<span class="pd-cta-wrap"><span class="btn btn-solid">' + ed("hero." + i + ".cta", "span", "", s.cta) + "</span>" +
+          '<button type="button" class="pd-link-btn" data-edit-link="hero.' + i + '.link" title="Set where this button links to">&#128279;</button>' +
+          "</span></div></div>";
       }).join("\n");
       var nav = list.length > 1
         ? '<button type="button" class="pd-hero-arrow prev" data-hero-arrow="-1">&#8249;</button>' +
@@ -1212,6 +1218,19 @@ function wirePdFrame() {
       e.preventDefault();
       photoTarget = el.dataset.editPhoto;
       picker.click();
+    });
+  });
+
+  Array.prototype.forEach.call(doc.querySelectorAll("[data-edit-link]"), function (el) {
+    el.addEventListener("click", function (e) {
+      e.preventDefault();
+      var path = el.dataset.editLink;
+      var current = path.split(".").reduce(function (o, k) { return o == null ? o : o[k]; }, content) || "";
+      var next = doc.defaultView.prompt("Link this button to (e.g. contact-us.html, occasions.html#wedding, https://wa.me/96181406046):", current);
+      if (next === null) return;
+      pdSetPath(path, next.trim());
+      contentDirty = true;
+      refreshPublish();
     });
   });
 
