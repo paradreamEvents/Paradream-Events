@@ -552,7 +552,7 @@ page("why-paradream.html", "Why Paradream? | Top Event Planner &amp; Parade Expe
 
 
 # ── Occasions ───────────────────────────────────────────────
-OCCASIONS = [(x["slug"], x["title"], x["image"], x["text"]) for x in CONTENT["occasions"]]
+OCCASIONS = [(x["slug"], x["title"], x["image"], x["text"], x.get("head_position", "center")) for x in CONTENT["occasions"]]
 
 # Occasions with their own dedicated booking form; everyone else still
 # lands on the generic contact form until theirs is built.
@@ -560,13 +560,13 @@ DEDICATED_FORMS = {"proposal": "proposal.html", "engagement": "engagement.html",
                     "bachelor": "bachelor.html", "wedding": "wedding.html"}
 
 occ_html = "\n".join(f"""      <article class="occasion reveal" id="{slug}">
-        <img class="occasion-img" src="{media(src, 1200)}" alt="{name}" loading="lazy">
+        <img class="occasion-img" style="object-position:{pos}" src="{media(src, 1200)}" alt="{name}" loading="lazy">
         <div>
           <h3>{name}</h3>
           <p>{text}</p>
           <a class="btn btn-outline" href="{DEDICATED_FORMS.get(slug, 'contact-us.html?occasion=' + quote(name))}">Book Now</a>
         </div>
-      </article>""" for slug, name, src, text in OCCASIONS)
+      </article>""" for slug, name, src, text, pos in OCCASIONS)
 
 page("occasions.html", "Occasions We Cover - Paradream Events",
      "Proposal, engagement, bachelor, wedding, baptism, first communion, gender reveal, birthday and Christmas celebrations across Lebanon.",
