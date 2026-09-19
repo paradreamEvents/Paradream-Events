@@ -246,7 +246,7 @@ FOOTER = f"""<footer class="site-footer">
 </div>
 
 {PRICING_TAG}
-<script src="main.js"></script>"""
+<script src="main.js?v={stamp('main.js')}"></script>"""
 
 
 def analytics_tag():
@@ -283,7 +283,7 @@ def page(filename, title, description, body, current=None):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v={stamp('styles.css')}">
 {analytics_tag()}
 </head>
 <body>
@@ -378,6 +378,14 @@ how_steps_html = "\n".join(
         <p>{s["p"]}</p>
       </div>""" for i, s in enumerate(PAGES["home"]["how_steps"]))
 
+marquee_cards = "\n".join(
+    f'      <a class="mq-card" href="our-services.html"><img src="{media(x.get("image", ""), 700)}" alt="" loading="lazy" decoding="async">'
+    f'<span class="mq-title">{x["title"]}</span></a>'
+    for x in CONTENT["services"]
+)
+
+marquee_cards_dup = marquee_cards.replace('<a class="mq-card"', '<a aria-hidden="true" tabindex="-1" class="mq-card"')
+
 # ── Home ────────────────────────────────────────────────────
 hero_arrows = ""
 if len(CONTENT["hero"]) > 1:
@@ -404,11 +412,19 @@ HOME_BLOCKS = {
   </div>
 </div>""",
 
-"services_teaser": f"""<section class="band">
+"services_teaser": f"""<section class="band showcase">
   <div class="band-inner reveal">
     <h2>{PAGES["home"]["services_teaser_h"]}</h2>
     <p class="lede">{PAGES["home"]["services_teaser_p"]}</p>
-    <a class="btn btn-outline" href="our-services.html">Our Services</a>
+  </div>
+  <div class="marquee" aria-label="Our services">
+    <div class="marquee-track">
+{marquee_cards}
+{marquee_cards_dup}
+    </div>
+  </div>
+  <div class="band-inner reveal">
+    <a class="btn btn-solid" href="our-services.html">Explore All Services</a>
   </div>
 </section>""",
 
@@ -520,9 +536,12 @@ quotes = "\n".join(f"""      <figure class="quote reveal">
 WHY = PAGES["why-paradream"]
 WHY_BLOCKS = {
 "intro": f"""<section class="band">
-  <div class="band-inner">
-    <img src="{media("images/why-team.png", 900)}" alt="Paradream team at work" style="border-radius:3px;margin:0 auto 2.2rem">
-    <p class="lede">{WHY["story"]}</p>
+  <div class="band-inner story">
+    <figure class="story-photo reveal"><img src="{media(WHY.get("image", "images/why-story.jpg"), 1200)}" alt="The Paradream team celebrating with a client" loading="lazy"></figure>
+    <div class="story-text reveal reveal-d1">
+      <p class="lede">{WHY["story"]}</p>
+      <a class="btn btn-solid" href="contact-us.html">Plan Your Event</a>
+    </div>
   </div>
 </section>""",
 
@@ -567,14 +586,15 @@ DEDICATED_FORMS = {"proposal": "proposal.html", "engagement": "engagement.html",
                     "communion": "communion.html", "baptism": "baptism.html",
                     "birthday": "birthday.html", "christmas": "christmas.html"}
 
-occ_html = "\n".join(f"""      <article class="occasion reveal" id="{slug}">
-        <img class="occasion-img" style="object-position:{pos}" src="{media(src, 1200)}" alt="{name}" loading="lazy">
-        <div>
+occ_html = "\n".join(f"""      <article class="occ-card reveal" id="{slug}" style="--d:{(i % 3) * 120}ms">
+        <img class="occ-img" style="object-position:{pos}" src="{media(src, 1000)}" alt="{name}" loading="lazy" decoding="async">
+        <div class="occ-shade"></div>
+        <div class="occ-body">
           <h3>{name}</h3>
           <p>{text}</p>
-          <a class="btn btn-outline" href="{DEDICATED_FORMS.get(slug, 'contact-us.html?occasion=' + quote(name))}">Book Now</a>
+          <a class="btn btn-solid" href="{DEDICATED_FORMS.get(slug, 'contact-us.html?occasion=' + quote(name))}">Book Now</a>
         </div>
-      </article>""" for slug, name, src, text, pos in OCCASIONS)
+      </article>""" for i, (slug, name, src, text, pos) in enumerate(OCCASIONS))
 
 page("occasions.html", "Occasions We Cover - Paradream Events",
      "Proposal, engagement, bachelor, wedding, baptism, first communion, gender reveal, birthday and Christmas celebrations across Lebanon.",
@@ -586,7 +606,7 @@ page("occasions.html", "Occasions We Cover - Paradream Events",
 
 <section class="band">
   <div class="band-inner">
-    <div class="occasions">
+    <div class="occ-grid">
 {occ_html}
     </div>
   </div>
@@ -596,16 +616,17 @@ page("occasions.html", "Occasions We Cover - Paradream Events",
 
 # ── Our Services ────────────────────────────────────────────
 SERVICES = [(x["title"], x["text"], x.get("image", "")) for x in CONTENT["services"]]
-tiles = "\n".join(f"""      <a class="tile reveal" href="contact-us.html">
-{responsive(image, name, "(max-width:700px) 92vw, (max-width:1100px) 45vw, 360px", [400, 760, 1100], 0, 0) if image.startswith("images/") else f'      <img src="{image}" alt="{name}" loading="lazy">'}
-        <div class="tile-body">
+tiles = "\n".join(f"""      <a class="svc-card reveal" style="--d:{(i % 3) * 110}ms" href="contact-us.html">
+        <div class="svc-img"><img src="{media(image, 900)}" srcset="{media(image, 600)} 600w, {media(image, 900)} 900w, {media(image, 1300)} 1300w" sizes="(max-width:700px) 92vw, (max-width:1100px) 46vw, 380px" alt="{name}" loading="lazy" decoding="async"></div>
+        <div class="svc-body">
           <h3>{name}</h3>
           <p>{desc}</p>
+          <span class="svc-link">Enquire now <i aria-hidden="true">&rarr;</i></span>
         </div>
       </a>""" for i, (name, desc, image) in enumerate(SERVICES))
 
 page("our-services.html", "Our Services - Paradream Events",
-     "Live show parades, oriental zaffah, photo booths, mascots, circus shows, inflatable games, table decoration, catering and Christmas mascots.",
+     "Full event planning, live show parades, oriental zaffah, photo booths, mascots, fire and LED shows, décor, catering and entertainment by Paradream Events in Lebanon.",
      f"""
 <section class="page-head">
   <h1>{PAGES["our-services"]["h1"]}</h1>
@@ -614,7 +635,7 @@ page("our-services.html", "Our Services - Paradream Events",
 
 <section class="band band-services">
   <div class="band-inner">
-    <div class="tiles">
+    <div class="svc-grid">
 {tiles}
     </div>
   </div>

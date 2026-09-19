@@ -180,7 +180,21 @@
       im.alt = "Paradream event photo " + id;
       im.dataset.full = gsrc(id, 1600, 88);
       fig.appendChild(im);
+      if (ALBUMS[id]) {
+        var tag = document.createElement("span");
+        tag.className = "shot-tag";
+        tag.textContent = ALBUMS[id];
+        fig.appendChild(tag);
+      }
       return fig;
+    };
+
+    // One big feature tile every 7 photos (only when enough are showing)
+    var layoutFeatured = function () {
+      var vis = $$(".shot", grid).filter(function (f) {
+        return !f.classList.contains("filtered-out") && !f.hidden;
+      });
+      vis.forEach(function (f, k) { f.classList.toggle("feat", vis.length >= 6 && k % 7 === 0); });
     };
 
     var empty = $("#gallery-empty");
@@ -198,9 +212,11 @@
         moreBtn.addEventListener("click", function () {
           extras.forEach(function (f) { f.hidden = false; });
           moreWrap.hidden = true;
+          layoutFeatured();
         });
       }
       setupLightbox($$("img", grid));
+      layoutFeatured();
 
       var tabs = $$(".gallery-tab", $("#gallery-tabs"));
       var shots = $$(".shot", grid);
@@ -220,6 +236,7 @@
             });
             if (moreWrap) moreWrap.hidden = true;
           }
+          layoutFeatured();
         });
       });
     }

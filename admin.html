@@ -433,10 +433,11 @@ function galleryId(name) {
   return name.replace(/^gallery-/, "").replace(/\.jpg$/i, "");
 }
 
-function nextFree() {
-  var used = existing.filter(function (f) { return f.name.indexOf(tab + "-") === 0; })
+function nextFree(prefix) {
+  prefix = prefix || tab;
+  var used = existing.filter(function (f) { return f.name.indexOf(prefix + "-") === 0; })
                      .map(function (f) { return numOf(f.name); });
-  queued.forEach(function (q) { used.push(numOf(q.name)); });
+  queued.forEach(function (q) { if (q.name.indexOf(prefix + "-") === 0) used.push(numOf(q.name)); });
   var n = 1;
   while (used.indexOf(n) !== -1) n++;
   return n;
@@ -559,8 +560,13 @@ function render() {
 }
 
 /* ── Queue uploads ─────────────────────────────── */
+var uploadKind = null;   // "gallery" when adding photos from the Gallery page canvas
+var PD_PHOTO_RATIOS = { "pages.why-paradream.image": [1400, 1050] };
+
 async function handle(files) {
-  var p = PRESETS[tab];
+  var p = PRESETS[uploadKind === "gallery" ? "gallery" : tab] || PRESETS.gallery;
+  var addingToGallery = uploadKind === "gallery";
+  uploadKind = null;
   for (var i = 0; i < files.length; i++) {
     var file = files[i];
     if (!file.type.indexOf || file.type.indexOf("image/") !== 0) continue;
@@ -570,6 +576,8 @@ async function handle(files) {
     if (photoTarget) {
       var sc = secFor(photoTarget.split(".")[0]);
       if (sc && sc.ratio) target = { w: sc.ratio[0], h: sc.ratio[1] };
+      else if (PD_PHOTO_RATIOS[photoTarget]) target = { w: PD_PHOTO_RATIOS[photoTarget][0], h: PD_PHOTO_RATIOS[photoTarget][1] };
+      else target = { w: 1400, h: 1050 };
     }
 
     var rect = await openCropper(img, target.w, target.h);
@@ -581,8 +589,13 @@ async function handle(files) {
       var parts = photoTarget.split(".");
       var sec = secFor(parts[0]);
       var idx = parseInt(parts[1], 10);
-      name = parts[0].replace(/s$/, "") + "-" + Date.now() + ".jpg";
-      content[parts[0]][idx].image = "images/" + name;
+      if (isNaN(idx)) {   // page-level photo, e.g. pages.why-paradream.image
+        name = "page-" + Date.now() + ".jpg";
+        pdSetPath(photoTarget, "images/" + name);
+      } else {
+        name = parts[0].replace(/s$/, "") + "-" + Date.now() + ".jpg";
+        content[parts[0]][idx].image = "images/" + name;
+      }
       contentDirty = true;
       photoTarget = null;
       queued.push({ name: name, dataUrl: dataUrl });
@@ -596,11 +609,11 @@ async function handle(files) {
       queued = queued.filter(function (q) { return q.name !== name; });
       slotTarget = null;
     } else {
-      name = tab + "-" + nextFree() + ".jpg";
+      name = (addingToGallery ? "gallery" : tab) + "-" + nextFree(addingToGallery ? "gallery" : tab) + ".jpg";
     }
     queued.push({ name: name, dataUrl: dataUrl });
     releaseImage(img);
-    render();
+    if (tab === "pages") { renderPagesView(); refreshPublish(); } else render();
     if (!slotTarget && tab === "service") break;  // one file per slot
   }
 }
@@ -872,6 +885,16 @@ var PD_STYLE = "" +
   ".pd-remove { position: absolute; top: -10px; right: -10px; width: 26px; height: 26px; border-radius: 50%; border: 1px solid #E4251B; " +
   "background: #fff; color: #E4251B; font-size: 16px; line-height: 1; cursor: pointer; z-index: 5; }" +
   ".pd-item-wrap:hover .pd-remove { display: block; } .pd-remove { display: none; }" +
+  ".pd-gal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: .8rem; margin-top: 1rem; }" +
+  ".pd-gal-tile { position: relative; background: #fff; border: 1px solid #E3E6EA; border-radius: 6px; padding: .4rem; }" +
+  ".pd-gal-tile.gone { opacity: .45; }" +
+  ".pd-gal-img { aspect-ratio: 1; background-size: cover; background-position: center; border-radius: 4px; }" +
+  ".pd-gal-del { position: absolute; top: .7rem; right: .7rem; background: #fff; color: #E4251B; border: 1px solid #E4251B; " +
+  "border-radius: 3px; font: 700 10px/1 Lato, sans-serif; letter-spacing: .05em; text-transform: uppercase; padding: 5px 8px; cursor: pointer; }" +
+  ".pd-gal-badge { position: absolute; top: .7rem; left: .7rem; background: #12263A; color: #fff; font: 700 9px/1 Lato, sans-serif; " +
+  "letter-spacing: .06em; text-transform: uppercase; padding: 4px 7px; border-radius: 2px; }" +
+  ".pd-gal-badge.new { background: #E4251B; }" +
+  ".pd-gal-add { aspect-ratio: 1; align-self: stretch; }" +
   ".pd-note { max-width: 640px; margin: 1.4rem auto; padding: .9rem 1.1rem; background: #FFF7E6; border: 1px solid #F0D999; " +
   "border-radius: 4px; font: 400 14px/1.5 Lato, sans-serif; color: #6b5a1e; }";
 
@@ -1019,7 +1042,7 @@ function whyBlocks() {
   return {
     intro: function () {
       return '<section class="band"><div class="band-inner">' +
-        edImg("images/why-team.png", LOGO_OR(existing, "why-team.png"), "", "Paradream team at work") +
+        edImg("pages.why-paradream.image", photoFor({ image: W.image }), "", "Paradream team") +
         ed("pages.why-paradream.story", "p", "lede", W.story, true) + "</div></section>";
     },
     testimonials: function () {
@@ -1072,33 +1095,57 @@ function renderOccasionsBody() {
 function renderServicesBody() {
   var S = content.pages["our-services"];
   var tiles = pdRepeat("services", function (s, i) {
-    return '<span class="tile">' + edImg("services." + i + ".image", photoFor(s), "", s.title) +
-      '<div class="tile-body">' + ed("services." + i + ".title", "h3", "", s.title) +
-      ed("services." + i + ".text", "p", "", s.text, true) + "</div></span>";
+    return '<div class="svc-card" style="opacity:1;transform:none">' +
+      '<div class="svc-img">' + edImg("services." + i + ".image", photoFor(s), "", s.title) + "</div>" +
+      '<div class="svc-body">' + ed("services." + i + ".title", "h3", "", s.title) +
+      ed("services." + i + ".text", "p", "", s.text, true) + "</div></div>";
   }) + addTile("services", "service");
 
   return pdHeader("our-services.html") + "<main>" +
     '<section class="page-head">' + ed("pages.our-services.h1", "h1", "", S.h1) +
     ed("pages.our-services.sub", "p", "", S.sub) + "</section>" +
-    '<section class="band band-services"><div class="band-inner"><div class="tiles">' + tiles +
+    '<section class="band band-services"><div class="band-inner"><div class="svc-grid">' + tiles +
     "</div></div></section></main>" + pdFooter();
 }
 
 function renderGalleryBody() {
   var G = content.pages.gallery;
+  var albums = content.gallery_albums || [];
+  var map = content.gallery_photo_albums || {};
   var photos = existing.filter(function (f) { return f.name.indexOf("gallery-") === 0; })
-    .sort(function (a, b) { return numOf(a.name) - numOf(b.name); }).slice(0, 12);
-  var grid = photos.map(function (f) {
-    return '<div class="occasion-img" style="aspect-ratio:1;background:url(\'' + f.url + '\') center/cover"></div>';
-  }).join("\n");
+    .sort(function (a, b) { return numOf(a.name) - numOf(b.name); });
+
+  function albumSelect(id) {
+    return '<select data-pd-galalbum="' + esc(id) + '" style="width:100%;margin-top:.3rem;font-size:.75rem;padding:.25rem">' +
+      '<option value="">Uncategorized</option>' + albums.map(function (a) {
+        return '<option' + (map[id] === a ? " selected" : "") + ">" + esc(a) + "</option>";
+      }).join("") + "</select>";
+  }
+
+  var tiles = photos.map(function (f) {
+    var gone = deleting.indexOf(f.name) !== -1;
+    return '<div class="pd-gal-tile' + (gone ? " gone" : "") + '">' +
+      '<div class="pd-gal-img" style="background-image:url(&quot;' + f.url + '&quot;)"></div>' +
+      '<button type="button" class="pd-gal-del" data-pd-galdel="' + esc(f.name) + '">' + (gone ? "Undo" : "Remove") + "</button>" +
+      (gone ? '<span class="pd-gal-badge">Removing</span>' : albumSelect(galleryId(f.name))) + "</div>";
+  }).join("");
+
+  var fresh = queued.map(function (q, qi) {
+    if (q.name.indexOf("gallery-") !== 0) return "";
+    return '<div class="pd-gal-tile">' +
+      '<div class="pd-gal-img" style="background-image:url(&quot;' + q.dataUrl + '&quot;)"></div>' +
+      '<span class="pd-gal-badge new">New</span>' +
+      '<button type="button" class="pd-gal-del" data-pd-galq="' + qi + '">Remove</button>' +
+      albumSelect(galleryId(q.name)) + "</div>";
+  }).join("");
+
   return pdHeader("gallery.html") + "<main>" +
     '<section class="page-head">' + ed("pages.gallery.h1", "h1", "", G.h1) +
     ed("pages.gallery.sub", "p", "", G.sub) + "</section>" +
     '<section class="band"><div class="band-inner">' +
-    '<div class="pd-note">Add, remove and reorder gallery photos from the <a href="#" data-pd-tab="gallery">Gallery tab</a> — ' +
-    "shown below is a preview of the first photos.</div>" +
-    '<div class="occasions" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem">' +
-    grid + "</div></div></section></main>" + pdFooter();
+    '<div class="pd-note">Add or remove gallery photos here and pick an album for each. Nothing goes live until you press Publish.</div>' +
+    '<div class="pd-gal-grid"><div class="pd-add pd-gal-add" data-pd-galadd="1"><span>+ Add photos</span></div>' +
+    fresh + tiles + "</div></div></section></main>" + pdFooter();
 }
 
 function renderContactBody() {
@@ -1231,6 +1278,33 @@ function wirePdFrame() {
       pdSetPath(path, next.trim());
       contentDirty = true;
       refreshPublish();
+    });
+  });
+
+  Array.prototype.forEach.call(doc.querySelectorAll("[data-pd-galadd]"), function (el) {
+    el.addEventListener("click", function (e) { e.preventDefault(); uploadKind = "gallery"; picker.click(); });
+  });
+  Array.prototype.forEach.call(doc.querySelectorAll("[data-pd-galdel]"), function (el) {
+    el.addEventListener("click", function (e) {
+      e.preventDefault();
+      var n = el.dataset.pdGaldel, at = deleting.indexOf(n);
+      if (at === -1) deleting.push(n); else deleting.splice(at, 1);
+      refreshPublish(); renderPagesView();
+    });
+  });
+  Array.prototype.forEach.call(doc.querySelectorAll("[data-pd-galq]"), function (el) {
+    el.addEventListener("click", function (e) {
+      e.preventDefault();
+      queued.splice(parseInt(el.dataset.pdGalq, 10), 1);
+      refreshPublish(); renderPagesView();
+    });
+  });
+  Array.prototype.forEach.call(doc.querySelectorAll("[data-pd-galalbum]"), function (el) {
+    el.addEventListener("change", function () {
+      if (!content.gallery_photo_albums) content.gallery_photo_albums = {};
+      var id = el.dataset.pdGalalbum;
+      if (el.value) content.gallery_photo_albums[id] = el.value; else delete content.gallery_photo_albums[id];
+      contentDirty = true; refreshPublish();
     });
   });
 

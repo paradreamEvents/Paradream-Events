@@ -23,7 +23,7 @@
       "title": "Christmas is better together",
       "text": "Mascots, music and mornings your family will keep talking about.",
       "cta": "See Christmas",
-      "link": "occasions.html#christmas"
+      "link": "christmas.html"
     },
     {
       "image": "images/hero-1789659401329.jpg",
@@ -31,15 +31,15 @@
       "title": "Weddings, done your way",
       "text": "Zaffah, parade and production, timed to the second.",
       "cta": "See weddings",
-      "link": "occasions.html#wedding"
+      "link": "wedding.html"
     },
     {
       "image": "images/hero-1789659375807.jpg",
       "position": "center 38%",
-      "title": "Book Your Dream Event Now!",
-      "text": "Your Dream Event Is One Click Away!",
-      "cta": "Book Now!",
-      "link": "contact-us.html"
+      "title": "Join the Paradream Events Family",
+      "text": "Be a part of the magic — help us bring unforgettable moments to life.",
+      "cta": "Join Us",
+      "link": "join-us.html"
     }
   ],
   "counters": [
@@ -67,49 +67,79 @@
   "about": "At Paradream Events, we're passionate about turning your most precious moments into unforgettable memories. Based in Beirut, Lebanon, with over 12 years of experience in events, hospitality, and F&B services, our team of dedicated planners handles every detail — from the first consultation to the final applause. Whether it's an intimate baptism or a grand wedding celebration, we bring creativity, professionalism, and heart to every event. You dream it. We achieve it.",
   "services": [
     {
+      "title": "Full Event Planning & Coordination",
+      "text": "From the first consultation to the final applause: concept, budget, timeline, vendors and on-the-day coordination handled by one dedicated team.",
+      "image": "images/svc-planning.jpg"
+    },
+    {
+      "title": "Décor, Styling & Table Setups",
+      "text": "Centerpieces, floral runners, linens, signage and themed styling designed around your vision and set up before your guests arrive.",
+      "image": "images/svc-decor.jpg"
+    },
+    {
       "title": "Live Show Parade",
-      "text": "A full parade built around your entrance — performers, music and movement.",
-      "image": "images/service-1.jpg"
+      "text": "A full parade built around your entrance — drummers, brass and performers moving with your guests from start to finish.",
+      "image": "images/svc-parade.jpg"
     },
     {
       "title": "Oriental Zaffah",
-      "text": "The traditional zaffah, with drummers and dancers, timed to your moment.",
-      "image": "images/service-2.jpg"
+      "text": "The traditional zaffah with drums, dancers and brass, timed to the second of your grand entrance.",
+      "image": "images/svc-zaffah.jpg"
     },
     {
-      "title": "Photo Booth & Entertainment",
-      "text": "Props, prints and an attendant, so guests leave with something in hand.",
-      "image": "images/service-3.jpg"
+      "title": "Live Music & Entertainment",
+      "text": "Violin, saxophone, trumpet, piano, DJ and customized music shows to set the right mood for every moment of the night.",
+      "image": "images/svc-music.jpg"
     },
     {
-      "title": "Characters & Mascots",
-      "text": "Costumed performers who keep children entertained throughout the event.",
-      "image": "images/service-4.jpg"
+      "title": "Photo Booths & Backdrops",
+      "text": "360° and mirror photo booths, glamorous backdrops and props, with an attendant and instant keepsakes for every guest.",
+      "image": "images/svc-photobooth.jpg"
     },
     {
-      "title": "Circus Show",
-      "text": "Acrobats, fire and LED acts for the part of the night people remember.",
-      "image": "images/service-5.jpg"
+      "title": "Characters & LED Mascots",
+      "text": "Costumed characters and glowing LED performers that keep children and adults entertained throughout the event.",
+      "image": "images/svc-characters.jpg"
     },
     {
-      "title": "Inflatable Games",
-      "text": "Slides, castles and obstacle courses, delivered, installed and supervised.",
-      "image": "images/service-6.jpg"
+      "title": "Fire, LED & Circus Shows",
+      "text": "Acrobats, fire and LED acts for the part of the night people talk about long after it ends.",
+      "image": "images/svc-fire.jpg"
     },
     {
-      "title": "Table Decoration Set-Up",
-      "text": "Centerpieces, linens and styling arranged before your guests arrive.",
-      "image": "images/service-7.jpg"
+      "title": "Inflatable Games & Kids' Fun",
+      "text": "Slides, castles and obstacle courses, delivered, installed and supervised by our team.",
+      "image": "images/svc-inflatables.jpg"
     },
     {
-      "title": "Catering Services",
-      "text": "Menus, service staff and bar built around your guest count.",
-      "image": "images/service-8.jpg"
+      "title": "Catering, Bar & Chocolate",
+      "text": "Menus, platters, bar service and chocolate & dessert tables built around your guest count and taste.",
+      "image": "images/svc-catering.jpg"
     },
     {
-      "title": "Christmas Mascots",
-      "text": "Santa and friends, for home visits, offices and Christmas gatherings.",
-      "image": "images/service-9.jpg"
+      "title": "Signature Guest Experiences",
+      "text": "Ring the Bell, slipper stand, sign-in boards and coffee stations — the small touches that make an event feel personal.",
+      "image": "images/svc-signature.jpg"
+    },
+    {
+      "title": "Roaming Acts & Interactive Hospitality",
+      "text": "Living-statue servers and roaming performers who greet, serve and delight guests as they arrive.",
+      "image": "images/svc-roaming.jpg"
+    },
+    {
+      "title": "Christmas & Seasonal Mascots",
+      "text": "Santa, reindeer, polar bears and friends for gatherings, offices, malls and home visits all season long.",
+      "image": "images/svc-christmas.jpg"
+    },
+    {
+      "title": "Corporate Events & Brand Activations",
+      "text": "Launches, galas, staff parties and brand activations with professional entertainment and flawless production.",
+      "image": "images/svc-corporate.jpg"
+    },
+    {
+      "title": "Baptisms, Communions & Family Milestones",
+      "text": "Warm, elegant celebrations for the moments that matter most to your family, planned with care and detail.",
+      "image": "images/svc-family.jpg"
     }
   ],
   "occasions": [
@@ -224,8 +254,8 @@
   },
   "pages": {
     "home": {
-      "services_teaser_h": "Discover Our Services",
-      "services_teaser_p": "Dive Into Paradream's Portfolio To Know What Your Event Will Look Like",
+      "services_teaser_h": "Everything Your Event Needs",
+      "services_teaser_p": "Full event planning, live shows, décor, catering and unforgettable entertainment — handled by one team.",
       "how_h": "How It Works",
       "how_steps": [
         {
@@ -256,7 +286,7 @@
       "h1": "Our Success Story",
       "sub": "How It Started",
       "story": "Paradream was established in 2019, with a strong background in hospitality management and event planning. We have a fervent passion for turning dreams into reality. Driven by our love for music and hospitality, and commitment to excellence, we founded PARADREAM with a clear vision: to make your dreams come true. Our guiding principle, 'YOUR DAY, OUR WAY!', reflects our commitment to bringing your visions to life.",
-      "stat": "200+ celebrations brought to life with unforgettable moments across Lebanon.",
+      "stat": "150+ celebrations brought to life with unforgettable moments across Lebanon.",
       "clients_h": "Here's What Our Clients Say About Paradream",
       "what_h": "What We Do",
       "what_p": "Occasions we cover — proposal, engagement, bachelor, pre-wedding, wedding, baptism, first communion, gender reveal, birthdays and more.",
@@ -264,7 +294,8 @@
         "intro",
         "testimonials",
         "what"
-      ]
+      ],
+      "image": "images/why-story.jpg"
     },
     "occasions": {
       "h1": "Occasions We Cover",
@@ -275,7 +306,7 @@
     },
     "our-services": {
       "h1": "Our Services",
-      "sub": "Dive into Paradream's portfolio to know what your event will look like.",
+      "sub": "Full event planning, live shows, décor, catering and entertainment — everything your celebration needs under one roof.",
       "sections": [
         "list"
       ]
