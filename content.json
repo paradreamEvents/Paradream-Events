@@ -69,77 +69,428 @@
     {
       "title": "Full Event Planning & Coordination",
       "text": "For weddings, private celebrations and corporate events alike: concept, budget, timeline, vendors and on-the-day coordination handled by one dedicated team.",
-      "image": "images/svc-planning.jpg"
+      "image": "images/svc-planning.jpg",
+      "slug": "planning",
+      "intro": "One team, one plan. We take your celebration from the first idea to the final applause, so you enjoy the day instead of running it. Weddings, private celebrations and corporate events all get the same care.",
+      "how": [
+        {
+          "h": "We listen",
+          "p": "Tell us the occasion, date, guest count and budget. We shape a concept around your vision."
+        },
+        {
+          "h": "We plan",
+          "p": "Venue, décor, entertainment, catering and timing are lined up and confirmed in a single plan."
+        },
+        {
+          "h": "We run the day",
+          "p": "Our coordinators are on site from set-up to the last guest, so everything happens on time."
+        }
+      ],
+      "photos": [
+        "images/svc-planning-1.jpg",
+        "images/svc-planning-2.jpg",
+        "images/svc-planning-3.jpg",
+        "images/svc-planning-4.jpg"
+      ],
+      "book": "contact-us.html"
     },
     {
       "title": "Venues & Locations",
       "text": "Indoor or outdoor, panoramic mountain view, beach sunset or a private venue — we help you find and secure the space that fits your guests and your vision.",
-      "image": "images/svc-venues.jpg"
+      "image": "images/svc-venues.jpg",
+      "slug": "venues",
+      "intro": "Indoor or outdoor, panoramic mountain view, beach sunset or a private venue. Tell us what your celebration needs and we help you find and secure the right space.",
+      "how": [
+        {
+          "h": "Tell us the feel",
+          "p": "Share the style you want, your guest count and your budget."
+        },
+        {
+          "h": "We help you choose",
+          "p": "We suggest suitable spaces and help you compare them against your plans."
+        },
+        {
+          "h": "We set it up around the space",
+          "p": "Décor, sound, seating and entertainment are planned to fit the venue you pick."
+        }
+      ],
+      "photos": [
+        "images/svc-venues-1.jpg",
+        "images/svc-venues-2.jpg",
+        "images/svc-venues-3.jpg",
+        "images/svc-venues-4.jpg"
+      ],
+      "book": "contact-us.html"
     },
     {
       "title": "Décor, Styling & Table Setups",
       "text": "Centerpieces, floral runners, linens, signage and themed styling designed around your vision and set up before your guests arrive.",
-      "image": "images/svc-decor.jpg"
+      "image": "images/svc-decor.jpg",
+      "slug": "decor",
+      "intro": "Centerpieces, floral runners, linens, signage and themed styling, designed around your vision and set up before your guests arrive.",
+      "how": [
+        {
+          "h": "Concept and mood",
+          "p": "Share your colors, theme and inspiration. We turn them into a mood board you approve."
+        },
+        {
+          "h": "The details",
+          "p": "Centerpieces, table setups, backdrops, signs and lighting are chosen to match the concept."
+        },
+        {
+          "h": "Set up before guests arrive",
+          "p": "Our team installs everything so the space is ready when the first guest walks in."
+        }
+      ],
+      "photos": [
+        "images/svc-decor-1.jpg",
+        "images/svc-decor-2.jpg",
+        "images/svc-decor-3.jpg",
+        "images/svc-decor-4.jpg"
+      ],
+      "book": "contact-us.html"
     },
     {
       "title": "Live Show Parade",
       "text": "A full parade built around your entrance — drummers, brass and performers moving with your guests from start to finish.",
-      "image": "images/svc-parade.jpg"
+      "image": "images/svc-parade.jpg",
+      "slug": "parade",
+      "intro": "A full parade built around your entrance: drummers, brass and performers moving with your guests from start to finish.",
+      "how": [
+        {
+          "h": "Plan the moment",
+          "p": "We agree the route, the timing and the entrance with you."
+        },
+        {
+          "h": "Our team in costume",
+          "p": "Drummers, brass players and performers arrive ready to play and lead the crowd."
+        },
+        {
+          "h": "Live on the day",
+          "p": "The parade moves through your venue and brings everyone into the celebration."
+        }
+      ],
+      "photos": [
+        "images/svc-parade-1.jpg",
+        "images/svc-parade-2.jpg",
+        "images/svc-parade-3.jpg",
+        "images/svc-parade-4.jpg",
+        "images/svc-parade-5.jpg"
+      ],
+      "book": "contact-us.html"
     },
     {
       "title": "Oriental Zaffah",
       "text": "The traditional zaffah with drums, dancers and brass, timed to the second of your grand entrance.",
-      "image": "images/svc-zaffah.jpg"
+      "image": "images/svc-zaffah.jpg",
+      "slug": "zaffah",
+      "intro": "The traditional Lebanese zaffah with drums, dancers and brass, timed to the second of your grand entrance.",
+      "how": [
+        {
+          "h": "Choose your style",
+          "p": "Traditional zaffah, or a modern take with extra instruments and dancers."
+        },
+        {
+          "h": "Timing with the family",
+          "p": "We agree the entrance, the song order and the moment the couple appears."
+        },
+        {
+          "h": "The grand entrance",
+          "p": "Drums, brass and dancers lead the couple in, with your guests clapping along."
+        }
+      ],
+      "photos": [
+        "images/svc-zaffah-1.jpg",
+        "images/svc-zaffah-2.jpg",
+        "images/svc-zaffah-3.jpg",
+        "images/svc-zaffah-4.jpg",
+        "images/svc-zaffah-5.jpg"
+      ],
+      "book": "wedding.html"
     },
     {
       "title": "Live Music & Entertainment",
       "text": "Violin, saxophone, trumpet, piano, DJ and customized music shows to set the right mood for every moment of the night.",
-      "image": "images/svc-music.jpg"
+      "image": "images/svc-music.jpg",
+      "slug": "music",
+      "intro": "Violin, saxophone, trumpet, piano, DJ and customized music shows to set the right mood for every moment of the night.",
+      "how": [
+        {
+          "h": "Tell us the mood",
+          "p": "Elegant dinner, dance floor or a mix of both. We recommend the right line-up."
+        },
+        {
+          "h": "Choose your shows",
+          "p": "Pick live instruments, a DJ, or a customized show built around your celebration."
+        },
+        {
+          "h": "Live on the night",
+          "p": "We arrive early, set up and play through the moments you planned."
+        }
+      ],
+      "photos": [
+        "images/svc-music-1.jpg",
+        "images/svc-music-2.jpg",
+        "images/svc-music-3.jpg",
+        "images/svc-music-4.jpg"
+      ],
+      "book": "contact-us.html"
     },
     {
       "title": "Photo Booths & Backdrops",
       "text": "360° and mirror photo booths, glamorous backdrops and props, with an attendant and instant keepsakes for every guest.",
-      "image": "images/svc-photobooth.jpg"
+      "image": "images/svc-photobooth.jpg",
+      "slug": "photobooth",
+      "intro": "Custom photo booths and backdrops your guests will queue up for, styled with your names, date and theme.",
+      "how": [
+        {
+          "h": "Pick the booth",
+          "p": "Choose a booth or backdrop style that suits your celebration."
+        },
+        {
+          "h": "Make it yours",
+          "p": "We design the print or backdrop with your names, date and colors."
+        },
+        {
+          "h": "Guests take the photos",
+          "p": "Guests pose, share and take memories home."
+        }
+      ],
+      "photos": [
+        "images/svc-photobooth-1.jpg",
+        "images/svc-photobooth-2.jpg"
+      ],
+      "book": "contact-us.html"
     },
     {
       "title": "Characters & LED Mascots",
       "text": "Costumed characters and glowing LED performers that keep children and adults entertained throughout the event.",
-      "image": "images/svc-characters.jpg"
+      "image": "images/svc-characters.jpg",
+      "slug": "characters",
+      "intro": "Life-size character mascots and glowing LED costumes that kids and guests love to meet, dance with and take pictures with.",
+      "how": [
+        {
+          "h": "Choose your characters",
+          "p": "Pick from our mascots and LED costumes for the age and theme of your event."
+        },
+        {
+          "h": "Performers in costume",
+          "p": "Each character comes with a performer who knows how to entertain a crowd."
+        },
+        {
+          "h": "Meet, dance, take photos",
+          "p": "They greet guests, join the fun and pose for pictures."
+        }
+      ],
+      "photos": [
+        "images/svc-characters-1.jpg",
+        "images/svc-characters-2.jpg",
+        "images/svc-characters-3.jpg",
+        "images/svc-characters-4.jpg",
+        "images/svc-characters-5.jpg",
+        "images/svc-characters-6.jpg"
+      ],
+      "book": "contact-us.html"
     },
     {
       "title": "Fire, LED & Circus Shows",
       "text": "Acrobats, fire and LED acts for the part of the night people talk about long after it ends.",
-      "image": "images/svc-fire.jpg"
+      "image": "images/svc-fire.jpg",
+      "slug": "fire-shows",
+      "intro": "Fire, LED and circus performers that turn an ordinary evening into a show your guests will talk about.",
+      "how": [
+        {
+          "h": "Choose the act",
+          "p": "Fire, LED, aerial or circus acts, alone or as a full show."
+        },
+        {
+          "h": "Check the space",
+          "p": "We look at your venue and confirm the space and set-up each act needs."
+        },
+        {
+          "h": "Show time",
+          "p": "The performers take over and pull the crowd in."
+        }
+      ],
+      "photos": [
+        "images/svc-fire-shows-1.jpg",
+        "images/svc-fire-shows-2.jpg",
+        "images/svc-fire-shows-3.jpg",
+        "images/svc-fire-shows-4.jpg",
+        "images/svc-fire-shows-5.jpg",
+        "images/svc-fire-shows-6.jpg"
+      ],
+      "book": "contact-us.html"
     },
     {
       "title": "Inflatable Games & Kids' Fun",
       "text": "Slides, castles and obstacle courses, delivered, installed and supervised by our team.",
-      "image": "images/svc-inflatables.jpg"
+      "image": "images/svc-inflatables.jpg",
+      "slug": "inflatables",
+      "intro": "Slides, obstacle courses, climbing walls, ball pits and water games that keep kids busy and happy at birthdays, family days and corporate fun days.",
+      "how": [
+        {
+          "h": "Choose your games",
+          "p": "Browse our catalogue of slides, sport games, combo castles and water games."
+        },
+        {
+          "h": "We deliver and set up",
+          "p": "The games are brought to your venue and installed before the event."
+        },
+        {
+          "h": "Let the fun start",
+          "p": "Kids play while you enjoy the celebration."
+        }
+      ],
+      "photos": [
+        "images/svc-inflatables-1.jpg",
+        "images/svc-inflatables-2.jpg",
+        "images/svc-inflatables-3.jpg",
+        "images/svc-inflatables-4.jpg"
+      ],
+      "book": "birthday.html"
     },
     {
       "title": "Catering, Bar & Chocolate",
       "text": "Menus, platters, bar service and chocolate & dessert tables built around your guest count and taste.",
-      "image": "images/svc-catering.jpg"
+      "image": "images/svc-catering.jpg",
+      "slug": "catering",
+      "intro": "Platters, buffets, a bar and chocolate stations, prepared and presented to match the rest of your celebration.",
+      "how": [
+        {
+          "h": "Tell us your guests and tastes",
+          "p": "Guest count, menu ideas and any dietary needs."
+        },
+        {
+          "h": "We prepare the menu",
+          "p": "Platters, hot dishes, canapés, bar and chocolate stations chosen with you."
+        },
+        {
+          "h": "Served at your event",
+          "p": "Everything is set up and presented at your venue."
+        }
+      ],
+      "photos": [
+        "images/svc-catering-1.jpg",
+        "images/svc-catering-2.jpg",
+        "images/svc-catering-3.jpg",
+        "images/svc-catering-4.jpg",
+        "images/svc-catering-5.jpg",
+        "images/svc-catering-6.jpg"
+      ],
+      "book": "contact-us.html"
     },
     {
       "title": "Signature Guest Experiences",
       "text": "Ring the Bell, slipper stand, sign-in boards and coffee stations — the small touches that make an event feel personal.",
-      "image": "images/svc-signature.jpg"
+      "image": "images/svc-signature.jpg",
+      "slug": "signature",
+      "intro": "Small surprises guests remember, like Ring the Bell champagne moments and other custom touches that make your event different.",
+      "how": [
+        {
+          "h": "Choose your moment",
+          "p": "Tell us the feeling you want your guests to have."
+        },
+        {
+          "h": "We design and brand it",
+          "p": "The experience is styled with your names, colors and theme."
+        },
+        {
+          "h": "We install and host it",
+          "p": "Our team sets it up and keeps it running during the event."
+        }
+      ],
+      "photos": [
+        "images/svc-signature-1.jpg",
+        "images/svc-signature-2.jpg"
+      ],
+      "book": "contact-us.html"
     },
     {
       "title": "Roaming Acts & Interactive Hospitality",
       "text": "Living-statue servers and roaming performers who greet, serve and delight guests as they arrive.",
-      "image": "images/svc-roaming.jpg"
+      "image": "images/svc-roaming.jpg",
+      "slug": "roaming",
+      "intro": "Performers in dazzling costumes who move through your event serving canapés, greeting guests and starting conversations.",
+      "how": [
+        {
+          "h": "Choose the characters",
+          "p": "Disco-ball heads, LED costumes, silver hospitality outfits and more."
+        },
+        {
+          "h": "Ready to circulate",
+          "p": "Performers come in costume with everything they need to serve and entertain."
+        },
+        {
+          "h": "Among your guests",
+          "p": "They move through the room, so the fun reaches every table."
+        }
+      ],
+      "photos": [
+        "images/svc-roaming-1.jpg",
+        "images/svc-roaming-2.jpg",
+        "images/svc-roaming-3.jpg",
+        "images/svc-roaming-4.jpg"
+      ],
+      "book": "contact-us.html"
     },
     {
       "title": "Christmas & Seasonal Mascots",
       "text": "Santa, reindeer, polar bears and friends for gatherings, offices, malls and home visits all season long.",
-      "image": "images/svc-christmas.jpg"
+      "image": "images/svc-christmas.jpg",
+      "slug": "christmas-mascots",
+      "intro": "Santa, a friendly polar bear, snowmen, a reindeer and more, with live music, for Christmas parties, schools and public events.",
+      "how": [
+        {
+          "h": "Choose your mascots",
+          "p": "Santa, snowmen, a polar bear, a reindeer, elves and more."
+        },
+        {
+          "h": "Add live music",
+          "p": "Bring the band along for a Christmas parade or a party entrance."
+        },
+        {
+          "h": "Christmas magic",
+          "p": "Mascots greet the kids, pose for photos and keep the party moving."
+        }
+      ],
+      "photos": [
+        "images/svc-christmas-mascots-1.jpg",
+        "images/svc-christmas-mascots-2.jpg",
+        "images/svc-christmas-mascots-3.jpg",
+        "images/svc-christmas-mascots-4.jpg",
+        "images/svc-christmas-mascots-5.jpg",
+        "images/svc-christmas-mascots-6.jpg"
+      ],
+      "book": "christmas.html"
     },
     {
       "title": "Baptisms, Communions & Family Milestones",
       "text": "Warm, elegant celebrations for the moments that matter most to your family, planned with care and detail.",
-      "image": "images/svc-family.jpg"
+      "image": "images/svc-family.jpg",
+      "slug": "family",
+      "intro": "Baptisms, holy communions, birthdays and gender reveals, with décor, entertainment and sweets planned around your family.",
+      "how": [
+        {
+          "h": "Tell us the milestone",
+          "p": "Baptism, communion, birthday or gender reveal, with the date and guest count."
+        },
+        {
+          "h": "Make it personal",
+          "p": "Choose the décor, chocolates, entertainment and catering that suit your family."
+        },
+        {
+          "h": "Celebrate together",
+          "p": "We set everything up so you can enjoy the day with your loved ones."
+        }
+      ],
+      "photos": [
+        "images/svc-family-1.jpg",
+        "images/svc-family-2.jpg",
+        "images/svc-family-3.jpg",
+        "images/svc-family-4.jpg"
+      ],
+      "book": "occasions.html"
     }
   ],
   "occasions": [
@@ -537,5 +888,11 @@
       "venue": "The Garden Terrace, Jounieh",
       "rsvp": "Kindly reply by 1 June"
     }
+  },
+  "services_page": {
+    "how_title": "How we do it",
+    "photos_title": "Our work",
+    "book_label": "Book Now",
+    "more_title": "More services"
   }
 }

@@ -1,4 +1,5 @@
 # Old Strikingly URLs -> new pages
+/gallery                    /our-services.html     301
 /home                       /                      301
 /proposal                   /occasions.html        301
 /engagement                 /occasions.html        301

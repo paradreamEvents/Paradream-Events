@@ -8,6 +8,22 @@ CONTENT = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__))
                                       "content.json"), encoding="utf-8"))
 SITE = CONTENT["site"]
 
+# Every service gets its own page. Services added in the back office may lack
+# some fields, so fill sensible defaults instead of failing the build.
+import re as _re
+_seen_slugs = set()
+for _sv in CONTENT.get("services", []):
+    _slug = _sv.get("slug") or (_re.sub(r"[^a-z0-9]+", "-", _sv.get("title", "").lower()).strip("-") or "service")
+    _base, _n = _slug, 2
+    while _slug in _seen_slugs:
+        _slug = f"{_base}-{_n}"; _n += 1
+    _seen_slugs.add(_slug)
+    _sv["slug"] = _slug
+    _sv.setdefault("intro", _sv.get("text", ""))
+    _sv.setdefault("how", [])
+    _sv.setdefault("photos", [_sv["image"]] if _sv.get("image") else [])
+    _sv.setdefault("book", "contact-us.html")
+
 OUT = os.path.dirname(os.path.abspath(__file__))
 
 CDN = "https://custom-images.strikinglycdn.com/res/hrscywv4p/image/upload"
@@ -128,7 +144,6 @@ NAV = [
     ("index.html", "Home"),
     ("why-paradream.html", "Why Paradream?"),
     ("our-services.html", "Our Services"),
-    ("gallery.html", "Gallery"),
     ("contact-us.html", "Contact Us"),
 ]
 
@@ -176,7 +191,6 @@ FOOTER = f"""<footer class="site-footer">
         <li><a href="index.html">Home</a></li>
         <li><a href="why-paradream.html">Why Paradream?</a></li>
         <li><a href="our-services.html">Our Services</a></li>
-        <li><a href="gallery.html">Gallery</a></li>
         <li><a href="contact-us.html">Contact Us</a></li>
         <li><a href="join-us.html">Join Our Team</a></li>
       </ul>
@@ -389,6 +403,9 @@ def hero_slide_html(i, sl):
 
 PAGES = CONTENT["pages"]
 
+def svc_url(s):
+    return "service-" + s["slug"] + ".html"
+
 hero_slides = "\n".join(hero_slide_html(i, sl) for i, sl in enumerate(CONTENT["hero"]))
 
 hero_dots = "\n".join(
@@ -405,7 +422,7 @@ how_steps_html = "\n".join(
       </div>""" for i, s in enumerate(PAGES["home"]["how_steps"]))
 
 marquee_cards = "\n".join(
-    f'      <a class="mq-card" href="our-services.html"><img src="{media(x.get("image", ""), 700)}" alt="" loading="lazy" decoding="async">'
+    f'      <a class="mq-card" href="{svc_url(x)}"><img src="{media(x.get("image", ""), 700)}" alt="" loading="lazy" decoding="async">'
     f'<span class="mq-title">{x["title"]}</span></a>'
     for x in CONTENT["services"]
 )
@@ -642,13 +659,14 @@ page("occasions.html", "Occasions We Cover - Paradream Events",
 
 
 # ── Our Services ────────────────────────────────────────────
-SERVICES = [(x["title"], x["text"], x.get("image", "")) for x in CONTENT["services"]]
-tiles = "\n".join(f"""      <a class="svc-card reveal" style="--d:{(i % 3) * 110}ms" href="contact-us.html">
+SVC = CONTENT["services"]
+SERVICES = [(x["title"], x["text"], x.get("image", "")) for x in SVC]
+tiles = "\n".join(f"""      <a class="svc-card reveal" style="--d:{(i % 3) * 110}ms" href="{svc_url(SVC[i])}">
         <div class="svc-img"><img src="{media(image, 900)}" srcset="{media(image, 600)} 600w, {media(image, 900)} 900w, {media(image, 1300)} 1300w" sizes="(max-width:700px) 92vw, (max-width:1100px) 46vw, 380px" alt="{name}" loading="lazy" decoding="async"></div>
         <div class="svc-body">
           <h3>{name}</h3>
           <p>{desc}</p>
-          <span class="svc-link">Enquire now <i aria-hidden="true">&rarr;</i></span>
+          <span class="svc-link">See how we do it <i aria-hidden="true">&rarr;</i></span>
         </div>
       </a>""" for i, (name, desc, image) in enumerate(SERVICES))
 
@@ -731,27 +749,73 @@ page("our-services.html", "Our Services - Paradream Events",
 """)
 
 
-# ── Gallery ─────────────────────────────────────────────────
-page("gallery.html", "Gallery - Paradream Events",
-     "Photos from weddings, engagements, baptisms, birthdays and Christmas events by Paradream in Lebanon.",
-     f"""
-<section class="page-head">
-  <h1>{PAGES["gallery"]["h1"]}</h1>
-  <p>{PAGES["gallery"]["sub"]}</p>
+# ── Service pages: photos, how we do it, Book Now ────────────
+SP_CFG = CONTENT.get("services_page", {})
+
+def service_page_html(s):
+    title = _e(s["title"])
+    steps = "\n".join(
+        f"""      <div class="step reveal{' reveal-d' + str(i) if i else ''}">
+        <p class="step-num">{i + 1}</p>
+        <h3>{_e(st["h"])}</h3>
+        <p>{_e(st["p"])}</p>
+      </div>""" for i, st in enumerate(s["how"]))
+    figs = "\n".join(
+        f"""      <figure class="svc-photo reveal" style="--d:{(i % 3) * 90}ms"><img src="{media(p, 900)}" srcset="{media(p, 600)} 600w, {media(p, 900)} 900w, {media(p, 1400)} 1400w" sizes="(max-width:700px) 92vw, (max-width:1100px) 46vw, 360px" alt="{title} by Paradream Events" loading="lazy" decoding="async"></figure>"""
+        for i, p in enumerate(s["photos"]))
+    others = "\n".join(
+        f'        <a href="{svc_url(o)}">{_e(o["title"])}</a>' for o in SVC if o["slug"] != s["slug"])
+    book = s.get("book", "contact-us.html")
+    if book.startswith("contact-us.html") and "?" not in book:
+        book += "?service=" + s["slug"]
+    bg = media(s["image"], 1800)
+    how_section = f"""<section class="band band-cream">
+  <div class="band-inner reveal">
+    <h2>{_e(SP_CFG.get("how_title", "How we do it"))}</h2>
+    <div class="steps">
+{steps}
+    </div>
+  </div>
+</section>""" if steps else ""
+    photos_section = f"""<section class="band">
+  <div class="band-inner">
+    <h2 class="reveal">{_e(SP_CFG.get("photos_title", "Our work"))}</h2>
+    <div class="svc-photos">
+{figs}
+    </div>
+  </div>
+</section>""" if figs else ""
+    return f"""
+<section class="page-head has-photo">
+  <div class="ph-bg" style="background-image:url('{bg}');background-position:center"></div>
+  <h1>{title}</h1>
 </section>
 
 <section class="band">
-  <div class="band-inner">
-    <div class="gallery-tabs" id="gallery-tabs">
-{gallery_tabs_html}
-    </div>
-    <div class="gallery-grid" id="gallery-grid" data-visible="{GALLERY_VISIBLE}"
-         data-files='{gallery_ids_json}' data-stamps='{gallery_stamps}' data-albums='{gallery_photo_albums_json}'></div>
-    <p class="gallery-empty" id="gallery-empty">Loading photos&hellip;</p>
-    <p class="gallery-more" hidden><button class="btn btn-outline" id="gallery-more" type="button">Show more photos</button></p>
+  <div class="band-inner reveal">
+    <p class="lede">{_e(s["intro"])}</p>
+    <a class="btn btn-solid" href="{book}">{_e(SP_CFG.get("book_label", "Book Now"))}</a>
   </div>
 </section>
-""")
+
+{how_section}
+{photos_section}
+
+<section class="band band-cream svc-cta">
+  <div class="band-inner reveal">
+    <h2>{title}</h2>
+    <a class="btn btn-solid" href="{book}">{_e(SP_CFG.get("book_label", "Book Now"))}</a>
+    <p class="svc-more-h">{_e(SP_CFG.get("more_title", "More services"))}</p>
+    <nav class="svc-more" aria-label="More services">
+{others}
+    </nav>
+  </div>
+</section>
+"""
+
+for _s in SVC:
+    page(svc_url(_s), _e(_s["title"]) + " in Lebanon - Paradream Events",
+         _e(_s["intro"]), service_page_html(_s), current="our-services.html")
 
 
 occasion_options = "\n".join(
@@ -941,7 +1005,9 @@ page("contact-us.html", "Contact Paradream | Book the Best Event Entertainment i
 
   <form class="form" name="event-enquiry" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="website">
     <input type="hidden" name="form-name" value="event-enquiry">
+    <input type="hidden" name="service" id="service-field" value="">
     <p class="hp"><label>Leave empty <input name="website"></label></p>
+    <p class="form-service" id="service-note" data-names="{_e(json.dumps({x["slug"]: x["title"] for x in SVC}, ensure_ascii=False))}" hidden></p>
 
     <div class="field">
       <label for="name">Full name</label>
@@ -1191,7 +1257,7 @@ THANKS_BLOCKS = {
   <div class="band-inner reveal">
     <h2>{PAGES["thanks"]["wait_h"]}</h2>
     <p class="lede">{PAGES["thanks"]["wait_p"]}</p>
-    <a class="btn btn-outline" href="gallery.html">See the gallery</a>
+    <a class="btn btn-outline" href="our-services.html">See our services</a>
   </div>
 </section>"""
 }

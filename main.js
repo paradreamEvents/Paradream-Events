@@ -643,3 +643,19 @@
     }
   });
 })();
+
+/* Contact form: remember which service the visitor came from (?service=slug) */
+(function () {
+  var note = document.getElementById("service-note");
+  var field = document.getElementById("service-field");
+  if (!note || !field) return;
+  var slug = new URLSearchParams(location.search).get("service");
+  if (!slug) return;
+  var names = {};
+  try { names = JSON.parse(note.getAttribute("data-names") || "{}"); } catch (e) {}
+  var title = names[slug];
+  if (!title) return;
+  field.value = title;
+  note.textContent = "Booking enquiry: " + title;
+  note.hidden = false;
+})();

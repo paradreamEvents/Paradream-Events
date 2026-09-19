@@ -592,6 +592,12 @@ async function handle(files) {
       if (isNaN(idx)) {   // page-level photo, e.g. pages.why-paradream.image
         name = "page-" + Date.now() + ".jpg";
         pdSetPath(photoTarget, "images/" + name);
+      } else if (parts[0] === "services" && parts[2] === "photos") {
+        var svc = content.services[idx];
+        name = "svc-" + (svc.slug || "service") + "-" + Date.now() + ".jpg";
+        if (!svc.photos) svc.photos = [];
+        var pk = parseInt(parts[3], 10);
+        if (isNaN(pk)) svc.photos.push("images/" + name); else svc.photos[pk] = "images/" + name;
       } else {
         name = parts[0].replace(/s$/, "") + "-" + Date.now() + ".jpg";
         content[parts[0]][idx].image = "images/" + name;
@@ -816,7 +822,6 @@ var PD_PAGES = [
   ["why-paradream.html", "Why Paradream?"],
   ["occasions.html", "Occasions"],
   ["our-services.html", "Our Services"],
-  ["gallery.html", "Gallery"],
   ["contact-us.html", "Contact Us"],
   ["join-us.html", "Join Us"],
   ["thanks.html", "Thank you page"],
@@ -907,8 +912,11 @@ function pdDoc(bodyHtml) {
 }
 
 function pdHeader(current) {
-  var links = PD_PAGES.slice(0, 5).map(function (p) {
-    return '<a href="#"' + (p[0] === current ? ' aria-current="page"' : "") + ">" + p[1] + "</a>";
+  var NAV_PREVIEW = [["index.html", "Home"], ["why-paradream.html", "Why Paradream?"],
+    ["our-services.html", "Our Services"], ["contact-us.html", "Contact Us"]];
+  var links = NAV_PREVIEW.map(function (p) {
+    var on = p[0] === current || (p[0] === "our-services.html" && String(current).indexOf("service:") === 0);
+    return '<a href="#"' + (on ? ' aria-current="page"' : "") + ">" + p[1] + "</a>";
   }).join("\n");
   return '<header class="site-header"><div class="header-inner">' +
     '<a class="brand" href="#"><img src="' + LOGO_SRC() + '" alt="Paradream Events">' +
@@ -1134,6 +1142,37 @@ function invitationPreview() {
     "</span></span></span></div></div></div></div></section>";
 }
 
+function renderServiceDetail(i) {
+  var sv = content.services[i];
+  if (!sv) return "<p>Not available</p>";
+  var cfg = content.services_page || {};
+  if (!sv.how) sv.how = [];
+  if (!sv.photos) sv.photos = [];
+  var steps = sv.how.map(function (st, j) {
+    return '<div class="step"><p class="step-num">' + (j + 1) + "</p>" +
+      ed("services." + i + ".how." + j + ".h", "h3", "", st.h) +
+      ed("services." + i + ".how." + j + ".p", "p", "", st.p, true) + "</div>";
+  }).join("");
+  var photos = sv.photos.map(function (ph, k) {
+    return '<figure class="svc-photo" style="position:relative;opacity:1;transform:none">' +
+      edImg("services." + i + ".photos." + k, photoFor({ image: ph }), "", sv.title) +
+      '<button type="button" class="pd-gal-del" data-pd-photodel="' + i + "." + k + '">Remove</button></figure>';
+  }).join("");
+  return pdHeader("service:" + i) + "<main>" +
+    '<section class="page-head has-photo"><div class="ph-bg" style="background-image:url(&quot;' + photoFor(sv) + '&quot;)"></div>' +
+    ed("services." + i + ".title", "h1", "", sv.title) + "</section>" +
+    '<section class="band"><div class="band-inner">' + ed("services." + i + ".intro", "p", "lede", sv.intro || "", true) +
+    '<span class="btn btn-solid" data-edit-link="services.' + i + '.book" title="Click to change where this button goes">' +
+    esc(cfg.book_label || "Book Now") + "</span>" +
+    '<p class="pd-note" style="margin-top:.8rem">Book Now goes to: <b>' + esc(sv.book || "contact-us.html") + "</b> (click the button to change)</p></div></section>" +
+    '<section class="band band-cream"><div class="band-inner"><h2>' + esc(cfg.how_title || "How we do it") + "</h2>" +
+    '<div class="steps">' + steps + "</div></div></section>" +
+    '<section class="band"><div class="band-inner"><h2>' + esc(cfg.photos_title || "Our work") + "</h2>" +
+    '<div class="svc-photos">' + photos + "</div>" +
+    '<div class="pd-add" data-pd-photoadd="' + i + '" style="margin-top:1rem"><span>+ Add photo</span></div>' +
+    "</div></section></main>" + pdFooter();
+}
+
 function renderGalleryBody() {
   var G = content.pages.gallery;
   var albums = content.gallery_albums || [];
@@ -1241,7 +1280,6 @@ var PD_RENDER = {
   "why-paradream.html": renderWhyBody,
   "occasions.html": renderOccasionsBody,
   "our-services.html": renderServicesBody,
-  "gallery.html": renderGalleryBody,
   "contact-us.html": renderContactBody,
   "join-us.html": renderJoinBody,
   "thanks.html": renderThanksBody,
@@ -1304,6 +1342,23 @@ function wirePdFrame() {
       pdSetPath(path, next.trim());
       contentDirty = true;
       refreshPublish();
+    });
+  });
+
+  Array.prototype.forEach.call(doc.querySelectorAll("[data-pd-photoadd]"), function (el) {
+    el.addEventListener("click", function (e) {
+      e.preventDefault();
+      photoTarget = "services." + el.dataset.pdPhotoadd + ".photos.new";
+      picker.click();
+    });
+  });
+  Array.prototype.forEach.call(doc.querySelectorAll("[data-pd-photodel]"), function (el) {
+    el.addEventListener("click", function (e) {
+      e.preventDefault(); e.stopPropagation();
+      var ij = el.dataset.pdPhotodel.split(".");
+      var arr = content.services[parseInt(ij[0], 10)].photos;
+      arr.splice(parseInt(ij[1], 10), 1);
+      contentDirty = true; refreshPublish(); renderPagesView();
     });
   });
 
@@ -1420,7 +1475,7 @@ function wirePdFrame() {
 
 var PD_CONTENT_KEY = {
   "index.html": "home", "why-paradream.html": "why-paradream", "occasions.html": "occasions",
-  "our-services.html": "our-services", "gallery.html": "gallery", "contact-us.html": "contact-us",
+  "our-services.html": "our-services", "contact-us.html": "contact-us",
   "join-us.html": "join-us", "thanks.html": "thanks", "terms.html": null, "privacy.html": null
 };
 
@@ -1506,8 +1561,20 @@ function renderSectionList() {
   });
 }
 
+var PD_SVC_ADDED = false;
+function pdAddServicePages() {
+  if (PD_SVC_ADDED || !content || !content.services) return;
+  PD_SVC_ADDED = true;
+  var at = 0;
+  PD_PAGES.forEach(function (p, i) { if (p[0] === "our-services.html") at = i + 1; });
+  content.services.forEach(function (sv, i) {
+    PD_PAGES.splice(at + i, 0, ["service:" + i, "\u00a0\u00a0\u203a " + sv.title]);
+  });
+}
+
 function renderPagesView() {
   if (!content) return;
+  pdAddServicePages();
   var sel = $("#page-select");
   if (!sel.options.length) {
     sel.innerHTML = PD_PAGES.map(function (p) {
@@ -1521,6 +1588,10 @@ function renderPagesView() {
 
   var frame = $("#pages-frame");
   var fn = PD_RENDER[currentPage];
+  if (!fn && String(currentPage).indexOf("service:") === 0) {
+    var svcIdx = parseInt(currentPage.split(":")[1], 10);
+    fn = function () { return renderServiceDetail(svcIdx); };
+  }
   var html = pdDoc(fn ? fn() : "<p>Not available</p>");
   var doc = frame.contentDocument || frame.contentWindow.document;
   doc.open();
