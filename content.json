@@ -68,7 +68,7 @@
   "services": [
     {
       "title": "Full Event Planning & Coordination",
-      "text": "From the first consultation to the final applause: concept, budget, timeline, vendors and on-the-day coordination handled by one dedicated team.",
+      "text": "For weddings, private celebrations and corporate events alike: concept, budget, timeline, vendors and on-the-day coordination handled by one dedicated team.",
       "image": "images/svc-planning.jpg"
     },
     {
@@ -135,11 +135,6 @@
       "title": "Christmas & Seasonal Mascots",
       "text": "Santa, reindeer, polar bears and friends for gatherings, offices, malls and home visits all season long.",
       "image": "images/svc-christmas.jpg"
-    },
-    {
-      "title": "Corporate Events & Brand Activations",
-      "text": "Launches, galas, staff parties and brand activations with professional entertainment and flawless production.",
-      "image": "images/svc-corporate.jpg"
     },
     {
       "title": "Baptisms, Communions & Family Milestones",
