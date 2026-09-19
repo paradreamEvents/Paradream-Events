@@ -107,18 +107,37 @@
         },
         {
           "h": "We help you choose",
-          "p": "We suggest suitable spaces and help you compare them against your plans."
+          "p": "We suggest suitable spaces, from mountain terraces and gardens to grand halls, and help you compare them against your plans."
         },
         {
           "h": "We set it up around the space",
-          "p": "Décor, sound, seating and entertainment are planned to fit the venue you pick."
+          "p": "Décor, lighting, sound, seating and entertainment are planned to fit the venue you pick."
         }
       ],
       "photos": [
         "images/svc-venues-1.jpg",
         "images/svc-venues-2.jpg",
         "images/svc-venues-3.jpg",
-        "images/svc-venues-4.jpg"
+        "images/svc-venues-4.jpg",
+        "images/svc-venues-5.jpg",
+        "images/svc-venues-6.jpg",
+        "images/svc-venues-7.jpg",
+        "images/svc-venues-8.jpg",
+        "images/svc-venues-9.jpg",
+        "images/svc-venues-10.jpg",
+        "images/svc-venues-11.jpg",
+        "images/svc-venues-12.jpg",
+        "images/svc-venues-13.jpg",
+        "images/svc-venues-14.jpg",
+        "images/svc-venues-15.jpg",
+        "images/svc-venues-16.jpg",
+        "images/svc-venues-17.jpg",
+        "images/svc-venues-18.jpg",
+        "images/svc-venues-19.jpg",
+        "images/svc-venues-20.jpg",
+        "images/svc-venues-21.jpg",
+        "images/svc-venues-22.jpg",
+        "images/svc-venues-23.jpg"
       ],
       "book": "contact-us.html"
     },
