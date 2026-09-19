@@ -844,3 +844,18 @@ div.opt input[type=checkbox]{margin:0;width:18px;height:18px}
 .svc-chips a{padding:.55rem 1.2rem;border-radius:999px;background:var(--ink);color:#fff;text-decoration:none;font-weight:900;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;transition:background .25s}
 .svc-chips a:hover{background:var(--red)}
 .svc-group-h{margin:2.4rem 0 0;scroll-margin-top:90px}
+
+/* Indoor / Outdoor choice cards */
+.svc-choice{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}
+.svc-choice-card{position:relative;display:block;aspect-ratio:16/10;border-radius:14px;overflow:hidden;isolation:isolate;text-decoration:none;color:#fff;box-shadow:0 14px 36px rgba(18,38,58,.25)}
+.svc-choice-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.4s ease}
+.svc-choice-card:hover img{transform:scale(1.1)}
+.svc-choice-shade{position:absolute;inset:0;background:linear-gradient(transparent 25%,rgba(0,0,0,.82))}
+.svc-choice-body{position:absolute;left:0;right:0;bottom:0;padding:1.4rem;text-align:left;display:flex;flex-direction:column;gap:.25rem}
+.svc-choice-body b{font-family:var(--serif);font-size:clamp(1.4rem,3vw,2rem);letter-spacing:.02em}
+.svc-choice-body small{font-size:.95rem;opacity:.92}
+.svc-choice-body i{font-style:normal;font-weight:900;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:#fff;margin-top:.4rem;padding:.4rem .9rem;border-radius:999px;background:var(--red);align-self:flex-start;transition:transform .3s}
+.svc-choice-card:hover .svc-choice-body i{transform:translateY(-4px)}
+html{scroll-behavior:smooth}
+@media (max-width:640px){.svc-choice{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}

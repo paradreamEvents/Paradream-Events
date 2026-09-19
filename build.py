@@ -786,6 +786,7 @@ def service_page_html(s):
   </div>
 </section>""" if figs else ""
     groups = s.get("groups") or []
+    choice_section = ""
     if groups and s["photos"]:
         pg = s.get("photo_groups", {})
         def _fig(i, p):
@@ -799,14 +800,22 @@ def service_page_html(s):
             if not ps:
                 continue
             gid = f"grp-{gi + 1}"
-            chips.append(f'<a href="#{gid}">{_e(g)}</a>')
+            cover = s.get("group_covers", {}).get(g) or ps[0]
+            blurb = s.get("group_blurbs", {}).get(g, "")
+            chips.append(f'''      <a class="svc-choice-card" href="#{gid}"><img src="{media(cover, 900)}" alt="{_e(g)}" loading="lazy" decoding="async"><span class="svc-choice-shade"></span><span class="svc-choice-body"><b>{_e(g)}</b><small>{_e(blurb)}</small><i>{len(ps)} photos &darr;</i></span></a>''')
             secs.append(f"""    <h2 class="reveal svc-group-h" id="{gid}">{_e(g)}</h2>
     <div class="svc-photos">
 {chr(10).join(_fig(i, p) for i, p in enumerate(ps))}
     </div>""")
+        choice_section = f"""<section class="band band-cream">
+  <div class="band-inner">
+    <div class="svc-choice">
+{chr(10).join(chips)}
+    </div>
+  </div>
+</section>"""
         photos_section = f"""<section class="band">
   <div class="band-inner">
-    <nav class="svc-chips" aria-label="Photo groups">{"".join(chips)}</nav>
 {chr(10).join(secs)}
   </div>
 </section>"""
@@ -823,6 +832,7 @@ def service_page_html(s):
   </div>
 </section>
 
+{choice_section}
 {how_section}
 {photos_section}
 

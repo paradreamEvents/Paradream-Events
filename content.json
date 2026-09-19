@@ -116,10 +116,9 @@
       ],
       "photos": [
         "images/svc-venues-13.jpg",
-        "images/svc-venues-16.jpg",
+        "images/svc-venues-15.jpg",
         "images/svc-venues-17.jpg",
         "images/svc-venues-18.jpg",
-        "images/svc-venues-19.jpg",
         "images/svc-venues-20.jpg",
         "images/svc-venues-22.jpg",
         "images/svc-venues-1.jpg",
@@ -135,7 +134,8 @@
         "images/svc-venues-11.jpg",
         "images/svc-venues-12.jpg",
         "images/svc-venues-14.jpg",
-        "images/svc-venues-15.jpg",
+        "images/svc-venues-16.jpg",
+        "images/svc-venues-19.jpg",
         "images/svc-venues-21.jpg",
         "images/svc-venues-23.jpg"
       ],
@@ -145,6 +145,13 @@
         "Outdoor venues"
       ],
       "photo_groups": {
+        "images/svc-venues-13.jpg": "Indoor venues",
+        "images/svc-venues-16.jpg": "Outdoor venues",
+        "images/svc-venues-17.jpg": "Indoor venues",
+        "images/svc-venues-18.jpg": "Indoor venues",
+        "images/svc-venues-19.jpg": "Outdoor venues",
+        "images/svc-venues-20.jpg": "Indoor venues",
+        "images/svc-venues-22.jpg": "Indoor venues",
         "images/svc-venues-1.jpg": "Outdoor venues",
         "images/svc-venues-2.jpg": "Outdoor venues",
         "images/svc-venues-3.jpg": "Outdoor venues",
@@ -157,17 +164,18 @@
         "images/svc-venues-10.jpg": "Outdoor venues",
         "images/svc-venues-11.jpg": "Outdoor venues",
         "images/svc-venues-12.jpg": "Outdoor venues",
-        "images/svc-venues-13.jpg": "Indoor venues",
         "images/svc-venues-14.jpg": "Outdoor venues",
-        "images/svc-venues-15.jpg": "Outdoor venues",
-        "images/svc-venues-16.jpg": "Indoor venues",
-        "images/svc-venues-17.jpg": "Indoor venues",
-        "images/svc-venues-18.jpg": "Indoor venues",
-        "images/svc-venues-19.jpg": "Indoor venues",
-        "images/svc-venues-20.jpg": "Indoor venues",
+        "images/svc-venues-15.jpg": "Indoor venues",
         "images/svc-venues-21.jpg": "Outdoor venues",
-        "images/svc-venues-22.jpg": "Indoor venues",
         "images/svc-venues-23.jpg": "Outdoor venues"
+      },
+      "group_covers": {
+        "Indoor venues": "images/svc-venues-17.jpg",
+        "Outdoor venues": "images/svc-venues-1.jpg"
+      },
+      "group_blurbs": {
+        "Indoor venues": "Grand halls, chandeliers and ceilings of light.",
+        "Outdoor venues": "Terraces, gardens and mountain views."
       }
     },
     {
