@@ -615,3 +615,31 @@
     });
   }
 })();
+
+/* Invitation showcase: click the envelope → flap opens, card rises, then unfolds */
+(function () {
+  var stage = document.querySelector("[data-invite]");
+  if (!stage) return;
+  var env = stage.querySelector(".invite-env");
+  var hint = stage.querySelector(".invite-hint");
+  var timer = null;
+  env.addEventListener("click", function () {
+    clearTimeout(timer);
+    var opening = !stage.classList.contains("is-open");
+    if (opening) {
+      stage.classList.add("is-open");
+      env.setAttribute("aria-expanded", "true");
+      timer = setTimeout(function () {
+        stage.classList.add("is-spread");
+        if (hint) hint.textContent = "Tap to close";
+      }, 950);
+    } else {
+      stage.classList.remove("is-spread");
+      if (hint) hint.textContent = "Tap the envelope to open";
+      timer = setTimeout(function () {
+        stage.classList.remove("is-open");
+        env.setAttribute("aria-expanded", "false");
+      }, 900);
+    }
+  });
+})();

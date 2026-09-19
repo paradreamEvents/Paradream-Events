@@ -627,6 +627,66 @@ tiles = "\n".join(f"""      <a class="svc-card reveal" style="--d:{(i % 3) * 110
         </div>
       </a>""" for i, (name, desc, image) in enumerate(SERVICES))
 
+
+# ── Invitation card showcase (interactive envelope → folded card) ──
+INV = CONTENT.get("invitation", {})
+def _e(x): return html.escape(str(x), quote=True)
+
+def invitation_html():
+    if not INV:
+        return ""
+    c = INV["card"]
+    types = "\n".join(f'        <li>{_e(t)}</li>' for t in INV["types"])
+    return f"""
+<section class="band invite" id="invitations">
+  <div class="invite-inner">
+    <div class="invite-copy reveal">
+      <p class="eyebrow">{_e(INV["eyebrow"])}</p>
+      <h2>{_e(INV["title"])}</h2>
+      <p class="lede">{_e(INV["text"])}</p>
+      <ul class="invite-types">
+{types}
+      </ul>
+      <a class="btn btn-solid" href="contact-us.html">{_e(INV["cta"])}</a>
+    </div>
+    <div class="invite-stage-wrap reveal reveal-d1">
+      <p class="invite-example">{_e(INV["example_label"])}</p>
+      <div class="invite-stage" data-invite>
+        <button class="invite-env" type="button" aria-expanded="false" aria-label="Open the example invitation">
+          <span class="env-back"></span>
+          <span class="env-book">
+            <span class="bk-right">
+              <span class="ph-mono">P</span>
+              <span class="inv-kicker">{_e(c["kicker"])}</span>
+              <span class="inv-names">{_e(c["names"])}</span>
+              <span class="inv-line">{_e(c["line"])}</span>
+              <span class="inv-rule"></span>
+              <span class="inv-date">{_e(c["date"])}</span>
+              <span class="inv-venue">{_e(c["venue"])}</span>
+              <span class="inv-rsvp">{_e(c["rsvp"])}</span>
+            </span>
+            <span class="bk-cover">
+              <span class="cv-front">
+                <span class="cv-top">{_e(c["cover_top"])}</span>
+                <span class="cv-names">{_e(c["cover_names"])}</span>
+                <span class="cv-bottom">{_e(c["cover_bottom"])}</span>
+              </span>
+              <span class="cv-back">
+                <span class="cv-lt">{_e(c["left_top"])}</span>
+                <span class="cv-lx">{_e(c["left_text"])}</span>
+              </span>
+            </span>
+          </span>
+          <span class="env-front"></span>
+          <span class="env-flap"></span>
+          <span class="env-seal">P</span>
+        </button>
+        <p class="invite-hint">{_e(INV["hint"])}</p>
+      </div>
+    </div>
+  </div>
+</section>"""
+
 page("our-services.html", "Our Services - Paradream Events",
      "Full event planning, live show parades, oriental zaffah, photo booths, mascots, fire and LED shows, décor, catering and entertainment by Paradream Events in Lebanon.",
      f"""
@@ -642,6 +702,7 @@ page("our-services.html", "Our Services - Paradream Events",
     </div>
   </div>
 </section>
+{invitation_html()}
 """)
 
 

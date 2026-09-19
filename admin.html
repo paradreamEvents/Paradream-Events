@@ -1105,7 +1105,33 @@ function renderServicesBody() {
     '<section class="page-head">' + ed("pages.our-services.h1", "h1", "", S.h1) +
     ed("pages.our-services.sub", "p", "", S.sub) + "</section>" +
     '<section class="band band-services"><div class="band-inner"><div class="svc-grid">' + tiles +
-    "</div></div></section></main>" + pdFooter();
+    "</div></div></section>" + invitationPreview() + "</main>" + pdFooter();
+}
+
+function invitationPreview() {
+  var I = content.invitation;
+  if (!I) return "";
+  var c = I.card;
+  var types = I.types.map(function (t, i) {
+    return "<li>" + ed("invitation.types." + i, "span", "", t) + "</li>";
+  }).join("");
+  return '<section class="band invite is-preview"><div class="invite-inner">' +
+    '<div class="invite-copy">' + ed("invitation.eyebrow", "p", "eyebrow", I.eyebrow) +
+    ed("invitation.title", "h2", "", I.title) + ed("invitation.text", "p", "lede", I.text) +
+    '<ul class="invite-types">' + types + "</ul>" +
+    '<span class="btn btn-solid">' + ed("invitation.cta", "span", "", I.cta) + "</span></div>" +
+    '<div class="invite-stage-wrap"><p class="invite-example">' + ed("invitation.example_label", "span", "", I.example_label) + "</p>" +
+    '<div class="invite-stage is-open is-spread"><div class="invite-env" style="animation:none;pointer-events:auto">' +
+    '<span class="env-book"><span class="bk-right">' +
+    '<span class="ph-mono">P</span>' + ed("invitation.card.kicker", "span", "inv-kicker", c.kicker) +
+    ed("invitation.card.names", "span", "inv-names", c.names) + ed("invitation.card.line", "span", "inv-line", c.line) +
+    '<span class="inv-rule"></span>' + ed("invitation.card.date", "span", "inv-date", c.date) +
+    ed("invitation.card.venue", "span", "inv-venue", c.venue) + ed("invitation.card.rsvp", "span", "inv-rsvp", c.rsvp) +
+    '</span><span class="bk-cover"><span class="cv-front">' +
+    ed("invitation.card.cover_top", "span", "cv-top", c.cover_top) + ed("invitation.card.cover_names", "span", "cv-names", c.cover_names) +
+    ed("invitation.card.cover_bottom", "span", "cv-bottom", c.cover_bottom) + '</span><span class="cv-back">' +
+    ed("invitation.card.left_top", "span", "cv-lt", c.left_top) + ed("invitation.card.left_text", "span", "cv-lx", c.left_text) +
+    "</span></span></span></div></div></div></div></section>";
 }
 
 function renderGalleryBody() {

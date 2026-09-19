@@ -490,5 +490,33 @@
     "7 (1)": "Weddings",
     "8 (1)": "Weddings",
     "9 (1)": "Weddings"
+  },
+  "invitation": {
+    "eyebrow": "Invitation Cards",
+    "title": "Invitations That Feel Like the Real Thing",
+    "text": "Digital or printed, every invitation is designed around your celebration. Tap the envelope to see how yours will open.",
+    "types": [
+      "Digital invitation, ready to share on WhatsApp or email",
+      "Printed invitation card",
+      "Plexi and board cards",
+      "Thank-you cards and return gifts (cadeaux de retour)",
+      "Fully customized design"
+    ],
+    "example_label": "Example — this is how your invitation will look",
+    "hint": "Tap the envelope to open",
+    "cta": "Request Your Invitation",
+    "card": {
+      "cover_top": "Save the date",
+      "cover_names": "A & M",
+      "cover_bottom": "Together with their families",
+      "left_top": "With love",
+      "left_text": "Your story, your colors, your design.",
+      "kicker": "You're invited",
+      "names": "Adam & Maya",
+      "line": "invite you to celebrate their wedding",
+      "date": "Saturday, 14 June 2026 · 7:00 PM",
+      "venue": "The Garden Terrace, Jounieh",
+      "rsvp": "Kindly reply by 1 June"
+    }
   }
 }
