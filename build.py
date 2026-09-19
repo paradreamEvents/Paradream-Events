@@ -165,6 +165,7 @@ FOOTER = f"""<footer class="site-footer">
         <li><a href="wedding.html">Wedding</a></li>
         <li><a href="communion.html">Holy First Communion</a></li>
         <li><a href="baptism.html">Baptism</a></li>
+        <li><a href="gender-reveal.html">Gender Reveal</a></li>
         <li><a href="birthday.html">Birthday</a></li>
         <li><a href="christmas.html">Christmas</a></li>
       </ul>
@@ -584,7 +585,8 @@ OCCASIONS = [(x["slug"], x["title"], x["image"], x["text"], x.get("head_position
 DEDICATED_FORMS = {"proposal": "proposal.html", "engagement": "engagement.html",
                     "bachelor": "bachelor.html", "wedding": "wedding.html",
                     "communion": "communion.html", "baptism": "baptism.html",
-                    "birthday": "birthday.html", "christmas": "christmas.html"}
+                    "birthday": "birthday.html", "christmas": "christmas.html",
+                    "gender-reveal": "gender-reveal.html"}
 
 occ_html = "\n".join(f"""      <article class="occ-card reveal" id="{slug}" style="--d:{(i % 3) * 120}ms">
         <img class="occ-img" style="object-position:{pos}" src="{media(src, 1000)}" alt="{name}" loading="lazy" decoding="async">
@@ -932,6 +934,13 @@ page("communion.html", "Plan Your Holy First Communion - Paradream Events",
 page("baptism.html", "Plan Your Baptism - Paradream Events",
      "Tell us about the baptism you're planning and Paradream will help bring it to life.",
      occasion_form("baptism", "Baptism", ENGAGEMENT_CHOCOLATE),
+     current="occasions.html")
+
+page("gender-reveal.html", "Plan Your Gender Reveal - Paradream Events",
+     "Tell us about the gender reveal you're planning and Paradream will help bring it to life.",
+     occasion_form("gender-reveal", "Gender Reveal", ENGAGEMENT_CHOCOLATE,
+         extra_top=field_group("Reveal Style", ["Balloon Pop", "Confetti Cannon", "Smoke Bombs", "Cake Cutting",
+                                                 "Piñata", "Fireworks", "Customized Reveal", "Other"], "reveal_style")),
      current="occasions.html")
 
 page("birthday.html", "Plan Your Birthday - Paradream Events",
