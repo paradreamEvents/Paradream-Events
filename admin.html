@@ -1156,7 +1156,10 @@ function renderServiceDetail(i) {
   var photos = sv.photos.map(function (ph, k) {
     return '<figure class="svc-photo" style="position:relative;opacity:1;transform:none">' +
       edImg("services." + i + ".photos." + k, photoFor({ image: ph }), "", sv.title) +
-      '<button type="button" class="pd-gal-del" data-pd-photodel="' + i + "." + k + '">Remove</button></figure>';
+      '<button type="button" class="pd-gal-del" data-pd-photodel="' + i + "." + k + '">Remove</button>' +
+      (sv.groups && sv.groups.length ? '<select data-pd-photogroup="' + i + "." + k + '" style="width:100%;margin-top:.3rem;font-size:.75rem;padding:.25rem"><option value="">Ungrouped</option>' +
+        sv.groups.map(function (g) { return "<option" + ((sv.photo_groups || {})[ph] === g ? " selected" : "") + ">" + esc(g) + "</option>"; }).join("") + "</select>" : "") +
+      "</figure>";
   }).join("");
   return pdHeader("service:" + i) + "<main>" +
     '<section class="page-head has-photo"><div class="ph-bg" style="background-image:url(&quot;' + photoFor(sv) + '&quot;)"></div>' +
@@ -1350,6 +1353,17 @@ function wirePdFrame() {
       e.preventDefault();
       photoTarget = "services." + el.dataset.pdPhotoadd + ".photos.new";
       picker.click();
+    });
+  });
+  Array.prototype.forEach.call(doc.querySelectorAll("[data-pd-photogroup]"), function (el) {
+    el.addEventListener("click", function (e) { e.stopPropagation(); });
+    el.addEventListener("change", function () {
+      var ij = el.dataset.pdPhotogroup.split(".");
+      var sv = content.services[parseInt(ij[0], 10)];
+      var path = sv.photos[parseInt(ij[1], 10)];
+      if (!sv.photo_groups) sv.photo_groups = {};
+      if (el.value) sv.photo_groups[path] = el.value; else delete sv.photo_groups[path];
+      contentDirty = true; refreshPublish();
     });
   });
   Array.prototype.forEach.call(doc.querySelectorAll("[data-pd-photodel]"), function (el) {

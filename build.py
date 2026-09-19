@@ -785,6 +785,31 @@ def service_page_html(s):
     </div>
   </div>
 </section>""" if figs else ""
+    groups = s.get("groups") or []
+    if groups and s["photos"]:
+        pg = s.get("photo_groups", {})
+        def _fig(i, p):
+            return f"""      <figure class="svc-photo reveal" style="--d:{(i % 3) * 90}ms"><img src="{media(p, 900)}" srcset="{media(p, 600)} 600w, {media(p, 900)} 900w, {media(p, 1400)} 1400w" sizes="(max-width:700px) 92vw, (max-width:1100px) 46vw, 360px" alt="{title} by Paradream Events" loading="lazy" decoding="async"></figure>"""
+        secs, chips = [], []
+        buckets = [(g, [p for p in s["photos"] if pg.get(p) == g]) for g in groups]
+        rest = [p for p in s["photos"] if pg.get(p) not in groups]
+        if rest:
+            buckets.append((SP_CFG.get("photos_title", "Our work"), rest))
+        for gi, (g, ps) in enumerate(buckets):
+            if not ps:
+                continue
+            gid = f"grp-{gi + 1}"
+            chips.append(f'<a href="#{gid}">{_e(g)}</a>')
+            secs.append(f"""    <h2 class="reveal svc-group-h" id="{gid}">{_e(g)}</h2>
+    <div class="svc-photos">
+{chr(10).join(_fig(i, p) for i, p in enumerate(ps))}
+    </div>""")
+        photos_section = f"""<section class="band">
+  <div class="band-inner">
+    <nav class="svc-chips" aria-label="Photo groups">{"".join(chips)}</nav>
+{chr(10).join(secs)}
+  </div>
+</section>"""
     return f"""
 <section class="page-head has-photo">
   <div class="ph-bg" style="background-image:url('{bg}');background-position:center"></div>
