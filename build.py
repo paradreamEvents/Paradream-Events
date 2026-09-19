@@ -563,7 +563,7 @@ WHY = PAGES["why-paradream"]
 WHY_BLOCKS = {
 "intro": f"""<section class="band">
   <div class="band-inner story">
-    <figure class="story-photo reveal"><img src="{media(WHY.get("image", "images/why-story.jpg"), 1200)}" alt="The Paradream team celebrating with a client" loading="lazy"></figure>
+    <figure class="story-photo reveal"><img src="{media(WHY.get("image", "images/why-story-team.jpg"), 1200)}" alt="The Paradream team celebrating with a client" loading="lazy"></figure>
     <div class="story-text reveal reveal-d1">
       <p class="lede">{WHY["story"]}</p>
       <a class="btn btn-solid" href="contact-us.html">Plan Your Event</a>
