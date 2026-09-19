@@ -7,7 +7,7 @@
     "address_lines": [
       "Furn El Chebbak",
       "Beirut, Lebanon.",
-      "+12 years experience in events, hospitality, and f&b services!"
+      "Established in 2019 · 12+ years of experience in events, hospitality and F&B"
     ]
   },
   "socials": {
@@ -236,6 +236,30 @@
   ],
   "faqs": [
     {
+      "q": "What services does Paradream Events offer?",
+      "a": "Paradream Events is an event planning and entertainment company in Lebanon. We offer full event planning and coordination, venue sourcing, décor and table setups, live show parades, oriental zaffah, live music, photo booths, characters and LED mascots, fire, LED and circus shows, inflatable games, catering, bar and chocolate stations, and digital or printed invitation cards."
+    },
+    {
+      "q": "Which occasions do you cover, and where in Lebanon do you work?",
+      "a": "We plan proposals, engagements, bachelor parties, weddings, baptisms, first communions, gender reveals, birthdays, Christmas events and corporate events. We are based in Furn El Chebbak, Beirut, and work across Lebanon. Events outside Beirut include a travel fee, which our online quote calculator estimates."
+    },
+    {
+      "q": "How much does a zaffah or live parade cost?",
+      "a": "Zaffah and live show parades are priced per musician or performer, starting from $65 each, so the total depends on the size of your group. Catering is priced per guest. Use the quote calculator on this page for an instant estimate, then send us your details for a confirmed quote."
+    },
+    {
+      "q": "How do I book Paradream for my event?",
+      "a": "Pick your occasion on the Occasions page and fill in its short form, or use the Contact page. Our team reviews every request and replies within 24 to 48 hours. If your date is close, call or message us on WhatsApp at +961 81 406 046."
+    },
+    {
+      "q": "Can you help me find a venue?",
+      "a": "Yes. Tell us whether you want an indoor or outdoor space, a panoramic mountain view, a beach sunset or a private venue, along with your guest count and budget, and we will help you find and secure the right place."
+    },
+    {
+      "q": "Do you offer digital or printed invitation cards?",
+      "a": "Yes. We design digital invitations ready to share on WhatsApp or email, printed cards, plexi and board cards, thank-you cards and return gifts, all matched to your celebration. You can see how an invitation opens on the Our Services page."
+    },
+    {
       "q": "What is the overall cost of organizing the event, and what factors influence the final price?",
       "a": "The overall cost of organizing an event depends on various factors, including the venue, catering, entertainment, staffing, and any additional services or equipment required. The final price is influenced by the size and scope of the event, the complexity of logistics, and the level of customization desired. We provide a detailed estimate based on your specific requirements to ensure transparency and help you manage your budget effectively."
     },
@@ -290,7 +314,7 @@
     "why-paradream": {
       "h1": "Our Success Story",
       "sub": "How It Started",
-      "story": "Paradream was established in 2019, with a strong background in hospitality management and event planning. We have a fervent passion for turning dreams into reality. Driven by our love for music and hospitality, and commitment to excellence, we founded PARADREAM with a clear vision: to make your dreams come true. Our guiding principle, 'YOUR DAY, OUR WAY!', reflects our commitment to bringing your visions to life.",
+      "story": "Paradream was established in 2019, built on more than 12 years of background in hospitality management and event planning. We have a fervent passion for turning dreams into reality. Driven by our love for music and hospitality, and commitment to excellence, we founded PARADREAM with a clear vision: to make your dreams come true. Our guiding principle, 'YOUR DAY, OUR WAY!', reflects our commitment to bringing your visions to life.",
       "stat": "150+ celebrations brought to life with unforgettable moments across Lebanon.",
       "clients_h": "Here's What Our Clients Say About Paradream",
       "what_h": "What We Do",

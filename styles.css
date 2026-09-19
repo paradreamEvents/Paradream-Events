@@ -343,7 +343,7 @@ h3{font-size:clamp(1.25rem,2.4vw,1.55rem)}
 .slide.active{opacity:1;pointer-events:auto}
 .slide-inner{position:relative;z-index:2;max-width:46ch}
 @media (prefers-reduced-motion: reduce){.hero-bg{animation:none}}
-.slide h1,.slide h2{color:#fff;margin-bottom:.5rem}
+.slide h1,.slide h2{color:#fff;margin-bottom:.5rem;font-size:clamp(2.2rem,5.4vw,3.5rem)}
 .slide p{font-size:clamp(1.05rem,2.2vw,1.35rem);color:rgba(255,255,255,.92);margin:0 0 2rem}
 .slide.active .slide-inner>*{animation:rise .8s cubic-bezier(.22,.8,.3,1) both}
 .slide.active .slide-inner>*:nth-child(2){animation-delay:.12s}

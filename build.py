@@ -155,7 +155,7 @@ FOOTER = f"""<footer class="site-footer">
     <div>
       <img class="footer-logo" src="{FOOTER_LOGO}" alt="">
       <h4>Paradream Events</h4>
-      <p>Furn El Chebbak<br>Beirut, Lebanon.<br>+12 years experience in events, hospitality, and f&amp;b services!</p>
+      <p>Furn El Chebbak<br>Beirut, Lebanon.<br>Established in 2019 &middot; 12+ years of experience in events, hospitality and F&amp;B</p>
     </div>
     <div>
       <h4>Events</h4>
@@ -264,7 +264,31 @@ def analytics_tag():
                 f'gtag("js",new Date());gtag("config","{gid}");</script>')
     return ""
 
+def local_business_jsonld():
+    data = {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "Paradream Events",
+        "url": "https://paradreamlb.com/",
+        "logo": "https://paradreamlb.com/images/logo-mark.png",
+        "image": OG,
+        "description": "Event planning and entertainment company in Lebanon: live show parades, oriental zaffah, décor, catering and full event coordination for weddings, engagements, baptisms, birthdays and more.",
+        "slogan": SITE.get("tagline", ""),
+        "telephone": SITE["phone_tel"],
+        "email": SITE["email"],
+        "foundingDate": "2019",
+        "address": {"@type": "PostalAddress", "streetAddress": "Furn El Chebbak",
+                    "addressLocality": "Beirut", "addressCountry": "LB"},
+        "areaServed": {"@type": "Country", "name": "Lebanon"},
+        "sameAs": [u for u in SOCIALS.values() if u.strip()],
+    }
+    return '<script type="application/ld+json">' + json.dumps(data, ensure_ascii=False) + '</script>'
+
+PAGES_WRITTEN = []
+
 def page(filename, title, description, body, current=None):
+    PAGES_WRITTEN.append(filename)
+    extra_head = local_business_jsonld() if filename == "index.html" else ""
     doc = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -286,6 +310,7 @@ def page(filename, title, description, body, current=None):
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v={stamp('styles.css')}">
 {analytics_tag()}
+{extra_head}
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -354,7 +379,7 @@ def hero_slide_html(i, sl):
         '    <div class="hero-bg" style="background-image:url(&#39;' + bg + '&#39;);'
         'background-position:' + pos + '"></div>\n'
         '    <div class="slide-inner">\n'
-        '      <h1>' + sl.get("title", "") + '</h1>\n'
+        '      <' + ("h1" if i == 0 else "h2") + '>' + sl.get("title", "") + '</' + ("h1" if i == 0 else "h2") + '>\n'
         '      <p>' + sl.get("text", "") + '</p>\n'
         '      <a class="btn btn-solid" href="' + sl.get("link", "contact-us.html") + '">'
         + sl.get("cta", "Book Now!") + '</a>\n'
@@ -518,8 +543,8 @@ HOME_BLOCKS = {
 }
 
 home = "\n\n".join(HOME_BLOCKS[k] for k in PAGES["home"]["sections"] if k in HOME_BLOCKS)
-page("index.html", "Paradream Events",
-     "Paradream Events — Lebanon's trusted event planning company with 12+ years of experience. We plan weddings, engagements, birthdays, baptisms, Christmas events, and more. Based in Beirut. Contact us today!",
+page("index.html", "Paradream Events | Event Planner, Zaffah &amp; Live Parades in Lebanon",
+     "Event planner in Lebanon: weddings, engagements, baptisms, birthdays and more. Live parades, oriental zaffah, entertainment and décor. Based in Beirut.",
      home)
 
 
@@ -1218,3 +1243,18 @@ for fn, h1, body, desc in [
 
 
 print("done")
+
+
+# ── sitemap.xml ─────────────────────────────────────────────
+import datetime
+_skip = {"thanks.html", "admin.html"}
+_urls = []
+for _f in PAGES_WRITTEN:
+    if _f in _skip:
+        continue
+    _loc = "https://paradreamlb.com/" if _f == "index.html" else "https://paradreamlb.com/" + _f[:-5]
+    _urls.append(f"  <url><loc>{_loc}</loc><lastmod>{datetime.date.today().isoformat()}</lastmod></url>")
+with open(os.path.join(OUT, "sitemap.xml"), "w", encoding="utf-8") as _fh:
+    _fh.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+              + "\n".join(_urls) + "\n</urlset>\n")
+print("wrote sitemap.xml")
