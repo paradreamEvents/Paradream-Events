@@ -150,7 +150,7 @@ NAV = [
 
 def header(current):
     links = "\n".join(
-        f'      <a href="{h}"{" aria-current=\"page\"" if h == current else ""}{" class=\"nav-new\"" if h == "occasions.html" else ""}>{t}</a>'
+        f'      <a href="{h}"{" aria-current=\"page\"" if h == current else ""}>{t}</a>'
         for h, t in NAV
     )
     return f"""<header class="site-header">

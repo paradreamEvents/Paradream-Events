@@ -629,6 +629,8 @@
     clearTimeout(timer);
     var opening = !stage.classList.contains("is-open");
     if (opening) {
+      var rr = env.getBoundingClientRect();
+      if (window.pdConfetti) window.pdConfetti(rr.left + rr.width / 2, rr.top + rr.height / 2, 46);
       stage.classList.add("is-open");
       env.setAttribute("aria-expanded", "true");
       timer = setTimeout(function () {
@@ -660,4 +662,113 @@
   field.value = title;
   note.textContent = "Booking enquiry: " + title;
   note.hidden = false;
+})();
+
+
+/* Delight: hover tilt, magnetic and rippling buttons, hero sparkles + parallax, confetti */
+(function () {
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduced) return;
+  var fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  var COLORS = ["#E4251B", "#FFD166", "#FFFFFF", "#FF8A7D", "#F2C14E"];
+
+  window.pdConfetti = function (x, y, n) {
+    n = n || 36;
+    for (var i = 0; i < n; i++) {
+      var p = document.createElement("i");
+      p.className = "confetti";
+      var ang = Math.random() * Math.PI * 2, force = 90 + Math.random() * 220;
+      p.style.left = x + "px";
+      p.style.top = y + "px";
+      p.style.background = COLORS[i % COLORS.length];
+      p.style.setProperty("--dx", Math.cos(ang) * force + "px");
+      p.style.setProperty("--uy", -(60 + Math.random() * 140) + "px");
+      p.style.setProperty("--dy", 120 + Math.random() * 260 + "px");
+      p.style.setProperty("--r", (Math.random() * 720 - 360) + "deg");
+      document.body.appendChild(p);
+      (function (el) { setTimeout(function () { el.remove(); }, 1600); })(p);
+    }
+  };
+
+  /* Ripple on every button */
+  document.addEventListener("pointerdown", function (e) {
+    var btn = e.target.closest && e.target.closest(".btn");
+    if (!btn) return;
+    var r = btn.getBoundingClientRect(), size = Math.max(r.width, r.height) * 2;
+    var s = document.createElement("span");
+    s.className = "ripple";
+    s.style.width = s.style.height = size + "px";
+    s.style.left = e.clientX - r.left - size / 2 + "px";
+    s.style.top = e.clientY - r.top - size / 2 + "px";
+    btn.appendChild(s);
+    setTimeout(function () { s.remove(); }, 750);
+  });
+
+  /* Thank-you page celebrates */
+  if (/thanks/.test(location.pathname)) {
+    var w = window.innerWidth;
+    setTimeout(function () { window.pdConfetti(w * 0.5, 160, 70); }, 500);
+    setTimeout(function () { window.pdConfetti(w * 0.25, 220, 40); window.pdConfetti(w * 0.75, 220, 40); }, 900);
+  }
+
+  if (!fine) return;
+
+  /* 3D tilt with a light glare on cards and photos */
+  var tiltSel = ".svc-card, .occ-card, .svc-choice-card, .svc-photo, .mq-card";
+  Array.prototype.forEach.call(document.querySelectorAll(tiltSel), function (el) {
+    el.classList.add("tilt");
+    var g = document.createElement("span");
+    g.className = "glare";
+    el.appendChild(g);
+    var lift = el.classList.contains("mq-card") ? 0 : -6;
+    el.addEventListener("pointermove", function (e) {
+      var r = el.getBoundingClientRect();
+      var x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      el.style.transition = "transform .1s ease-out, box-shadow .35s";
+      el.style.transform = "perspective(900px) rotateX(" + ((0.5 - y) * 9).toFixed(2) + "deg) rotateY(" +
+        ((x - 0.5) * 11).toFixed(2) + "deg) translateY(" + lift + "px)";
+      el.style.setProperty("--mx", (x * 100).toFixed(1) + "%");
+      el.style.setProperty("--my", (y * 100).toFixed(1) + "%");
+    });
+    el.addEventListener("pointerleave", function () {
+      el.style.transition = "";
+      el.style.transform = "";
+    });
+  });
+
+  /* Magnetic buttons */
+  Array.prototype.forEach.call(document.querySelectorAll(".btn"), function (b) {
+    if (b.closest(".occ-body") || b.closest(".cookie")) return;
+    b.addEventListener("pointermove", function (e) {
+      var r = b.getBoundingClientRect();
+      var x = (e.clientX - (r.left + r.width / 2)) / r.width, y = (e.clientY - (r.top + r.height / 2)) / r.height;
+      b.style.transform = "translate(" + (x * 12).toFixed(1) + "px," + (y * 9).toFixed(1) + "px)";
+    });
+    b.addEventListener("pointerleave", function () { b.style.transform = ""; });
+  });
+
+  /* Hero: sparkles follow the cursor and the headline drifts with it */
+  var hero = document.querySelector(".hero-slider");
+  if (hero) {
+    var last = 0;
+    hero.addEventListener("pointermove", function (e) {
+      var r = hero.getBoundingClientRect();
+      hero.style.setProperty("--px", (((e.clientX - r.left) / r.width - 0.5) * -1).toFixed(3));
+      hero.style.setProperty("--py", (((e.clientY - r.top) / r.height - 0.5) * -1).toFixed(3));
+      var t = Date.now();
+      if (t - last < 60) return;
+      last = t;
+      var s = document.createElement("i");
+      s.className = "spark";
+      s.style.left = e.clientX - r.left + "px";
+      s.style.top = e.clientY - r.top + "px";
+      s.style.setProperty("--c", COLORS[Math.floor(Math.random() * COLORS.length)]);
+      hero.appendChild(s);
+      setTimeout(function () { s.remove(); }, 900);
+    });
+    hero.addEventListener("pointerleave", function () {
+      hero.style.setProperty("--px", 0);
+      hero.style.setProperty("--py", 0);
+    });
+  }
 })();
