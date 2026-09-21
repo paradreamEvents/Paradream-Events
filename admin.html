@@ -913,7 +913,7 @@ function pdDoc(bodyHtml) {
 
 function pdHeader(current) {
   var NAV_PREVIEW = [["index.html", "Home"], ["why-paradream.html", "Why Paradream?"],
-    ["our-services.html", "Our Services"], ["contact-us.html", "Contact Us"]];
+    ["occasions.html", "Occasions We Cover"], ["our-services.html", "Our Services"], ["contact-us.html", "Contact Us"]];
   var links = NAV_PREVIEW.map(function (p) {
     var on = p[0] === current || (p[0] === "our-services.html" && String(current).indexOf("service:") === 0);
     return '<a href="#"' + (on ? ' aria-current="page"' : "") + ">" + p[1] + "</a>";

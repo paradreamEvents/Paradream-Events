@@ -143,13 +143,14 @@ def responsive(path, alt, sizes, widths, ratio_w, ratio_h, cls=""):
 NAV = [
     ("index.html", "Home"),
     ("why-paradream.html", "Why Paradream?"),
+    ("occasions.html", "Occasions We Cover"),
     ("our-services.html", "Our Services"),
     ("contact-us.html", "Contact Us"),
 ]
 
 def header(current):
     links = "\n".join(
-        f'      <a href="{h}"{" aria-current=\"page\"" if h == current else ""}>{t}</a>'
+        f'      <a href="{h}"{" aria-current=\"page\"" if h == current else ""}{" class=\"nav-new\"" if h == "occasions.html" else ""}>{t}</a>'
         for h, t in NAV
     )
     return f"""<header class="site-header">
@@ -674,7 +675,7 @@ page("occasions.html", "Occasions We Cover - Paradream Events",
     </div>
   </div>
 </section>
-""", current="why-paradream.html")
+""", current="occasions.html")
 
 
 # ── Our Services ────────────────────────────────────────────

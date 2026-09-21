@@ -32,6 +32,8 @@
   if (header) {
     var onScroll = function () {
       header.classList.toggle("scrolled", window.scrollY > 20);
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      header.style.setProperty("--sp", max > 0 ? Math.min(1, window.scrollY / max).toFixed(4) : 0);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
