@@ -99,7 +99,10 @@
         "images/svc-planning-10.jpg",
         "images/svc-planning-11.jpg",
         "images/svc-planning-12.jpg",
-        "images/svc-planning-13.jpg"
+        "images/svc-planning-13.jpg",
+        "images/svc-planning-14.jpg",
+        "images/svc-planning-15.jpg",
+        "images/svc-planning-16.jpg"
       ],
       "book": "contact-us.html"
     },
@@ -411,10 +414,7 @@
         "images/svc-inflatables-1.jpg",
         "images/svc-inflatables-2.jpg",
         "images/svc-inflatables-3.jpg",
-        "images/svc-inflatables-4.jpg",
-        "images/svc-inflatables-5.jpg",
-        "images/svc-inflatables-6.jpg",
-        "images/svc-inflatables-7.jpg"
+        "images/svc-inflatables-4.jpg"
       ],
       "book": "birthday.html"
     },
