@@ -560,7 +560,8 @@
       "slug": "promposal",
       "title": "Promposal",
       "image": "images/occasion-promposal.jpg",
-      "text": "Ask the big question with a moment they will never forget. From balloon arches and glowing signs to live music and a surprise reveal, we design the perfect promposal and handle every detail."
+      "text": "Ask the big question with a moment they will never forget. From balloon arches and glowing signs to live music and a surprise reveal, we design the perfect promposal and handle every detail.",
+      "head_position": "center 40%"
     },
     {
       "slug": "engagement",
@@ -611,7 +612,8 @@
       "slug": "graduation",
       "title": "Graduation",
       "image": "images/occasion-graduation.jpg",
-      "text": "Celebrate years of hard work in style. We plan graduation parties with décor, entertainment, sweets and a grand entrance worthy of the graduate and the whole family."
+      "text": "Celebrate years of hard work in style. We plan graduation parties with décor, entertainment, sweets and a grand entrance worthy of the graduate and the whole family.",
+      "head_position": "center 8%"
     },
     {
       "slug": "christmas",
