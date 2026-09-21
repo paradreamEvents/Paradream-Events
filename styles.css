@@ -859,3 +859,39 @@ div.opt input[type=checkbox]{margin:0;width:18px;height:18px}
 html{scroll-behavior:smooth}
 @media (max-width:640px){.svc-choice{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Footer motion: columns rise in, links slide in one by one, icons pop and pulse */
+.footer-logo{animation:ft-float 5s ease-in-out infinite}
+@keyframes ft-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.footer-inner h4{position:relative}
+.footer-inner h4::after{content:"";display:block;width:0;height:2px;background:var(--red);margin-top:.5rem;transition:width .7s ease .35s}
+.footer-inner .fcol.in h4::after{width:38px}
+.footer-inner li{opacity:0;transform:translateX(-18px);transition:opacity .55s ease,transform .55s ease}
+.footer-inner .fcol.in li{opacity:1;transform:none;transition-delay:calc(.3s + var(--i,0) * 80ms)}
+.footer-inner li a{position:relative;display:inline-block;transition:color .3s ease,transform .3s ease}
+.footer-inner li a::after{content:"";position:absolute;left:0;bottom:-3px;height:2px;width:100%;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform .35s ease}
+.footer-inner li a:hover{transform:translateX(8px)}
+.footer-inner li a:hover::after{transform:scaleX(1)}
+.socials a{opacity:0;transform:scale(.3)}
+.fcol.in .socials a{animation:ft-pop .65s cubic-bezier(.34,1.56,.64,1) both}
+.fcol.in .socials a:nth-child(1){animation-delay:.45s}
+.fcol.in .socials a:nth-child(2){animation-delay:.6s}
+.fcol.in .socials a:nth-child(3){animation-delay:.75s}
+.fcol.in .socials a:nth-child(4){animation-delay:.9s}
+@keyframes ft-pop{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:scale(1)}}
+.socials a:hover{transform:translateY(-5px) rotate(-8deg) scale(1.08)}
+.contact-line{opacity:0;transform:translateX(-18px);transition:opacity .55s ease,transform .55s ease}
+.fcol.in .contact-line{opacity:1;transform:none}
+.fcol.in .contact-line:nth-of-type(1){transition-delay:1s}
+.fcol.in .contact-line:nth-of-type(2){transition-delay:1.15s}
+.contact-line .ci{position:relative}
+.contact-line .ci::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--red);opacity:0;animation:ft-ring 2.6s ease-out infinite}
+.contact-line:nth-of-type(2) .ci::after{animation-delay:1.3s}
+@keyframes ft-ring{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.9);opacity:0}}
+.contact-line:hover .ci svg{animation:ft-wiggle .6s ease}
+@keyframes ft-wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-16deg)}50%{transform:rotate(14deg)}75%{transform:rotate(-8deg)}}
+@media (prefers-reduced-motion:reduce){
+  .footer-logo,.contact-line .ci::after{animation:none}
+  .footer-inner li,.socials a,.contact-line{opacity:1;transform:none;transition:none}
+  .fcol.in .socials a{animation:none}
+}

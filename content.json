@@ -22,7 +22,7 @@
       "position": "center 42%",
       "title": "Christmas is better together",
       "text": "Mascots, music and mornings your family will keep talking about.",
-      "cta": "See Christmas",
+      "cta": "Book Now!",
       "link": "christmas.html"
     },
     {
@@ -30,7 +30,7 @@
       "position": "center",
       "title": "Weddings, done your way",
       "text": "Zaffah, parade and production, timed to the second.",
-      "cta": "See weddings",
+      "cta": "Book Now!",
       "link": "wedding.html"
     },
     {
@@ -557,6 +557,12 @@
       "text": "The proposal is a once-in-a-lifetime, and we specialize in crafting unforgettable experiences that ensure a perfect and memorable \"yes\" moment."
     },
     {
+      "slug": "promposal",
+      "title": "Promposal",
+      "image": "images/occasion-promposal.jpg",
+      "text": "Ask the big question with a moment they will never forget. From balloon arches and glowing signs to live music and a surprise reveal, we design the perfect promposal and handle every detail."
+    },
+    {
       "slug": "engagement",
       "title": "Engagement",
       "image": "images/occasion-engagement.png",
@@ -600,6 +606,12 @@
       "image": "images/occasion-birthday.png",
       "text": "Choose Paradream to make your birthday truly unforgettable, ensuring a seamless and exceptional experience that will leave a lasting impression on you and your guests.",
       "head_position": "center 30%"
+    },
+    {
+      "slug": "graduation",
+      "title": "Graduation",
+      "image": "images/occasion-graduation.jpg",
+      "text": "Celebrate years of hard work in style. We plan graduation parties with décor, entertainment, sweets and a grand entrance worthy of the graduate and the whole family."
     },
     {
       "slug": "christmas",
@@ -924,7 +936,7 @@
   "services_page": {
     "how_title": "How we do it",
     "photos_title": "Our work",
-    "book_label": "Book Now",
+    "book_label": "Book your free consultation",
     "more_title": "More services"
   }
 }

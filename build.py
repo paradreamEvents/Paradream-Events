@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Builds the Paradream static site. Run: python3 build.py"""
-import os, html, json
+import os, html, json, re
 from urllib.parse import quote
 
 # Everything editable lives in content.json — the admin panel writes to it.
@@ -175,6 +175,7 @@ FOOTER = f"""<footer class="site-footer">
     <div>
       <h4>Events</h4>
       <ul>
+        <li><a href="promposal.html">Promposal</a></li>
         <li><a href="engagement.html">Engagement</a></li>
         <li><a href="bachelor.html">Bachelor</a></li>
         <li><a href="wedding.html">Wedding</a></li>
@@ -182,6 +183,7 @@ FOOTER = f"""<footer class="site-footer">
         <li><a href="baptism.html">Baptism</a></li>
         <li><a href="gender-reveal.html">Gender Reveal</a></li>
         <li><a href="birthday.html">Birthday</a></li>
+        <li><a href="graduation.html">Graduation</a></li>
         <li><a href="christmas.html">Christmas</a></li>
       </ul>
     </div>
@@ -278,6 +280,20 @@ def analytics_tag():
                 f'gtag("js",new Date());gtag("config","{gid}");</script>')
     return ""
 
+def footer_html():
+    n = [0]
+    def col(m):
+        n[0] += 1
+        return f'\n    <div class="fcol reveal" style="--d:{(n[0] - 1) * 130}ms">'
+    out = re.sub(r"\n    <div>", col, FOOTER, count=4)
+    def stagger(m):
+        k = [0]
+        def li(_):
+            k[0] += 1
+            return f'<li style="--i:{k[0]}">'
+        return re.sub(r"<li>", li, m.group(0))
+    return re.sub(r"<ul>.*?</ul>", stagger, out, flags=re.S)
+
 def local_business_jsonld():
     data = {
         "@context": "https://schema.org",
@@ -332,7 +348,7 @@ def page(filename, title, description, body, current=None):
 <main id="main">
 {body}
 </main>
-{FOOTER}
+{footer_html()}
 </body>
 </html>
 """
@@ -509,11 +525,13 @@ HOME_BLOCKS = {
             <option>Wedding</option>
             <option>Engagement</option>
             <option>Proposal</option>
+            <option>Promposal</option>
             <option>Bachelor</option>
             <option>Holy First Communion</option>
             <option>Baptism</option>
             <option>Gender Reveal</option>
             <option>Birthday</option>
+            <option>Graduation</option>
             <option>Christmas</option>
             <option>Other</option>
           </select>
@@ -583,7 +601,7 @@ WHY_BLOCKS = {
     <figure class="story-photo reveal"><img src="{media(WHY.get("image", "images/why-story-team.jpg"), 1200)}" alt="The Paradream team celebrating with a client" loading="lazy"></figure>
     <div class="story-text reveal reveal-d1">
       <p class="lede">{WHY["story"]}</p>
-      <a class="btn btn-solid" href="contact-us.html">Plan Your Event</a>
+      <a class="btn btn-solid" href="plan-your-event.html">Plan Your Event</a>
     </div>
   </div>
 </section>""",
@@ -628,7 +646,8 @@ DEDICATED_FORMS = {"proposal": "proposal.html", "engagement": "engagement.html",
                     "bachelor": "bachelor.html", "wedding": "wedding.html",
                     "communion": "communion.html", "baptism": "baptism.html",
                     "birthday": "birthday.html", "christmas": "christmas.html",
-                    "gender-reveal": "gender-reveal.html"}
+                    "gender-reveal": "gender-reveal.html",
+                    "promposal": "promposal.html", "graduation": "graduation.html"}
 
 occ_html = "\n".join(f"""      <article class="occ-card reveal" id="{slug}" style="--d:{(i % 3) * 120}ms">
         <img class="occ-img" style="object-position:{pos}" src="{media(src, 1000)}" alt="{name}" loading="lazy" decoding="async">
@@ -1130,6 +1149,20 @@ page("gender-reveal.html", "Plan Your Gender Reveal - Paradream Events",
                                                  "Piñata", "Fireworks", "Customized Reveal", "Other"], "reveal_style")),
      current="occasions.html")
 
+page("promposal.html", "Plan Your Promposal - Paradream Events",
+     "Tell us about the promposal you're planning and Paradream will help bring it to life.",
+     occasion_form("promposal", "Promposal", ENGAGEMENT_CHOCOLATE,
+         extra_top=field_group("Promposal Style", ["Balloons and signs", "Flowers", "Live music surprise", "Photo and video moment",
+                                                   "Customized set-up", "Other"], "promposal_style")),
+     current="occasions.html")
+
+page("graduation.html", "Plan Your Graduation - Paradream Events",
+     "Tell us about the graduation you're planning and Paradream will help bring it to life.",
+     occasion_form("graduation", "Graduation", ENGAGEMENT_CHOCOLATE,
+         extra_top=field_group("Type of Graduation", ["Kindergarten", "School", "University", "Master's / PhD", "Other"],
+                               "graduation_type", kind="radio", hint="")),
+     current="occasions.html")
+
 page("birthday.html", "Plan Your Birthday - Paradream Events",
      "Tell us about the birthday you're planning and Paradream will help bring it to life.",
      occasion_form("birthday", "Birthday", ENGAGEMENT_CHOCOLATE),
@@ -1162,21 +1195,14 @@ wedding_body = f"""
       <input type="hidden" name="form-name" value="wedding-enquiry">
       <p class="hp"><label>Leave empty <input name="website"></label></p>
 
-{name_fields()}
-      <div class="field">
-        <label for="wedding-date">Date <span class="field-required">*</span></label>
-        <input id="wedding-date" name="date" type="date" required>
-      </div>
-{venue_address_block()}
-{select_field("Estimated Guests", "guests", GUESTS_OPTIONS, required=True, field_id="wedding-guests")}
       <div class="field-row">
         <div class="field">
-          <label for="groom-name">Groom Name</label>
-          <input id="groom-name" name="groom_name" type="text">
+          <label for="groom-name">Groom Name <span class="field-required">*</span></label>
+          <input id="groom-name" name="groom_name" type="text" required>
         </div>
         <div class="field">
-          <label for="bride-name">Bride Name</label>
-          <input id="bride-name" name="bride_name" type="text">
+          <label for="bride-name">Bride Name <span class="field-required">*</span></label>
+          <input id="bride-name" name="bride_name" type="text" required>
         </div>
       </div>
       <div class="field-row">
@@ -1189,6 +1215,12 @@ wedding_body = f"""
           <input id="bride-age" name="bride_age" type="number" min="1">
         </div>
       </div>
+      <div class="field">
+        <label for="wedding-date">Date <span class="field-required">*</span></label>
+        <input id="wedding-date" name="date" type="date" required>
+      </div>
+{venue_address_block()}
+{select_field("Estimated Guests", "guests", GUESTS_OPTIONS, required=True, field_id="wedding-guests")}
 {field_group("Booked A Venue?", ["Yes", "Still Looking", "We Need Help"], "booked_venue", hint="")}
 {field_group("Venue Preferences", ["Indoor", "Outdoor", "Panoramic Mountain View", "Beach Sunset", "Private Venue", "Other"], "venue_preferences")}
 {field_group("Entertainment", WEDDING_ENTERTAINMENT, "entertainment")}
@@ -1212,6 +1244,70 @@ wedding_body = f"""
 page("wedding.html", "Plan Your Wedding - Paradream Events",
      "Tell us about the wedding you're planning and Paradream will help bring it to life.",
      wedding_body, current="occasions.html")
+
+
+
+# ── Plan Your Event (general planning brief) ─────────────────
+PLAN_OCCASIONS = [o["title"] for o in CONTENT["occasions"]] + ["Corporate event", "Other"]
+PLAN_NEEDS = ["Full planning and coordination", "Finding a venue", "Décor and styling", "Live show parade", "Oriental zaffah",
+              "Live music and entertainment", "Photo booth", "Characters and mascots", "Fire, LED or circus show",
+              "Inflatable games", "Catering, bar and chocolate", "Invitation cards", "Not sure yet, advise me"]
+PLAN_HEARD = ["Instagram", "TikTok", "Facebook", "Google search", "Friend or family", "Previous client", "Other"]
+
+plan_body = f"""
+<section class="page-head has-photo">
+  <div class="ph-bg" style="background-image:url('{media("images/why-story-team.jpg", 1800)}');background-position:center"></div>
+  <h1>Plan Your Event</h1>
+  <p>Answer a few questions and our team will come back with ideas and a plan that fits.</p>
+</section>
+
+<section class="form-wrap" style="grid-template-columns:1fr;max-width:760px">
+  <div>
+    <p class="form-note">{RESPONSE_NOTE}</p>
+    <form class="form" name="plan-event-enquiry" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="website">
+      <input type="hidden" name="form-name" value="plan-event-enquiry">
+      <p class="hp"><label>Leave empty <input name="website"></label></p>
+
+{name_fields()}
+      <div class="field">
+        <label for="plan-email">Email <span class="field-required">*</span></label>
+        <input id="plan-email" name="email" type="email" required autocomplete="email">
+      </div>
+{phone_field(field_id="plan-phone")}
+{select_field("What are you celebrating?", "occasion", PLAN_OCCASIONS, required=True, field_id="plan-occasion")}
+      <div class="field">
+        <label for="plan-date">Event Date <span class="field-required">*</span></label>
+        <input id="plan-date" name="date" type="date" required>
+      </div>
+{field_group("Is your date flexible?", ["The date is fixed", "Flexible by a few days", "Flexible by a few weeks", "Not decided yet"], "date_flexibility", kind="radio", hint="")}
+{select_field("Estimated Guests", "guests", GUESTS_OPTIONS, required=True, field_id="plan-guests")}
+{field_group("Do you have a venue?", ["Yes, it is booked", "I have options", "Still looking", "I need help finding one"], "venue_status", kind="radio", hint="")}
+{field_group("Venue Preferences", ["Indoor", "Outdoor", "Panoramic mountain view", "Beach sunset", "Private venue", "No preference"], "venue_preferences")}
+      <div class="field">
+        <label for="plan-area">Venue name or area in Lebanon</label>
+        <input id="plan-area" name="venue_area" type="text" placeholder="For example Jounieh, Batroun, Beirut">
+      </div>
+{select_field("Budget Range", "budget", BUDGET_OPTIONS, required=True, field_id="plan-budget")}
+{field_group("What do you need from us?", PLAN_NEEDS, "needs")}
+{field_group("How involved do you want to be?", ["Handle everything for me", "Work on it together", "I only need specific services"], "involvement", kind="radio", hint="")}
+      <div class="field">
+        <label for="plan-theme">Theme, colors or inspiration</label>
+        <textarea id="plan-theme" name="theme" rows="3" placeholder="Share a style, a color palette or a link to inspiration"></textarea>
+      </div>
+      <div class="field">
+        <label for="plan-vision">Tell us about your event</label>
+        <textarea id="plan-vision" name="vision" rows="4" placeholder="What would make this event perfect for you?"></textarea>
+      </div>
+{select_field("How did you hear about us?", "heard_about", PLAN_HEARD, field_id="plan-heard")}
+      <button class="btn btn-solid" type="submit">Send</button>
+    </form>
+  </div>
+</section>
+"""
+
+page("plan-your-event.html", "Plan Your Event - Paradream Events",
+     "Tell Paradream about your event, your guests, venue and budget, and get a plan for your celebration in Lebanon.",
+     plan_body, current="why-paradream.html")
 
 
 # ── Join us ─────────────────────────────────────────────────
