@@ -186,6 +186,7 @@ FOOTER = f"""<footer class="site-footer">
         <li><a href="birthday.html">Birthday</a></li>
         <li><a href="graduation.html">Graduation</a></li>
         <li><a href="christmas.html">Christmas</a></li>
+        <li><a href="corporate.html">Corporate Events</a></li>
       </ul>
     </div>
     <div>
@@ -534,6 +535,7 @@ HOME_BLOCKS = {
             <option>Birthday</option>
             <option>Graduation</option>
             <option>Christmas</option>
+            <option>Corporate Event</option>
             <option>Other</option>
           </select>
         </div>
@@ -648,7 +650,8 @@ DEDICATED_FORMS = {"proposal": "proposal.html", "engagement": "engagement.html",
                     "communion": "communion.html", "baptism": "baptism.html",
                     "birthday": "birthday.html", "christmas": "christmas.html",
                     "gender-reveal": "gender-reveal.html",
-                    "promposal": "promposal.html", "graduation": "graduation.html"}
+                    "promposal": "promposal.html", "graduation": "graduation.html",
+                    "corporate": "corporate.html"}
 
 occ_html = "\n".join(f"""      <article class="occ-card reveal" id="{slug}" style="--d:{(i % 3) * 120}ms">
         <img class="occ-img" style="object-position:{pos}" src="{media(src, 1000)}" alt="{name}" loading="lazy" decoding="async">
@@ -1164,6 +1167,17 @@ page("graduation.html", "Plan Your Graduation - Paradream Events",
                                "graduation_type", kind="radio", hint="")),
      current="occasions.html")
 
+page("corporate.html", "Plan Your Corporate Event - Paradream Events",
+     "Tell us about the corporate event you're planning and Paradream will help bring it to life.",
+     occasion_form("corporate", "Corporate Events", ENGAGEMENT_CHOCOLATE,
+         extra_top="""      <div class="field">
+        <label for="corporate-company">Company Name <span class="field-required">*</span></label>
+        <input id="corporate-company" name="company" type="text" required autocomplete="organization">
+      </div>
+""" + field_group("Type of Event", ["Year-end or Christmas party", "Product launch", "Team building day", "Conference or seminar",
+                                    "Brand activation", "Company anniversary", "Other"], "corporate_event_type")),
+     current="occasions.html")
+
 page("birthday.html", "Plan Your Birthday - Paradream Events",
      "Tell us about the birthday you're planning and Paradream will help bring it to life.",
      occasion_form("birthday", "Birthday", ENGAGEMENT_CHOCOLATE),
@@ -1249,7 +1263,7 @@ page("wedding.html", "Plan Your Wedding - Paradream Events",
 
 
 # ── Plan Your Event (general planning brief) ─────────────────
-PLAN_OCCASIONS = [o["title"] for o in CONTENT["occasions"]] + ["Corporate event", "Other"]
+PLAN_OCCASIONS = [o["title"] for o in CONTENT["occasions"]] + ["Other"]
 PLAN_NEEDS = ["Full planning and coordination", "Finding a venue", "Décor and styling", "Live show parade", "Oriental zaffah",
               "Live music and entertainment", "Photo booth", "Characters and mascots", "Fire, LED or circus show",
               "Inflatable games", "Catering, bar and chocolate", "Invitation cards", "Not sure yet, advise me"]

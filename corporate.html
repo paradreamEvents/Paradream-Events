@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Plan Your Bachelor Party - Paradream Events</title>
-<meta name="description" content="Tell us about the bachelor party you're planning and Paradream will help bring it to life.">
-<meta property="og:title" content="Plan Your Bachelor Party - Paradream Events">
-<meta property="og:description" content="Tell us about the bachelor party you're planning and Paradream will help bring it to life.">
+<title>Plan Your Corporate Event - Paradream Events</title>
+<meta name="description" content="Tell us about the corporate event you're planning and Paradream will help bring it to life.">
+<meta property="og:title" content="Plan Your Corporate Event - Paradream Events">
+<meta property="og:description" content="Tell us about the corporate event you're planning and Paradream will help bring it to life.">
 <meta property="og:image" content="https://paradreamlb.com/images/og-image.jpg">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#ffffff">
@@ -42,15 +42,15 @@
 <main id="main">
 
 <section class="page-head has-photo">
-  <div class="ph-bg" style="background-image:url('/.netlify/images?url=/images/occasion-bachelor.jpg&amp;w=1800&amp;fit=cover&amp;q=90&amp;v=13d43422');background-position:center 32%"></div>
-  <h1>Bachelor</h1>
+  <div class="ph-bg" style="background-image:url('/.netlify/images?url=/images/occasion-corporate.jpg&amp;w=1800&amp;fit=cover&amp;q=90&amp;v=39a9dcfd');background-position:center 45%"></div>
+  <h1>Corporate Events</h1>
 </section>
 
 <section class="form-wrap" style="grid-template-columns:1fr;max-width:760px">
   <div>
     <p class="form-note">We will receive your form submission shortly, and our team will carefully review the details. You can expect a response from us within <strong>24 to 48 hours</strong>.<br>If your request is urgent, feel free to contact us directly via phone or email.</p>
-    <form class="form" name="bachelor-enquiry" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="website">
-      <input type="hidden" name="form-name" value="bachelor-enquiry">
+    <form class="form" name="corporate-enquiry" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="website">
+      <input type="hidden" name="form-name" value="corporate-enquiry">
       <p class="hp"><label>Leave empty <input name="website"></label></p>
 
     <div class="field">
@@ -61,8 +61,8 @@
       </div>
     </div>
       <div class="field">
-        <label for="bachelor-date">Date <span class="field-required">*</span></label>
-        <input id="bachelor-date" name="date" type="date" required>
+        <label for="corporate-date">Date <span class="field-required">*</span></label>
+        <input id="corporate-date" name="date" type="date" required>
       </div>
   <div class="field-group">
     <p class="fg-label">Venue Address</p>
@@ -98,8 +98,8 @@
     </div>
   </div>
     <div class="field">
-      <label for="bachelor-guests">Estimated Guests <span class="field-required">*</span></label>
-      <select id="bachelor-guests" name="guests" required>
+      <label for="corporate-guests">Estimated Guests <span class="field-required">*</span></label>
+      <select id="corporate-guests" name="guests" required>
         <option value="" selected disabled>Select an option</option>
         <option>Under 20</option>
         <option>20-50</option>
@@ -109,7 +109,23 @@
         <option>300+</option>
       </select>
     </div>
-
+      <div class="field">
+        <label for="corporate-company">Company Name <span class="field-required">*</span></label>
+        <input id="corporate-company" name="company" type="text" required autocomplete="organization">
+      </div>
+  <div class="field-group">
+    <p class="fg-label">Type of Event</p>
+    <p class="fg-hint">Feel free to choose all options that apply.</p>
+    <div class="field-checks">
+      <label><input type="checkbox" name="corporate_event_type" value="Year-end or Christmas party">Year-end or Christmas party</label>
+      <label><input type="checkbox" name="corporate_event_type" value="Product launch">Product launch</label>
+      <label><input type="checkbox" name="corporate_event_type" value="Team building day">Team building day</label>
+      <label><input type="checkbox" name="corporate_event_type" value="Conference or seminar">Conference or seminar</label>
+      <label><input type="checkbox" name="corporate_event_type" value="Brand activation">Brand activation</label>
+      <label><input type="checkbox" name="corporate_event_type" value="Company anniversary">Company anniversary</label>
+      <label><input type="checkbox" name="corporate_event_type" value="Other">Other</label>
+    </div>
+  </div>
   <div class="field-group">
     <p class="fg-label">Chocolate and Decoration</p>
     <p class="fg-hint">Feel free to choose all options that apply.</p>
@@ -151,8 +167,8 @@
     </div>
   </div>
     <div class="field">
-      <label for="bachelor-catering">Catering Selection</label>
-      <select id="bachelor-catering" name="catering">
+      <label for="corporate-catering">Catering Selection</label>
+      <select id="corporate-catering" name="catering">
         <option value="" selected disabled>Select an option</option>
         <option>Not needed</option>
         <option>Light snacks</option>
@@ -162,8 +178,8 @@
       </select>
     </div>
     <div class="field">
-      <label for="bachelor-budget">Budget Range <span class="field-required">*</span></label>
-      <select id="bachelor-budget" name="budget" required>
+      <label for="corporate-budget">Budget Range <span class="field-required">*</span></label>
+      <select id="corporate-budget" name="budget" required>
         <option value="" selected disabled>Select an option</option>
         <option>Under $500</option>
         <option>$500-$1,000</option>
@@ -174,11 +190,11 @@
       </select>
     </div>
       <div class="field">
-        <label for="bachelor-email">Email</label>
-        <input id="bachelor-email" name="email" type="email" autocomplete="email">
+        <label for="corporate-email">Email</label>
+        <input id="corporate-email" name="email" type="email" autocomplete="email">
       </div>
     <div class="field">
-      <label for="bachelor-phone">Phone <span class="field-required">*</span></label>
+      <label for="corporate-phone">Phone <span class="field-required">*</span></label>
       <div class="phone-field">
         <select name="phone_code" aria-label="Country code">
           <option value="+961" selected>LB +961</option>
@@ -188,12 +204,12 @@
           <option value="+1">US/CA +1</option>
           <option value="+44">UK +44</option>
         </select>
-        <input id="bachelor-phone" name="phone" type="tel" required autocomplete="tel">
+        <input id="corporate-phone" name="phone" type="tel" required autocomplete="tel">
       </div>
     </div>
       <div class="field">
-        <label for="bachelor-notes">Special Instructions</label>
-        <textarea id="bachelor-notes" name="notes" rows="4"></textarea>
+        <label for="corporate-notes">Special Instructions</label>
+        <textarea id="corporate-notes" name="notes" rows="4"></textarea>
       </div>
       <button class="btn btn-solid" type="submit">Send</button>
     </form>

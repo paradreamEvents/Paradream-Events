@@ -621,6 +621,13 @@
       "image": "images/hero-christmas.jpg",
       "text": "Christmas is the dreaming season, and Christmas is better together! Music at Christmas time is like no other, enchanting hearts and weaving joy into the air. P.S: Ask Santa Claus for Paradream!",
       "head_position": "center 42%"
+    },
+    {
+      "slug": "corporate",
+      "title": "Corporate Events",
+      "image": "images/occasion-corporate.jpg",
+      "text": "From year-end parties and product launches to team days and brand activations, we plan corporate events that energize your people and reflect your brand, with entertainment, décor and logistics handled end to end.",
+      "head_position": "center 45%"
     }
   ],
   "testimonials": [
