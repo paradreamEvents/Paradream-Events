@@ -426,9 +426,57 @@
         "images/svc-photobooth-11.jpg",
         "images/svc-photobooth-12.jpg",
         "images/svc-photobooth-13.jpg",
-        "images/svc-photobooth-14.jpg"
+        "images/svc-photobooth-14.jpg",
+        "images/svc-photobooth-15.jpg",
+        "images/svc-photobooth-16.jpg",
+        "images/svc-photobooth-17.jpg",
+        "images/svc-photobooth-18.jpg",
+        "images/svc-photobooth-19.jpg",
+        "images/svc-photobooth-20.jpg",
+        "images/svc-photobooth-21.jpg",
+        "images/svc-photobooth-22.jpg",
+        "images/svc-photobooth-23.jpg",
+        "images/svc-photobooth-24.jpg"
       ],
-      "book": "contact-us.html"
+      "book": "contact-us.html",
+      "groups": [
+        "Photobooth & Backdrops",
+        "Games"
+      ],
+      "photo_groups": {
+        "images/svc-photobooth-1.jpg": "Photobooth & Backdrops",
+        "images/svc-photobooth-2.jpg": "Photobooth & Backdrops",
+        "images/svc-photobooth-3.jpg": "Photobooth & Backdrops",
+        "images/svc-photobooth-4.jpg": "Photobooth & Backdrops",
+        "images/svc-photobooth-5.jpg": "Photobooth & Backdrops",
+        "images/svc-photobooth-6.jpg": "Photobooth & Backdrops",
+        "images/svc-photobooth-7.jpg": "Photobooth & Backdrops",
+        "images/svc-photobooth-8.jpg": "Photobooth & Backdrops",
+        "images/svc-photobooth-9.jpg": "Photobooth & Backdrops",
+        "images/svc-photobooth-10.jpg": "Photobooth & Backdrops",
+        "images/svc-photobooth-11.jpg": "Photobooth & Backdrops",
+        "images/svc-photobooth-12.jpg": "Photobooth & Backdrops",
+        "images/svc-photobooth-13.jpg": "Photobooth & Backdrops",
+        "images/svc-photobooth-14.jpg": "Photobooth & Backdrops",
+        "images/svc-photobooth-15.jpg": "Games",
+        "images/svc-photobooth-16.jpg": "Games",
+        "images/svc-photobooth-17.jpg": "Games",
+        "images/svc-photobooth-18.jpg": "Games",
+        "images/svc-photobooth-19.jpg": "Games",
+        "images/svc-photobooth-20.jpg": "Games",
+        "images/svc-photobooth-21.jpg": "Games",
+        "images/svc-photobooth-22.jpg": "Games",
+        "images/svc-photobooth-23.jpg": "Games",
+        "images/svc-photobooth-24.jpg": "Games"
+      },
+      "group_covers": {
+        "Photobooth & Backdrops": "images/svc-photobooth-3.jpg",
+        "Games": "images/svc-photobooth-20.jpg"
+      },
+      "group_blurbs": {
+        "Photobooth & Backdrops": "Photo booths, mirror booths and styled backdrops for your guests.",
+        "Games": "Lawn games and party games to keep guests entertained all night."
+      }
     },
     {
       "title": "Characters & LED Mascots",
