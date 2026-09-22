@@ -127,7 +127,12 @@ def media(src, w):
         return ""
     return cdn(src, w) if src.startswith("images/") else src
 
-def cdn(path, w, extra="&amp;fit=cover&amp;q=90"):
+def cdn(path, w, extra="&amp;q=90"):
+    # No "fit=cover" here: without a matching "h=", Netlify's image CDN crops
+    # to the SOURCE image's native height instead of scaling proportionally,
+    # which over-zoomed every photo whose height is large relative to the
+    # requested width. CSS (object-fit:cover / background-size:cover) already
+    # does the real cropping client-side from a correctly-scaled image.
     return f"/.netlify/images?url=/{path}&amp;w={w}{extra}&amp;v={stamp(path)}"
 
 def responsive(path, alt, sizes, widths, ratio_w, ratio_h, cls=""):
