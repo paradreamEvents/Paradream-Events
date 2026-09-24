@@ -718,7 +718,11 @@
         "images/svc-catering-chocolate-6.jpg",
         "images/svc-catering-chocolate-7.jpg",
         "images/svc-catering-chocolate-8.jpg",
-        "images/svc-catering-chocolate-9.jpg"
+        "images/svc-catering-chocolate-9.jpg",
+        "images/svc-catering-chocolate-10.jpg",
+        "images/svc-catering-chocolate-11.jpg",
+        "images/svc-catering-chocolate-12.jpg",
+        "images/svc-catering-chocolate-13.jpg"
       ],
       "book": "contact-us.html",
       "groups": [
@@ -771,7 +775,11 @@
         "images/svc-catering-chocolate-6.jpg": "Chocolate",
         "images/svc-catering-chocolate-7.jpg": "Chocolate",
         "images/svc-catering-chocolate-8.jpg": "Chocolate",
-        "images/svc-catering-chocolate-9.jpg": "Chocolate"
+        "images/svc-catering-chocolate-9.jpg": "Chocolate",
+        "images/svc-catering-chocolate-10.jpg": "Chocolate",
+        "images/svc-catering-chocolate-11.jpg": "Chocolate",
+        "images/svc-catering-chocolate-12.jpg": "Chocolate",
+        "images/svc-catering-chocolate-13.jpg": "Chocolate"
       },
       "group_covers": {
         "Catering": "images/svc-catering-catering-1.jpg",
