@@ -867,10 +867,13 @@
         }
       ],
       "photos": [
-        "images/svc-roaming-1.jpg",
-        "images/svc-roaming-2.jpg",
-        "images/svc-roaming-3.jpg",
-        "images/svc-roaming-4.jpg"
+        "images/svc-roaming-hd-1.jpg",
+        "images/svc-roaming-hd-2.jpg",
+        "images/svc-roaming-hd-3.jpg",
+        "images/svc-roaming-hd-4.jpg",
+        "images/svc-roaming-hd-5.jpg",
+        "images/svc-roaming-hd-6.jpg",
+        "images/svc-roaming-hd-7.jpg"
       ],
       "book": "contact-us.html"
     },
