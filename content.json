@@ -1017,7 +1017,18 @@
         "images/svc-family-birthday-7.jpg",
         "images/svc-family-birthday-8.jpg",
         "images/svc-family-birthday-9.jpg",
-        "images/svc-family-birthday-10.jpg"
+        "images/svc-family-birthday-10.jpg",
+        "images/svc-family-gender-1.jpg",
+        "images/svc-family-gender-2.jpg",
+        "images/svc-family-gender-3.jpg",
+        "images/svc-family-gender-4.jpg",
+        "images/svc-family-gender-5.jpg",
+        "images/svc-family-gender-6.jpg",
+        "images/svc-family-gender-7.jpg",
+        "images/svc-family-gender-8.jpg",
+        "images/svc-family-gender-9.jpg",
+        "images/svc-family-gender-10.jpg",
+        "images/svc-family-gender-11.jpg"
       ],
       "book": "occasions.html",
       "groups": [
@@ -1058,12 +1069,24 @@
         "images/svc-family-birthday-7.jpg": "Birthday",
         "images/svc-family-birthday-8.jpg": "Birthday",
         "images/svc-family-birthday-9.jpg": "Birthday",
-        "images/svc-family-birthday-10.jpg": "Birthday"
+        "images/svc-family-birthday-10.jpg": "Birthday",
+        "images/svc-family-gender-1.jpg": "Gender Reveal",
+        "images/svc-family-gender-2.jpg": "Gender Reveal",
+        "images/svc-family-gender-3.jpg": "Gender Reveal",
+        "images/svc-family-gender-4.jpg": "Gender Reveal",
+        "images/svc-family-gender-5.jpg": "Gender Reveal",
+        "images/svc-family-gender-6.jpg": "Gender Reveal",
+        "images/svc-family-gender-7.jpg": "Gender Reveal",
+        "images/svc-family-gender-8.jpg": "Gender Reveal",
+        "images/svc-family-gender-9.jpg": "Gender Reveal",
+        "images/svc-family-gender-10.jpg": "Gender Reveal",
+        "images/svc-family-gender-11.jpg": "Gender Reveal"
       },
       "group_covers": {
         "Baptisms": "images/svc-family-baptism-3.jpg",
         "First Communion": "images/svc-family-communion-2.jpg",
-        "Birthday": "images/svc-family-birthday-1.jpg"
+        "Birthday": "images/svc-family-birthday-1.jpg",
+        "Gender Reveal": "images/svc-family-gender-1.jpg"
       },
       "group_blurbs": {
         "Baptisms": "Holy Baptism backdrops, favors and sweet tables",
