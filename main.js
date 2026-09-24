@@ -658,7 +658,7 @@
   openBtn.addEventListener("click", openEnv);
   replay.addEventListener("click", closeEnv);
   stage.addEventListener("click", function (e) { if (e.target === stage) openEnv(); });
-  ["pointerdown", "focusin"].forEach(function (ev) {
+  ["pointerdown", "click", "focusin"].forEach(function (ev) {
     [q(".ivs-bar"), q(".ivs-fields")].forEach(function (el) { el.addEventListener(ev, openEnv); });
   });
   setState("is-closed");
