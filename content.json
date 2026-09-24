@@ -1464,7 +1464,7 @@
   "invitation": {
     "eyebrow": "Invitation Cards",
     "title": "Invitations That Feel Like the Real Thing",
-    "text": "Digital or printed, every invitation is designed around your celebration. Tap the envelope to see how yours will open.",
+    "text": "Digital or printed, every invitation is designed around your celebration. Choose a format and a style, add your details, and watch your invitation take shape.",
     "types": [
       "Digital invitation, ready to share on WhatsApp or email",
       "Printed invitation card",
@@ -1472,8 +1472,8 @@
       "Thank-you cards and return gifts (cadeaux de retour)",
       "Fully customized design"
     ],
-    "example_label": "Example — this is how your invitation will look",
-    "hint": "Tap the envelope to open",
+    "example_label": "Live preview - design yours",
+    "hint": "Your choices are sent with your request, so we can start your design right away.",
     "cta": "Request Your Invitation",
     "card": {
       "cover_top": "Save the date",

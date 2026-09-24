@@ -1127,19 +1127,17 @@ function invitationPreview() {
     '<div class="invite-copy">' + ed("invitation.eyebrow", "p", "eyebrow", I.eyebrow) +
     ed("invitation.title", "h2", "", I.title) + ed("invitation.text", "p", "lede", I.text) +
     '<ul class="invite-types">' + types + "</ul>" +
-    '<span class="btn btn-solid">' + ed("invitation.cta", "span", "", I.cta) + "</span></div>" +
-    '<div class="invite-stage-wrap"><p class="invite-example">' + ed("invitation.example_label", "span", "", I.example_label) + "</p>" +
-    '<div class="invite-stage is-open is-spread"><div class="invite-env" style="animation:none;pointer-events:auto">' +
-    '<span class="env-book"><span class="bk-right">' +
-    '<span class="ph-mono">P</span>' + ed("invitation.card.kicker", "span", "inv-kicker", c.kicker) +
-    ed("invitation.card.names", "span", "inv-names", c.names) + ed("invitation.card.line", "span", "inv-line", c.line) +
-    '<span class="inv-rule"></span>' + ed("invitation.card.date", "span", "inv-date", c.date) +
-    ed("invitation.card.venue", "span", "inv-venue", c.venue) + ed("invitation.card.rsvp", "span", "inv-rsvp", c.rsvp) +
-    '</span><span class="bk-cover"><span class="cv-front">' +
-    ed("invitation.card.cover_top", "span", "cv-top", c.cover_top) + ed("invitation.card.cover_names", "span", "cv-names", c.cover_names) +
-    ed("invitation.card.cover_bottom", "span", "cv-bottom", c.cover_bottom) + '</span><span class="cv-back">' +
-    ed("invitation.card.left_top", "span", "cv-lt", c.left_top) + ed("invitation.card.left_text", "span", "cv-lx", c.left_text) +
-    "</span></span></span></div></div></div></div></section>";
+    '<span class="btn btn-solid">' + ed("invitation.cta", "span", "", I.cta) + "</span>" +
+    '<p class="invite-note">' + ed("invitation.hint", "span", "", I.hint) + "</p></div>" +
+    '<div class="invite-studio"><p class="invite-example">' + ed("invitation.example_label", "span", "", I.example_label) + "</p>" +
+    '<div class="ivs-bar"><div class="ivs-tabs"><button type="button" aria-selected="false">Digital</button><button type="button" aria-selected="true">Printed</button><button type="button" aria-selected="false">Plexi</button></div>' +
+    '<div class="ivs-themes"><span>Style</span><button type="button" data-t="ivory" aria-pressed="true"></button><button type="button" data-t="blush" aria-pressed="false"></button><button type="button" data-t="midnight" aria-pressed="false"></button><button type="button" data-t="sage" aria-pressed="false"></button></div></div>' +
+    '<div class="ivs-stage" data-format="printed" data-theme="ivory"><div class="ivs-frame"><div class="ivs-card"><div class="ivs-in">' +
+    '<span class="ivs-mono">A&amp;M</span>' + ed("invitation.card.kicker", "span", "ivs-kicker", c.kicker) +
+    ed("invitation.card.names", "span", "ivs-names", c.names) + ed("invitation.card.line", "span", "ivs-line", c.line) +
+    '<span class="ivs-rule"><i></i></span>' + ed("invitation.card.date", "span", "ivs-date", c.date) +
+    ed("invitation.card.venue", "span", "ivs-venue", c.venue) + ed("invitation.card.rsvp", "span", "ivs-rsvp", c.rsvp) +
+    "</div></div></div></div></div></div></div></section>";
 }
 
 function renderServiceDetail(i) {

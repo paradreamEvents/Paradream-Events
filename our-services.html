@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=3e6f8981">
+<link rel="stylesheet" href="styles.css?v=10090501">
 
 
 </head>
@@ -178,7 +178,7 @@
     <div class="invite-copy reveal">
       <p class="eyebrow">Invitation Cards</p>
       <h2>Invitations That Feel Like the Real Thing</h2>
-      <p class="lede">Digital or printed, every invitation is designed around your celebration. Tap the envelope to see how yours will open.</p>
+      <p class="lede">Digital or printed, every invitation is designed around your celebration. Choose a format and a style, add your details, and watch your invitation take shape.</p>
       <ul class="invite-types">
         <li>Digital invitation, ready to share on WhatsApp or email</li>
         <li>Printed invitation card</li>
@@ -186,41 +186,49 @@
         <li>Thank-you cards and return gifts (cadeaux de retour)</li>
         <li>Fully customized design</li>
       </ul>
-      <a class="btn btn-solid" href="contact-us.html">Request Your Invitation</a>
+      <a class="btn btn-solid" href="contact-us.html" data-invite-cta>Request Your Invitation</a>
+      <p class="invite-note">Your choices are sent with your request, so we can start your design right away.</p>
     </div>
-    <div class="invite-stage-wrap reveal reveal-d1">
-      <p class="invite-example">Example — this is how your invitation will look</p>
-      <div class="invite-stage" data-invite>
-        <button class="invite-env" type="button" aria-expanded="false" aria-label="Open the example invitation">
-          <span class="env-back"></span>
-          <span class="env-book">
-            <span class="bk-right">
-              <span class="ph-mono">P</span>
-              <span class="inv-kicker">You&#x27;re invited</span>
-              <span class="inv-names">Adam &amp; Maya</span>
-              <span class="inv-line">invite you to celebrate their wedding</span>
-              <span class="inv-rule"></span>
-              <span class="inv-date">Saturday, 14 June 2026 · 7:00 PM</span>
-              <span class="inv-venue">The Garden Terrace, Jounieh</span>
-              <span class="inv-rsvp">Kindly reply by 1 June</span>
-            </span>
-            <span class="bk-cover">
-              <span class="cv-front">
-                <span class="cv-top">Save the date</span>
-                <span class="cv-names">A &amp; M</span>
-                <span class="cv-bottom">Together with their families</span>
-              </span>
-              <span class="cv-back">
-                <span class="cv-lt">With love</span>
-                <span class="cv-lx">Your story, your colors, your design.</span>
-              </span>
-            </span>
-          </span>
-          <span class="env-front"></span>
-          <span class="env-flap"></span>
-          <span class="env-seal">P</span>
-        </button>
-        <p class="invite-hint">Tap the envelope to open</p>
+    <div class="invite-studio reveal reveal-d1" data-invite data-occasions="{&quot;Wedding&quot;: {&quot;kicker&quot;: &quot;You&#x27;re invited&quot;, &quot;line&quot;: &quot;invite you to celebrate their wedding&quot;}, &quot;Engagement&quot;: {&quot;kicker&quot;: &quot;You&#x27;re invited&quot;, &quot;line&quot;: &quot;invite you to celebrate their engagement&quot;}, &quot;Birthday&quot;: {&quot;kicker&quot;: &quot;Join us&quot;, &quot;line&quot;: &quot;invites you to celebrate a birthday&quot;}, &quot;Baptism&quot;: {&quot;kicker&quot;: &quot;With great joy&quot;, &quot;line&quot;: &quot;invite you to the baptism celebration&quot;}, &quot;First Communion&quot;: {&quot;kicker&quot;: &quot;With great joy&quot;, &quot;line&quot;: &quot;invite you to a first communion celebration&quot;}, &quot;Graduation&quot;: {&quot;kicker&quot;: &quot;You&#x27;re invited&quot;, &quot;line&quot;: &quot;invites you to celebrate a graduation&quot;}}">
+      <p class="invite-example">Live preview - design yours</p>
+      <div class="ivs-bar">
+        <div class="ivs-tabs" role="group" aria-label="Invitation format">
+          <button type="button" data-f="digital" aria-selected="false">Digital</button>
+          <button type="button" data-f="printed" aria-selected="true">Printed</button>
+          <button type="button" data-f="plexi" aria-selected="false">Plexi</button>
+        </div>
+        <div class="ivs-themes" role="group" aria-label="Invitation style">
+          <span>Style</span>
+          <button type="button" data-t="ivory" aria-pressed="true" aria-label="Ivory and gold" title="Ivory &amp; Gold"></button>
+          <button type="button" data-t="blush" aria-pressed="false" aria-label="Blush rose" title="Blush Rose"></button>
+          <button type="button" data-t="midnight" aria-pressed="false" aria-label="Midnight gold" title="Midnight Gold"></button>
+          <button type="button" data-t="sage" aria-pressed="false" aria-label="Sage garden" title="Sage Garden"></button>
+        </div>
+      </div>
+      <div class="ivs-stage" data-format="printed" data-theme="ivory">
+        <div class="ivs-frame">
+          <div class="ivs-phonebar"><i>P</i><b>Paradream<small>online</small></b></div>
+          <div class="ivs-card">
+            <div class="ivs-in">
+              <span class="ivs-mono" data-out="mono">A&amp;M</span>
+              <span class="ivs-kicker" data-out="kicker">You&#x27;re invited</span>
+              <span class="ivs-names" data-out="names">Adam &amp; Maya</span>
+              <span class="ivs-line" data-out="line">invite you to celebrate their wedding</span>
+              <span class="ivs-rule"><i></i></span>
+              <span class="ivs-date" data-out="date">Saturday, 14 June 2026 · 7:00 PM</span>
+              <span class="ivs-venue" data-out="venue">The Garden Terrace, Jounieh</span>
+              <span class="ivs-rsvp">Kindly reply by 1 June</span>
+            </div>
+          </div>
+          <div class="ivs-phonecta">Open invitation</div>
+          <span class="ivs-screw s1"></span><span class="ivs-screw s2"></span><span class="ivs-screw s3"></span><span class="ivs-screw s4"></span>
+        </div>
+      </div>
+      <div class="ivs-fields">
+        <label>Occasion<select id="ivs-occ"><option>Wedding</option><option>Engagement</option><option>Birthday</option><option>Baptism</option><option>First Communion</option><option>Graduation</option></select></label>
+        <label>Names<input id="ivs-names" type="text" maxlength="40" value="Adam &amp; Maya" autocomplete="off"></label>
+        <label class="wide">Date and time<input id="ivs-date" type="text" maxlength="60" value="Saturday, 14 June 2026 · 7:00 PM" autocomplete="off"></label>
+        <label class="wide">Venue<input id="ivs-venue" type="text" maxlength="60" value="The Garden Terrace, Jounieh" autocomplete="off"></label>
       </div>
     </div>
   </div>
@@ -334,6 +342,6 @@
 </div>
 
 <script>var PRICING = {"currency": "$", "staff": {"ratePerPerson": [65, 65], "guestsPerStaff": 10}, "coordination": [0.3, 0.4], "outsideBeirut": [100, 300], "services": {"zaffah": {"label": "Oriental Zaffah", "type": "unit", "price": [65, 65], "unit": "musicians", "def": 6, "max": 20}, "parade": {"label": "Live Show Parade", "type": "unit", "price": [65, 65], "unit": "performers", "def": 8, "max": 25}, "catering": {"label": "Catering", "type": "guest", "price": [65, 90]}, "booth": {"label": "Photo Booth", "type": "flat", "price": [500, 500]}, "mascots": {"label": "Characters & Mascots", "type": "unit", "price": [120, 200], "unit": "mascots", "def": 2, "max": 8}, "circus": {"label": "Circus Show", "type": "unit", "price": [250, 250], "unit": "performers", "def": 2, "max": 8}, "inflate": {"label": "Inflatable Games", "type": "unit", "price": [200, 250], "unit": "games", "def": 2, "max": 8}, "tables": {"label": "Table Decoration", "type": "flat", "price": [500, 2000]}, "santa": {"label": "Christmas Mascots", "type": "unit", "price": [300, 400], "unit": "characters", "def": 1, "max": 5}}};</script>
-<script src="main.js?v=bfce7131"></script>
+<script src="main.js?v=d7f715bc"></script>
 </body>
 </html>

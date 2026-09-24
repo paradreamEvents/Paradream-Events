@@ -708,6 +708,16 @@ def invitation_html():
         return ""
     c = INV["card"]
     types = "\n".join(f'        <li>{_e(t)}</li>' for t in INV["types"])
+    occasions = {
+        "Wedding": {"kicker": c["kicker"], "line": c["line"]},
+        "Engagement": {"kicker": "You're invited", "line": "invite you to celebrate their engagement"},
+        "Birthday": {"kicker": "Join us", "line": "invites you to celebrate a birthday"},
+        "Baptism": {"kicker": "With great joy", "line": "invite you to the baptism celebration"},
+        "First Communion": {"kicker": "With great joy", "line": "invite you to a first communion celebration"},
+        "Graduation": {"kicker": "You're invited", "line": "invites you to celebrate a graduation"},
+    }
+    opts = "".join(f'<option>{_e(k)}</option>' for k in occasions)
+    occ_json = _e(json.dumps(occasions, ensure_ascii=False))
     return f"""
 <section class="band invite" id="invitations">
   <div class="invite-inner">
@@ -718,45 +728,54 @@ def invitation_html():
       <ul class="invite-types">
 {types}
       </ul>
-      <a class="btn btn-solid" href="contact-us.html">{_e(INV["cta"])}</a>
+      <a class="btn btn-solid" href="contact-us.html" data-invite-cta>{_e(INV["cta"])}</a>
+      <p class="invite-note">{_e(INV["hint"])}</p>
     </div>
-    <div class="invite-stage-wrap reveal reveal-d1">
+    <div class="invite-studio reveal reveal-d1" data-invite data-occasions="{occ_json}">
       <p class="invite-example">{_e(INV["example_label"])}</p>
-      <div class="invite-stage" data-invite>
-        <button class="invite-env" type="button" aria-expanded="false" aria-label="Open the example invitation">
-          <span class="env-back"></span>
-          <span class="env-book">
-            <span class="bk-right">
-              <span class="ph-mono">P</span>
-              <span class="inv-kicker">{_e(c["kicker"])}</span>
-              <span class="inv-names">{_e(c["names"])}</span>
-              <span class="inv-line">{_e(c["line"])}</span>
-              <span class="inv-rule"></span>
-              <span class="inv-date">{_e(c["date"])}</span>
-              <span class="inv-venue">{_e(c["venue"])}</span>
-              <span class="inv-rsvp">{_e(c["rsvp"])}</span>
-            </span>
-            <span class="bk-cover">
-              <span class="cv-front">
-                <span class="cv-top">{_e(c["cover_top"])}</span>
-                <span class="cv-names">{_e(c["cover_names"])}</span>
-                <span class="cv-bottom">{_e(c["cover_bottom"])}</span>
-              </span>
-              <span class="cv-back">
-                <span class="cv-lt">{_e(c["left_top"])}</span>
-                <span class="cv-lx">{_e(c["left_text"])}</span>
-              </span>
-            </span>
-          </span>
-          <span class="env-front"></span>
-          <span class="env-flap"></span>
-          <span class="env-seal">P</span>
-        </button>
-        <p class="invite-hint">{_e(INV["hint"])}</p>
+      <div class="ivs-bar">
+        <div class="ivs-tabs" role="group" aria-label="Invitation format">
+          <button type="button" data-f="digital" aria-selected="false">Digital</button>
+          <button type="button" data-f="printed" aria-selected="true">Printed</button>
+          <button type="button" data-f="plexi" aria-selected="false">Plexi</button>
+        </div>
+        <div class="ivs-themes" role="group" aria-label="Invitation style">
+          <span>Style</span>
+          <button type="button" data-t="ivory" aria-pressed="true" aria-label="Ivory and gold" title="Ivory &amp; Gold"></button>
+          <button type="button" data-t="blush" aria-pressed="false" aria-label="Blush rose" title="Blush Rose"></button>
+          <button type="button" data-t="midnight" aria-pressed="false" aria-label="Midnight gold" title="Midnight Gold"></button>
+          <button type="button" data-t="sage" aria-pressed="false" aria-label="Sage garden" title="Sage Garden"></button>
+        </div>
+      </div>
+      <div class="ivs-stage" data-format="printed" data-theme="ivory">
+        <div class="ivs-frame">
+          <div class="ivs-phonebar"><i>P</i><b>Paradream<small>online</small></b></div>
+          <div class="ivs-card">
+            <div class="ivs-in">
+              <span class="ivs-mono" data-out="mono">A&amp;M</span>
+              <span class="ivs-kicker" data-out="kicker">{_e(c["kicker"])}</span>
+              <span class="ivs-names" data-out="names">{_e(c["names"])}</span>
+              <span class="ivs-line" data-out="line">{_e(c["line"])}</span>
+              <span class="ivs-rule"><i></i></span>
+              <span class="ivs-date" data-out="date">{_e(c["date"])}</span>
+              <span class="ivs-venue" data-out="venue">{_e(c["venue"])}</span>
+              <span class="ivs-rsvp">{_e(c["rsvp"])}</span>
+            </div>
+          </div>
+          <div class="ivs-phonecta">Open invitation</div>
+          <span class="ivs-screw s1"></span><span class="ivs-screw s2"></span><span class="ivs-screw s3"></span><span class="ivs-screw s4"></span>
+        </div>
+      </div>
+      <div class="ivs-fields">
+        <label>Occasion<select id="ivs-occ">{opts}</select></label>
+        <label>Names<input id="ivs-names" type="text" maxlength="40" value="{_e(c["names"])}" autocomplete="off"></label>
+        <label class="wide">Date and time<input id="ivs-date" type="text" maxlength="60" value="{_e(c["date"])}" autocomplete="off"></label>
+        <label class="wide">Venue<input id="ivs-venue" type="text" maxlength="60" value="{_e(c["venue"])}" autocomplete="off"></label>
       </div>
     </div>
   </div>
 </section>"""
+
 
 page("our-services.html", "Our Services - Paradream Events",
      "Full event planning, live show parades, oriental zaffah, photo booths, mascots, fire and LED shows, décor, catering and entertainment by Paradream Events in Lebanon.",

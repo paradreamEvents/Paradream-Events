@@ -618,34 +618,92 @@
   }
 })();
 
-/* Invitation showcase: click the envelope → flap opens, card rises, then unfolds */
+/* Invitation studio: pick a format and style, type your details, watch the card update live */
 (function () {
-  var stage = document.querySelector("[data-invite]");
-  if (!stage) return;
-  var env = stage.querySelector(".invite-env");
-  var hint = stage.querySelector(".invite-hint");
-  var timer = null;
-  env.addEventListener("click", function () {
-    clearTimeout(timer);
-    var opening = !stage.classList.contains("is-open");
-    if (opening) {
-      var rr = env.getBoundingClientRect();
-      if (window.pdConfetti) window.pdConfetti(rr.left + rr.width / 2, rr.top + rr.height / 2, 46);
-      stage.classList.add("is-open");
-      env.setAttribute("aria-expanded", "true");
-      timer = setTimeout(function () {
-        stage.classList.add("is-spread");
-        if (hint) hint.textContent = "Tap to close";
-      }, 950);
-    } else {
-      stage.classList.remove("is-spread");
-      if (hint) hint.textContent = "Tap the envelope to open";
-      timer = setTimeout(function () {
-        stage.classList.remove("is-open");
-        env.setAttribute("aria-expanded", "false");
-      }, 900);
+  var studio = document.querySelector("[data-invite]");
+  if (!studio) return;
+  var stage = studio.querySelector(".ivs-stage");
+  var frame = studio.querySelector(".ivs-frame");
+  var occ = {};
+  try { occ = JSON.parse(studio.getAttribute("data-occasions") || "{}"); } catch (e) {}
+  var q = function (s) { return studio.querySelector(s); };
+  var inp = { occ: q("#ivs-occ"), names: q("#ivs-names"), date: q("#ivs-date"), venue: q("#ivs-venue") };
+  var out = { mono: q('[data-out="mono"]'), kicker: q('[data-out="kicker"]'), names: q('[data-out="names"]'),
+    line: q('[data-out="line"]'), date: q('[data-out="date"]'), venue: q('[data-out="venue"]') };
+  var cta = document.querySelector("[data-invite-cta]");
+  var fmtNames = { digital: "Digital invitation", printed: "Printed card", plexi: "Plexi / board card" };
+  var themeNames = { ivory: "Ivory & Gold", blush: "Blush Rose", midnight: "Midnight Gold", sage: "Sage Garden" };
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function monogram(s) {
+    var parts = s.split(/\s*(?:&|\+|,|\band\b)\s*/i).filter(function (p) { return p.trim(); });
+    var l = parts.slice(0, 2).map(function (p) { return p.trim().charAt(0).toUpperCase(); });
+    return l.length ? l.join("&") : "P";
+  }
+  function update() {
+    var o = occ[inp.occ.value] || {};
+    var names = inp.names.value.trim();
+    out.kicker.textContent = o.kicker || "";
+    out.line.textContent = o.line || "";
+    out.names.textContent = names || "Your names";
+    out.mono.textContent = monogram(names);
+    out.date.textContent = inp.date.value.trim() || "Date and time";
+    out.venue.textContent = inp.venue.value.trim() || "Venue";
+    if (cta) {
+      var msg = "Invitation request - " + inp.occ.value + "\nFormat: " + fmtNames[stage.getAttribute("data-format")] +
+        "\nStyle: " + themeNames[stage.getAttribute("data-theme")] + "\nNames: " + names +
+        "\nDate: " + inp.date.value.trim() + "\nVenue: " + inp.venue.value.trim();
+      cta.href = "contact-us.html?invite=" + encodeURIComponent(msg);
     }
+  }
+
+  var tabs = studio.querySelectorAll(".ivs-tabs button");
+  tabs.forEach(function (b) {
+    b.addEventListener("click", function () {
+      tabs.forEach(function (x) { x.setAttribute("aria-selected", x === b ? "true" : "false"); });
+      stage.setAttribute("data-format", b.getAttribute("data-f"));
+      update();
+    });
   });
+  var swatches = studio.querySelectorAll(".ivs-themes button");
+  swatches.forEach(function (b) {
+    b.addEventListener("click", function () {
+      swatches.forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      stage.setAttribute("data-theme", b.getAttribute("data-t"));
+      update();
+    });
+  });
+  ["input", "change"].forEach(function (ev) {
+    Object.keys(inp).forEach(function (k) { inp[k].addEventListener(ev, update); });
+  });
+
+  if (!reduced && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    stage.addEventListener("pointermove", function (e) {
+      var r = stage.getBoundingClientRect();
+      var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+      frame.classList.add("is-live");
+      frame.style.setProperty("--ry", ((px - 0.5) * 16).toFixed(2) + "deg");
+      frame.style.setProperty("--rx", ((0.5 - py) * 12).toFixed(2) + "deg");
+      frame.style.setProperty("--mx", (px * 100).toFixed(1) + "%");
+      frame.style.setProperty("--my", (py * 100).toFixed(1) + "%");
+    });
+    stage.addEventListener("pointerleave", function () {
+      frame.classList.remove("is-live");
+      frame.style.setProperty("--ry", "0deg");
+      frame.style.setProperty("--rx", "0deg");
+      frame.style.setProperty("--mx", "50%");
+      frame.style.setProperty("--my", "30%");
+    });
+  }
+  update();
+})();
+
+/* Contact form: an invitation request from the studio arrives pre-filled */
+(function () {
+  var box = document.getElementById("message");
+  if (!box) return;
+  var msg = new URLSearchParams(location.search).get("invite");
+  if (msg && !box.value) box.value = msg;
 })();
 
 /* Contact form: remember which service the visitor came from (?service=slug) */
