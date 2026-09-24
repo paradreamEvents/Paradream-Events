@@ -796,6 +796,8 @@ def service_page_html(s):
     book = s.get("book", "contact-us.html")
     if book.startswith("contact-us.html") and "?" not in book:
         book += "?service=" + s["slug"]
+    book_label = _e(s.get("book_label", SP_CFG.get("book_label", "Book Now")))
+    book_attrs = ' target="_blank" rel="noopener"' if book.startswith("http") else ""
     bg = media(s["image"], 1800)
     how_section = f"""<section class="band band-cream">
   <div class="band-inner reveal">
@@ -856,7 +858,7 @@ def service_page_html(s):
 <section class="band">
   <div class="band-inner reveal">
     <p class="lede">{_e(s["intro"])}</p>
-    <a class="btn btn-solid" href="{book}">{_e(SP_CFG.get("book_label", "Book Now"))}</a>
+    <a class="btn btn-solid" href="{book}"{book_attrs}>{book_label}</a>
   </div>
 </section>
 
@@ -867,7 +869,7 @@ def service_page_html(s):
 <section class="band band-cream svc-cta">
   <div class="band-inner reveal">
     <h2>{title}</h2>
-    <a class="btn btn-solid" href="{book}">{_e(SP_CFG.get("book_label", "Book Now"))}</a>
+    <a class="btn btn-solid" href="{book}"{book_attrs}>{book_label}</a>
     <p class="svc-more-h">{_e(SP_CFG.get("more_title", "More services"))}</p>
     <nav class="svc-more" aria-label="More services">
 {others}
