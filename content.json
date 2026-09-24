@@ -995,7 +995,19 @@
         "images/svc-family-baptism-7.jpg",
         "images/svc-family-baptism-8.jpg",
         "images/svc-family-baptism-9.jpg",
-        "images/svc-family-baptism-10.jpg"
+        "images/svc-family-baptism-10.jpg",
+        "images/svc-family-communion-1.jpg",
+        "images/svc-family-communion-2.jpg",
+        "images/svc-family-communion-3.jpg",
+        "images/svc-family-communion-4.jpg",
+        "images/svc-family-communion-5.jpg",
+        "images/svc-family-communion-6.jpg",
+        "images/svc-family-communion-7.jpg",
+        "images/svc-family-communion-8.jpg",
+        "images/svc-family-communion-9.jpg",
+        "images/svc-family-communion-10.jpg",
+        "images/svc-family-communion-11.jpg",
+        "images/svc-family-communion-12.jpg"
       ],
       "book": "occasions.html",
       "groups": [
@@ -1014,10 +1026,23 @@
         "images/svc-family-baptism-7.jpg": "Baptisms",
         "images/svc-family-baptism-8.jpg": "Baptisms",
         "images/svc-family-baptism-9.jpg": "Baptisms",
-        "images/svc-family-baptism-10.jpg": "Baptisms"
+        "images/svc-family-baptism-10.jpg": "Baptisms",
+        "images/svc-family-communion-1.jpg": "First Communion",
+        "images/svc-family-communion-2.jpg": "First Communion",
+        "images/svc-family-communion-3.jpg": "First Communion",
+        "images/svc-family-communion-4.jpg": "First Communion",
+        "images/svc-family-communion-5.jpg": "First Communion",
+        "images/svc-family-communion-6.jpg": "First Communion",
+        "images/svc-family-communion-7.jpg": "First Communion",
+        "images/svc-family-communion-8.jpg": "First Communion",
+        "images/svc-family-communion-9.jpg": "First Communion",
+        "images/svc-family-communion-10.jpg": "First Communion",
+        "images/svc-family-communion-11.jpg": "First Communion",
+        "images/svc-family-communion-12.jpg": "First Communion"
       },
       "group_covers": {
-        "Baptisms": "images/svc-family-baptism-3.jpg"
+        "Baptisms": "images/svc-family-baptism-3.jpg",
+        "First Communion": "images/svc-family-communion-2.jpg"
       },
       "group_blurbs": {
         "Baptisms": "Holy Baptism backdrops, favors and sweet tables",
