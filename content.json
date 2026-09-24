@@ -997,7 +997,34 @@
         "images/svc-family-baptism-9.jpg",
         "images/svc-family-baptism-10.jpg"
       ],
-      "book": "occasions.html"
+      "book": "occasions.html",
+      "groups": [
+        "Baptisms",
+        "First Communion",
+        "Birthday",
+        "Gender Reveal"
+      ],
+      "photo_groups": {
+        "images/svc-family-baptism-1.jpg": "Baptisms",
+        "images/svc-family-baptism-2.jpg": "Baptisms",
+        "images/svc-family-baptism-3.jpg": "Baptisms",
+        "images/svc-family-baptism-4.jpg": "Baptisms",
+        "images/svc-family-baptism-5.jpg": "Baptisms",
+        "images/svc-family-baptism-6.jpg": "Baptisms",
+        "images/svc-family-baptism-7.jpg": "Baptisms",
+        "images/svc-family-baptism-8.jpg": "Baptisms",
+        "images/svc-family-baptism-9.jpg": "Baptisms",
+        "images/svc-family-baptism-10.jpg": "Baptisms"
+      },
+      "group_covers": {
+        "Baptisms": "images/svc-family-baptism-3.jpg"
+      },
+      "group_blurbs": {
+        "Baptisms": "Holy Baptism backdrops, favors and sweet tables",
+        "First Communion": "First Communion setups and favors",
+        "Birthday": "Birthday parties and celebrations",
+        "Gender Reveal": "Gender reveal moments and setups"
+      }
     }
   ],
   "occasions": [
