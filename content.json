@@ -898,14 +898,62 @@
         }
       ],
       "photos": [
-        "images/svc-christmas-mascots-1.jpg",
-        "images/svc-christmas-mascots-2.jpg",
-        "images/svc-christmas-mascots-3.jpg",
-        "images/svc-christmas-mascots-4.jpg",
-        "images/svc-christmas-mascots-5.jpg",
-        "images/svc-christmas-mascots-6.jpg"
+        "images/svc-xmas-season-1.jpg",
+        "images/svc-xmas-season-2.jpg",
+        "images/svc-xmas-season-3.jpg",
+        "images/svc-xmas-season-4.jpg",
+        "images/svc-xmas-season-5.jpg",
+        "images/svc-xmas-season-6.jpg",
+        "images/svc-xmas-season-7.jpg",
+        "images/svc-xmas-season-8.jpg",
+        "images/svc-xmas-season-9.jpg",
+        "images/svc-xmas-season-10.jpg",
+        "images/svc-xmas-mascots-1.jpg",
+        "images/svc-xmas-mascots-2.jpg",
+        "images/svc-xmas-mascots-3.jpg",
+        "images/svc-xmas-mascots-4.jpg",
+        "images/svc-xmas-mascots-5.jpg",
+        "images/svc-xmas-mascots-6.jpg",
+        "images/svc-xmas-mascots-7.jpg",
+        "images/svc-xmas-mascots-8.jpg",
+        "images/svc-xmas-mascots-9.jpg",
+        "images/svc-xmas-mascots-10.jpg"
       ],
-      "book": "christmas.html"
+      "book": "christmas.html",
+      "groups": [
+        "Christmas Season",
+        "Christmas Mascots"
+      ],
+      "photo_groups": {
+        "images/svc-xmas-season-1.jpg": "Christmas Season",
+        "images/svc-xmas-season-2.jpg": "Christmas Season",
+        "images/svc-xmas-season-3.jpg": "Christmas Season",
+        "images/svc-xmas-season-4.jpg": "Christmas Season",
+        "images/svc-xmas-season-5.jpg": "Christmas Season",
+        "images/svc-xmas-season-6.jpg": "Christmas Season",
+        "images/svc-xmas-season-7.jpg": "Christmas Season",
+        "images/svc-xmas-season-8.jpg": "Christmas Season",
+        "images/svc-xmas-season-9.jpg": "Christmas Season",
+        "images/svc-xmas-season-10.jpg": "Christmas Season",
+        "images/svc-xmas-mascots-1.jpg": "Christmas Mascots",
+        "images/svc-xmas-mascots-2.jpg": "Christmas Mascots",
+        "images/svc-xmas-mascots-3.jpg": "Christmas Mascots",
+        "images/svc-xmas-mascots-4.jpg": "Christmas Mascots",
+        "images/svc-xmas-mascots-5.jpg": "Christmas Mascots",
+        "images/svc-xmas-mascots-6.jpg": "Christmas Mascots",
+        "images/svc-xmas-mascots-7.jpg": "Christmas Mascots",
+        "images/svc-xmas-mascots-8.jpg": "Christmas Mascots",
+        "images/svc-xmas-mascots-9.jpg": "Christmas Mascots",
+        "images/svc-xmas-mascots-10.jpg": "Christmas Mascots"
+      },
+      "group_covers": {
+        "Christmas Season": "images/svc-xmas-season-2.jpg",
+        "Christmas Mascots": "images/svc-xmas-mascots-1.jpg"
+      },
+      "group_blurbs": {
+        "Christmas Season": "Our Christmas band, Santa and festive mascots live at real events",
+        "Christmas Mascots": "Santa, elves, nutcrackers and more Christmas characters"
+      }
     },
     {
       "title": "Baptisms, Communions & Family Milestones",
