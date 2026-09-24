@@ -837,8 +837,12 @@
         }
       ],
       "photos": [
-        "images/svc-signature-1.jpg",
-        "images/svc-signature-2.jpg"
+        "images/svc-signature-2.jpg",
+        "images/svc-signature-3.jpg",
+        "images/svc-signature-4.jpg",
+        "images/svc-signature-5.jpg",
+        "images/svc-signature-6.jpg",
+        "images/svc-signature-7.jpg"
       ],
       "book": "contact-us.html"
     },
