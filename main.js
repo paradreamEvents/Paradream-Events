@@ -632,34 +632,40 @@
     line: q('[data-out="line"]'), date: q('[data-out="date"]'), venue: q('[data-out="venue"]') };
   var cta = document.querySelector("[data-invite-cta]");
   var fmtNames = { digital: "Digital invitation", printed: "Printed card", plexi: "Plexi / board card" };
-  var themeNames = { ivory: "Ivory & Gold", blush: "Blush Rose", midnight: "Midnight Gold", sage: "Sage Garden" };
+  var themeNames = { ivory: "Ivory & Gold", blush: "Blush Rose", midnight: "Midnight Gold", sage: "Sage Garden", burgundy: "Royal Burgundy", powder: "Powder Blue" };
+  var hints = { printed: "Tap the envelope to open", digital: "Tap the notification to open", plexi: "Tap to peel the protective film" };
+  var durations = { printed: 950, digital: 2000, plexi: 1450 };
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var openBtn = q(".ivs-openbtn"), replay = q(".ivs-replay"), timer = null;
 
+  var hintEl = q(".ivs-hint");
+  function fmt() { return stage.getAttribute("data-format"); }
   function setState(s) {
     stage.classList.remove("is-closed", "is-opening");
     if (s) stage.classList.add(s);
     openBtn.hidden = s !== "is-closed";
     replay.hidden = s === "is-closed" || s === "is-opening";
+    hintEl.textContent = hints[fmt()];
+    openBtn.setAttribute("aria-label", hints[fmt()]);
   }
   function openEnv() {
     if (!stage.classList.contains("is-closed")) return;
     clearTimeout(timer);
-    var rr = openBtn.getBoundingClientRect();
-    if (window.pdConfetti) window.pdConfetti(rr.left + rr.width / 2, rr.top + rr.height / 2, 46);
+    var rr = stage.getBoundingClientRect();
+    if (window.pdConfetti && fmt() === "printed") window.pdConfetti(rr.left + rr.width / 2, rr.top + rr.height / 2, 46);
     setState("is-opening");
-    timer = setTimeout(function () { setState(""); }, 950);
+    timer = setTimeout(function () { setState(""); }, durations[fmt()]);
   }
   function closeEnv() {
     clearTimeout(timer);
     setState("is-opening");
-    timer = setTimeout(function () { setState("is-closed"); }, 850);
+    timer = setTimeout(function () { setState("is-closed"); }, 700);
   }
   openBtn.addEventListener("click", openEnv);
   replay.addEventListener("click", closeEnv);
   stage.addEventListener("click", function (e) { if (e.target === stage) openEnv(); });
   ["pointerdown", "click", "focusin"].forEach(function (ev) {
-    [q(".ivs-bar"), q(".ivs-fields")].forEach(function (el) { el.addEventListener(ev, openEnv); });
+    q(".ivs-fields").addEventListener(ev, openEnv);
   });
   setState("is-closed");
 
@@ -689,7 +695,15 @@
   tabs.forEach(function (b) {
     b.addEventListener("click", function () {
       tabs.forEach(function (x) { x.setAttribute("aria-selected", x === b ? "true" : "false"); });
+      var wasOpen = !stage.classList.contains("is-closed") && !stage.classList.contains("is-opening");
       stage.setAttribute("data-format", b.getAttribute("data-f"));
+      if (wasOpen) {
+        clearTimeout(timer);
+        setState("is-closed");
+        timer = setTimeout(openEnv, 500);
+      } else {
+        setState(stage.classList.contains("is-opening") ? "is-opening" : "is-closed");
+      }
       update();
     });
   });

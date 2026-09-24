@@ -745,11 +745,16 @@ def invitation_html():
           <button type="button" data-t="blush" aria-pressed="false" aria-label="Blush rose" title="Blush Rose"></button>
           <button type="button" data-t="midnight" aria-pressed="false" aria-label="Midnight gold" title="Midnight Gold"></button>
           <button type="button" data-t="sage" aria-pressed="false" aria-label="Sage garden" title="Sage Garden"></button>
+          <button type="button" data-t="burgundy" aria-pressed="false" aria-label="Royal burgundy" title="Royal Burgundy"></button>
+          <button type="button" data-t="powder" aria-pressed="false" aria-label="Powder blue" title="Powder Blue"></button>
         </div>
       </div>
       <div class="ivs-stage" data-format="printed" data-theme="ivory">
         <div class="ivs-frame">
           <div class="ivs-phonebar"><i>P</i><b>Paradream<small>online</small></b></div>
+          <div class="ivs-lock"><span class="lk-time">9:41</span><span class="lk-date">Saturday, 14 June</span>
+            <div class="lk-notif"><i>P</i><div><b>Paradream</b><span>You have received an invitation</span></div><small>now</small></div></div>
+          <div class="ivs-chat"><div class="ivs-typing"><i></i><i></i><i></i></div>
           <div class="ivs-card">
             <div class="ivs-in">
               <span class="ivs-mono" data-out="mono">A&amp;M</span>
@@ -761,7 +766,8 @@ def invitation_html():
               <span class="ivs-venue" data-out="venue">{_e(c["venue"])}</span>
               <span class="ivs-rsvp">{_e(c["rsvp"])}</span>
             </div>
-          </div>
+          </div></div>
+          <div class="ivs-film"></div>
           <div class="ivs-phonecta">Open invitation</div>
           <span class="ivs-screw s1"></span><span class="ivs-screw s2"></span><span class="ivs-screw s3"></span><span class="ivs-screw s4"></span>
         </div>

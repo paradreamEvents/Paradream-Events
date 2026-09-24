@@ -776,7 +776,7 @@ div.opt input[type=checkbox]{margin:0;width:18px;height:18px}
 .ivs-tabs button:focus-visible,.ivs-themes button:focus-visible{outline:3px solid #b98b3e;outline-offset:2px}
 
 .ivs-stage{--paper:#fbf7ef;--ink:#12263a;--soft:#5a6472;--accent:#b98b3e;--rule:#c9a35b;--bg1:#f6efe1;--bg2:#e6d8bb;
-  position:relative;border-radius:14px;min-height:clamp(400px,52vw,520px);display:grid;place-items:center;padding:1.4rem 1rem;overflow:hidden;
+  position:relative;border-radius:14px;min-height:clamp(400px,52vw,520px);display:grid;place-items:center;padding:1.4rem 1rem 3.1rem;overflow:hidden;
   background:radial-gradient(120% 90% at 30% 15%,var(--bg1),var(--bg2));perspective:1100px;transition:background .5s}
 .ivs-stage[data-theme=blush]{--paper:#fff6f6;--ink:#4a2330;--soft:#7d5b64;--accent:#c0566b;--rule:#e1a5b0;--bg1:#fdeeee;--bg2:#f1c9cf}
 .ivs-stage[data-theme=midnight]{--paper:#152840;--ink:#f6e6bf;--soft:#cdbf9f;--accent:#e2be7a;--rule:#b98b3e;--bg1:#2a4260;--bg2:#0e1c2d}
@@ -868,12 +868,78 @@ div.opt input[type=checkbox]{margin:0;width:18px;height:18px}
   color:var(--red);opacity:0;pointer-events:none;transition:opacity .4s}
 .ivs-stage.is-closed .ivs-hint{opacity:1;animation:ivs-pulse 1.8s ease-in-out infinite}
 @keyframes ivs-pulse{0%,100%{opacity:.5}50%{opacity:1}}
-.ivs-replay{position:absolute;right:.7rem;top:.7rem;z-index:8;font:inherit;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+.ivs-replay{position:absolute;left:50%;transform:translateX(-50%);bottom:.75rem;z-index:8;font:inherit;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
   color:#5a6472;background:rgba(255,255,255,.75);border:1px solid rgba(18,38,58,.15);border-radius:999px;padding:.3rem .7rem;transition:background .2s,color .2s}
 .ivs-replay:hover{background:#fff;color:#12263a}
 .ivs-replay[hidden],.ivs-openbtn[hidden]{display:none}
 @media (max-width:520px){.ivs-stage{--P:165px}}
 @media (prefers-reduced-motion:reduce){.env-back,.env-front,.env-flap,.env-seal{transition-duration:.01s!important;animation:none!important}}
+
+
+/* ---- per-format intros: digital = phone notification, printed = envelope, plexi = protective film peel ---- */
+.ivs-stage:not([data-format=printed]) .env-back,.ivs-stage:not([data-format=printed]) .env-front,
+.ivs-stage:not([data-format=printed]) .env-flap,.ivs-stage:not([data-format=printed]) .env-seal{display:none}
+.ivs-stage.is-closed:not([data-format=printed]) .ivs-frame,.ivs-stage.is-opening:not([data-format=printed]) .ivs-frame{--ty:0px;--sc:1;opacity:1;pointer-events:none}
+.ivs-stage:not([data-format=printed]) .ivs-openbtn{left:0;top:0;right:0;bottom:0;width:auto;height:auto;margin:0;border-radius:14px}
+.ivs-lock,.ivs-typing,.ivs-film{display:none}
+.ivs-chat{position:relative}
+
+/* digital: lock screen with a notification, unlock, typing, message arrives */
+.ivs-stage[data-format=digital] .ivs-chat{background:#e7dfd3;padding:10px 10px 12px}
+.ivs-stage[data-format=digital] .ivs-card{border-radius:12px 12px 12px 3px;box-shadow:0 1px 3px rgba(0,0,0,.25);
+  transition:opacity .6s,transform .6s cubic-bezier(.2,.8,.2,1),background .5s,color .5s}
+.ivs-stage[data-format=digital].is-closed .ivs-card,.ivs-stage[data-format=digital].is-opening .ivs-card{opacity:0;transform:translateY(26px) scale(.94)}
+.ivs-stage[data-format=digital] .ivs-frame::after{z-index:6}
+.ivs-stage[data-format=digital] .ivs-lock{display:flex;flex-direction:column;align-items:center;position:absolute;inset:10px;z-index:5;border-radius:29px;overflow:hidden;
+  padding:46px 12px 14px;box-sizing:border-box;color:#fff;font-family:system-ui,Arial,sans-serif;
+  background:radial-gradient(120% 70% at 50% 0%,#4b3a6e,#19203a 55%,#0a0e19);transition:transform .7s cubic-bezier(.5,0,.2,1),opacity .5s .1s}
+.ivs-lock .lk-time{font-size:52px;font-weight:200;letter-spacing:-.02em;line-height:1}
+.ivs-lock .lk-date{font-size:12px;opacity:.85;margin-top:6px}
+.ivs-lock .lk-notif{margin-top:auto;width:100%;display:flex;gap:9px;align-items:center;padding:10px;border-radius:16px;background:rgba(255,255,255,.18);
+  backdrop-filter:blur(8px);box-sizing:border-box;text-align:left;animation:ivs-notif 2.6s ease-in-out infinite}
+.ivs-lock .lk-notif i{flex:none;width:30px;height:30px;border-radius:8px;background:#fff;color:#e4251b;font:700 17px/30px Georgia,serif;text-align:center;font-style:normal}
+.ivs-lock .lk-notif div{flex:1;min-width:0;line-height:1.25}
+.ivs-lock .lk-notif b{display:block;font-size:12px}
+.ivs-lock .lk-notif span{display:block;font-size:11px;opacity:.9}
+.ivs-lock .lk-notif small{font-size:10px;opacity:.7;align-self:flex-start}
+@keyframes ivs-notif{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.ivs-stage[data-format=digital]:not(.is-closed) .ivs-lock{transform:translateY(-104%);opacity:0;pointer-events:none;animation:none}
+.ivs-stage[data-format=digital] .ivs-typing{display:flex;gap:4px;position:absolute;left:18px;top:18px;background:#fff;border-radius:12px 12px 12px 3px;padding:10px 13px;
+  box-shadow:0 1px 3px rgba(0,0,0,.25);opacity:0;transition:opacity .25s}
+.ivs-typing i{width:6px;height:6px;border-radius:50%;background:#8a94a0;animation:ivs-dot 1s infinite}
+.ivs-typing i:nth-child(2){animation-delay:.15s}.ivs-typing i:nth-child(3){animation-delay:.3s}
+@keyframes ivs-dot{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-4px);opacity:1}}
+.ivs-stage[data-format=digital].is-opening .ivs-typing{opacity:1;transition-delay:.55s}
+
+/* plexi: protective film peels off the acrylic board, standoffs pop in */
+@property --peel{syntax:"<percentage>";inherits:true;initial-value:-5%}
+.ivs-stage[data-format=plexi] .ivs-film{display:block;--peel:-5%;position:absolute;inset:0;z-index:4;border-radius:6px;pointer-events:none;overflow:hidden;
+  background:linear-gradient(135deg,rgba(214,232,246,.995),rgba(170,200,226,.995) 45%,rgba(222,238,249,.995));
+  -webkit-mask-image:linear-gradient(135deg,transparent var(--peel),#000 var(--peel));mask-image:linear-gradient(135deg,transparent var(--peel),#000 var(--peel));
+  transition:--peel 1.2s cubic-bezier(.45,0,.25,1)}
+.ivs-film::before{content:"PROTECTIVE FILM  -  PEEL TO REVEAL";position:absolute;left:50%;top:50%;width:150%;text-align:center;transform:translate(-50%,-50%) rotate(-38deg);
+  font:700 10px/1 system-ui,Arial,sans-serif;letter-spacing:.32em;color:rgba(255,255,255,.9);text-shadow:0 1px 2px rgba(60,100,140,.4)}
+.ivs-film::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent var(--peel),rgba(255,255,255,.95) calc(var(--peel) + 1%),rgba(120,160,195,.38) calc(var(--peel) + 7%),transparent calc(var(--peel) + 10%))}
+.ivs-stage[data-format=plexi].is-opening .ivs-film{--peel:112%}
+.ivs-stage[data-format=plexi]:not(.is-closed):not(.is-opening) .ivs-film{visibility:hidden}
+.ivs-stage[data-format=plexi] .ivs-screw{transition:transform .45s .75s cubic-bezier(.3,1.6,.5,1)}
+.ivs-stage[data-format=plexi].is-closed .ivs-screw{transform:scale(0);transition-delay:0s}
+@media (prefers-reduced-motion:reduce){.ivs-lock,.ivs-card,.ivs-film,.ivs-typing,.ivs-screw{transition-duration:.01s!important;animation:none!important}}
+
+/* ---- colour templates ---- */
+.ivs-stage{--env1:#f6eddb;--env2:#e9dcc0;--envb:#e6d9bf;--seal1:#ef4a3f;--seal2:#a91710}
+.ivs-stage[data-theme=blush]{--env1:#fde9e9;--env2:#f4cfd5;--envb:#efc3c9}
+.ivs-stage[data-theme=midnight]{--env1:#2b4566;--env2:#1b3049;--envb:#182b42;--seal1:#f0cf8a;--seal2:#a4762a}
+.ivs-stage[data-theme=sage]{--env1:#e2ebd3;--env2:#cbdab6;--envb:#c1d0aa}
+.ivs-stage[data-theme=burgundy]{--paper:#fbf1e6;--ink:#5a1424;--soft:#7c4a55;--accent:#a97b2c;--rule:#c9a35b;--bg1:#8a2b40;--bg2:#3d0e1b;--env1:#94324a;--env2:#732237;--envb:#611a2d;--seal1:#f0cf8a;--seal2:#a4762a}
+.ivs-stage[data-theme=powder]{--paper:#f5faff;--ink:#1f3b57;--soft:#5a7590;--accent:#4f86b3;--rule:#a9c7e0;--bg1:#eef6fc;--bg2:#bfd7ec;--env1:#e6f0fa;--env2:#d0e2f2;--envb:#c4d9ec}
+.env-back{background:var(--envb)!important}
+.env-front{background:linear-gradient(160deg,var(--env1),var(--env2))!important}
+.env-flap{background:linear-gradient(var(--env1),var(--env2))!important}
+.env-seal{background:radial-gradient(circle at 35% 30%,var(--seal1),var(--seal2))!important}
+.ivs-themes{flex-wrap:wrap}
+.ivs-themes [data-t=burgundy]{background:linear-gradient(135deg,#7a2237 50%,#e2be7a 50%)}
+.ivs-themes [data-t=powder]{background:linear-gradient(135deg,#eef6fc 50%,#4f86b3 50%)}
 
 /* Service detail pages */
 .svc-photos{columns:3;column-gap:1rem;margin-top:1.6rem}
