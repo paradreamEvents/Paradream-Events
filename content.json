@@ -1007,7 +1007,17 @@
         "images/svc-family-communion-9.jpg",
         "images/svc-family-communion-10.jpg",
         "images/svc-family-communion-11.jpg",
-        "images/svc-family-communion-12.jpg"
+        "images/svc-family-communion-12.jpg",
+        "images/svc-family-birthday-1.jpg",
+        "images/svc-family-birthday-2.jpg",
+        "images/svc-family-birthday-3.jpg",
+        "images/svc-family-birthday-4.jpg",
+        "images/svc-family-birthday-5.jpg",
+        "images/svc-family-birthday-6.jpg",
+        "images/svc-family-birthday-7.jpg",
+        "images/svc-family-birthday-8.jpg",
+        "images/svc-family-birthday-9.jpg",
+        "images/svc-family-birthday-10.jpg"
       ],
       "book": "occasions.html",
       "groups": [
@@ -1038,11 +1048,22 @@
         "images/svc-family-communion-9.jpg": "First Communion",
         "images/svc-family-communion-10.jpg": "First Communion",
         "images/svc-family-communion-11.jpg": "First Communion",
-        "images/svc-family-communion-12.jpg": "First Communion"
+        "images/svc-family-communion-12.jpg": "First Communion",
+        "images/svc-family-birthday-1.jpg": "Birthday",
+        "images/svc-family-birthday-2.jpg": "Birthday",
+        "images/svc-family-birthday-3.jpg": "Birthday",
+        "images/svc-family-birthday-4.jpg": "Birthday",
+        "images/svc-family-birthday-5.jpg": "Birthday",
+        "images/svc-family-birthday-6.jpg": "Birthday",
+        "images/svc-family-birthday-7.jpg": "Birthday",
+        "images/svc-family-birthday-8.jpg": "Birthday",
+        "images/svc-family-birthday-9.jpg": "Birthday",
+        "images/svc-family-birthday-10.jpg": "Birthday"
       },
       "group_covers": {
         "Baptisms": "images/svc-family-baptism-3.jpg",
-        "First Communion": "images/svc-family-communion-2.jpg"
+        "First Communion": "images/svc-family-communion-2.jpg",
+        "Birthday": "images/svc-family-birthday-1.jpg"
       },
       "group_blurbs": {
         "Baptisms": "Holy Baptism backdrops, favors and sweet tables",
