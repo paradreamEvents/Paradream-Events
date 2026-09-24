@@ -674,14 +674,59 @@
         }
       ],
       "photos": [
-        "images/svc-catering-1.jpg",
-        "images/svc-catering-2.jpg",
-        "images/svc-catering-3.jpg",
-        "images/svc-catering-4.jpg",
-        "images/svc-catering-5.jpg",
-        "images/svc-catering-6.jpg"
+        "images/svc-catering-catering-1.jpg",
+        "images/svc-catering-catering-2.jpg",
+        "images/svc-catering-catering-3.jpg",
+        "images/svc-catering-catering-4.jpg",
+        "images/svc-catering-catering-5.jpg",
+        "images/svc-catering-bar-1.jpg",
+        "images/svc-catering-bar-2.jpg",
+        "images/svc-catering-bar-3.jpg",
+        "images/svc-catering-bar-4.jpg",
+        "images/svc-catering-bar-5.jpg",
+        "images/svc-catering-bar-6.jpg",
+        "images/svc-catering-bar-7.jpg",
+        "images/svc-catering-bar-8.jpg",
+        "images/svc-catering-bar-9.jpg",
+        "images/svc-catering-chocolate-1.jpg",
+        "images/svc-catering-chocolate-2.jpg",
+        "images/svc-catering-chocolate-3.jpg"
       ],
-      "book": "contact-us.html"
+      "book": "contact-us.html",
+      "groups": [
+        "Catering",
+        "Bar",
+        "Chocolate"
+      ],
+      "photo_groups": {
+        "images/svc-catering-catering-1.jpg": "Catering",
+        "images/svc-catering-catering-2.jpg": "Catering",
+        "images/svc-catering-catering-3.jpg": "Catering",
+        "images/svc-catering-catering-4.jpg": "Catering",
+        "images/svc-catering-catering-5.jpg": "Catering",
+        "images/svc-catering-bar-1.jpg": "Bar",
+        "images/svc-catering-bar-2.jpg": "Bar",
+        "images/svc-catering-bar-3.jpg": "Bar",
+        "images/svc-catering-bar-4.jpg": "Bar",
+        "images/svc-catering-bar-5.jpg": "Bar",
+        "images/svc-catering-bar-6.jpg": "Bar",
+        "images/svc-catering-bar-7.jpg": "Bar",
+        "images/svc-catering-bar-8.jpg": "Bar",
+        "images/svc-catering-bar-9.jpg": "Bar",
+        "images/svc-catering-chocolate-1.jpg": "Chocolate",
+        "images/svc-catering-chocolate-2.jpg": "Chocolate",
+        "images/svc-catering-chocolate-3.jpg": "Chocolate"
+      },
+      "group_covers": {
+        "Catering": "images/svc-catering-catering-1.jpg",
+        "Bar": "images/svc-catering-bar-1.jpg",
+        "Chocolate": "images/svc-catering-chocolate-1.jpg"
+      },
+      "group_blurbs": {
+        "Catering": "Buffets, platters and live stations",
+        "Bar": "Drink stations, dispensers and signature bars",
+        "Chocolate": "Chocolate fountains, dessert shots and sweet tables"
+      }
     },
     {
       "title": "Signature Guest Experiences",
