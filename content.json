@@ -704,6 +704,12 @@
         "images/svc-catering-bar-7.jpg",
         "images/svc-catering-bar-8.jpg",
         "images/svc-catering-bar-9.jpg",
+        "images/svc-catering-bar-10.jpg",
+        "images/svc-catering-bar-11.jpg",
+        "images/svc-catering-bar-12.jpg",
+        "images/svc-catering-bar-13.jpg",
+        "images/svc-catering-bar-14.jpg",
+        "images/svc-catering-bar-15.jpg",
         "images/svc-catering-chocolate-1.jpg",
         "images/svc-catering-chocolate-2.jpg",
         "images/svc-catering-chocolate-3.jpg"
@@ -747,7 +753,13 @@
         "images/svc-catering-catering-18.jpg": "Catering",
         "images/svc-catering-catering-19.jpg": "Catering",
         "images/svc-catering-catering-20.jpg": "Catering",
-        "images/svc-catering-catering-21.jpg": "Catering"
+        "images/svc-catering-catering-21.jpg": "Catering",
+        "images/svc-catering-bar-10.jpg": "Bar",
+        "images/svc-catering-bar-11.jpg": "Bar",
+        "images/svc-catering-bar-12.jpg": "Bar",
+        "images/svc-catering-bar-13.jpg": "Bar",
+        "images/svc-catering-bar-14.jpg": "Bar",
+        "images/svc-catering-bar-15.jpg": "Bar"
       },
       "group_covers": {
         "Catering": "images/svc-catering-catering-1.jpg",
