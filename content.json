@@ -985,12 +985,7 @@
           "p": "We set everything up so you can enjoy the day with your loved ones."
         }
       ],
-      "photos": [
-        "images/svc-family-1.jpg",
-        "images/svc-family-2.jpg",
-        "images/svc-family-3.jpg",
-        "images/svc-family-4.jpg"
-      ],
+      "photos": [],
       "book": "occasions.html"
     }
   ],
