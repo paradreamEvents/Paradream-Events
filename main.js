@@ -634,6 +634,34 @@
   var fmtNames = { digital: "Digital invitation", printed: "Printed card", plexi: "Plexi / board card" };
   var themeNames = { ivory: "Ivory & Gold", blush: "Blush Rose", midnight: "Midnight Gold", sage: "Sage Garden" };
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var openBtn = q(".ivs-openbtn"), replay = q(".ivs-replay"), timer = null;
+
+  function setState(s) {
+    stage.classList.remove("is-closed", "is-opening");
+    if (s) stage.classList.add(s);
+    openBtn.hidden = s !== "is-closed";
+    replay.hidden = s === "is-closed" || s === "is-opening";
+  }
+  function openEnv() {
+    if (!stage.classList.contains("is-closed")) return;
+    clearTimeout(timer);
+    var rr = openBtn.getBoundingClientRect();
+    if (window.pdConfetti) window.pdConfetti(rr.left + rr.width / 2, rr.top + rr.height / 2, 46);
+    setState("is-opening");
+    timer = setTimeout(function () { setState(""); }, 950);
+  }
+  function closeEnv() {
+    clearTimeout(timer);
+    setState("is-opening");
+    timer = setTimeout(function () { setState("is-closed"); }, 850);
+  }
+  openBtn.addEventListener("click", openEnv);
+  replay.addEventListener("click", closeEnv);
+  stage.addEventListener("click", function (e) { if (e.target === stage) openEnv(); });
+  ["pointerdown", "focusin"].forEach(function (ev) {
+    [q(".ivs-bar"), q(".ivs-fields")].forEach(function (el) { el.addEventListener(ev, openEnv); });
+  });
+  setState("is-closed");
 
   function monogram(s) {
     var parts = s.split(/\s*(?:&|\+|,|\band\b)\s*/i).filter(function (p) { return p.trim(); });
@@ -679,6 +707,7 @@
 
   if (!reduced && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
     stage.addEventListener("pointermove", function (e) {
+      if (stage.classList.contains("is-closed") || stage.classList.contains("is-opening")) return;
       var r = stage.getBoundingClientRect();
       var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
       frame.classList.add("is-live");

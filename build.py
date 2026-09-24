@@ -765,6 +765,10 @@ def invitation_html():
           <div class="ivs-phonecta">Open invitation</div>
           <span class="ivs-screw s1"></span><span class="ivs-screw s2"></span><span class="ivs-screw s3"></span><span class="ivs-screw s4"></span>
         </div>
+        <span class="env-back"></span><span class="env-front"></span><span class="env-flap"></span><span class="env-seal">P</span>
+        <button class="ivs-openbtn" type="button" aria-label="Open the example invitation" hidden></button>
+        <p class="ivs-hint">{_e(INV.get("tap_hint", "Tap the envelope to open"))}</p>
+        <button class="ivs-replay" type="button" hidden>&#8634; Replay envelope</button>
       </div>
       <div class="ivs-fields">
         <label>Occasion<select id="ivs-occ">{opts}</select></label>

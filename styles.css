@@ -838,6 +838,43 @@ div.opt input[type=checkbox]{margin:0;width:18px;height:18px}
 @media (max-width:520px){.ivs-fields{grid-template-columns:1fr}.ivs-bar{justify-content:center}}
 @media (prefers-reduced-motion:reduce){.ivs-frame,.ivs-stage,.ivs-card{transition:none!important}}
 
+
+/* Envelope: opens to reveal the live card (kept from the original showcase) */
+.ivs-stage{--P:190px}
+.ivs-frame{z-index:2;--ty:0px;--sc:1;transform:translateY(var(--ty)) scale(var(--sc)) rotateX(var(--rx)) rotateY(var(--ry));
+  transition:transform .8s cubic-bezier(.4,0,.2,1),opacity .5s,width .5s,border-radius .5s,background .5s,box-shadow .5s,padding .5s}
+.ivs-frame.is-live{transition:transform .08s linear,opacity .5s,width .5s,border-radius .5s,background .5s,box-shadow .5s,padding .5s}
+.ivs-stage.is-closed .ivs-frame{--ty:40px;--sc:.5;opacity:0;pointer-events:none}
+.ivs-stage.is-opening .ivs-frame{--ty:-46px;--sc:.56;opacity:1;pointer-events:none}
+.env-back,.env-front,.env-flap,.env-seal{position:absolute;left:50%;top:50%;margin-left:calc(var(--P)*-.65);width:calc(var(--P)*1.3);
+  opacity:0;pointer-events:none;transform:translateY(calc(var(--P)*.55));transition:transform .9s cubic-bezier(.4,0,.2,1),opacity .6s .1s}
+.env-back{height:calc(var(--P)*.88);margin-top:calc(var(--P)*-.44);z-index:1;background:#e6d9bf;border-radius:4px;box-shadow:0 18px 34px rgba(18,38,58,.28)}
+.env-front{height:calc(var(--P)*.88);margin-top:calc(var(--P)*-.44);z-index:3;border-radius:4px;background:linear-gradient(160deg,#f6eddb,#e9dcc0);
+  clip-path:polygon(0 0,50% 58%,100% 0,100% 100%,0 100%)}
+.env-flap{height:calc(var(--P)*.88*.58);margin-top:calc(var(--P)*-.44);z-index:5;transform-origin:top center;background:linear-gradient(#f1e6cf,#e3d3b1);
+  clip-path:polygon(0 0,100% 0,50% 100%);transition:transform .8s cubic-bezier(.5,0,.2,1),opacity .6s .1s,z-index 0s .35s}
+.env-seal{z-index:6;width:calc(var(--P)*.24);height:calc(var(--P)*.24);margin-left:calc(var(--P)*-.12);margin-top:calc(var(--P)*-.44 + var(--P)*.88*.58 - var(--P)*.12);
+  border-radius:50%;background:radial-gradient(circle at 35% 30%,#ef4a3f,#a91710);color:#fff;font:700 calc(var(--P)*.12)/calc(var(--P)*.24) Georgia,serif;text-align:center;
+  box-shadow:0 3px 8px rgba(0,0,0,.35)}
+.ivs-stage.is-closed .env-back,.ivs-stage.is-closed .env-front,.ivs-stage.is-closed .env-flap,.ivs-stage.is-closed .env-seal,
+.ivs-stage.is-opening .env-back,.ivs-stage.is-opening .env-front,.ivs-stage.is-opening .env-flap,.ivs-stage.is-opening .env-seal{opacity:1;transform:none}
+.ivs-stage.is-closed .env-back,.ivs-stage.is-closed .env-front,.ivs-stage.is-closed .env-flap,.ivs-stage.is-closed .env-seal{animation:ivs-bob 3.2s ease-in-out infinite}
+@keyframes ivs-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.ivs-stage.is-opening .env-flap{transform:rotateX(180deg);z-index:0}
+.ivs-stage.is-opening .env-seal{opacity:0;transform:scale(.4)}
+.ivs-openbtn{all:unset;position:absolute;left:50%;top:50%;z-index:7;width:calc(var(--P)*1.3);height:calc(var(--P)*.88);margin:calc(var(--P)*-.44) 0 0 calc(var(--P)*-.65);cursor:pointer;border-radius:4px}
+.ivs-openbtn:focus-visible{outline:3px solid #b98b3e;outline-offset:6px}
+.ivs-hint{position:absolute;left:0;right:0;bottom:1.1rem;margin:0;text-align:center;font-size:.78rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--red);opacity:0;pointer-events:none;transition:opacity .4s}
+.ivs-stage.is-closed .ivs-hint{opacity:1;animation:ivs-pulse 1.8s ease-in-out infinite}
+@keyframes ivs-pulse{0%,100%{opacity:.5}50%{opacity:1}}
+.ivs-replay{position:absolute;right:.7rem;top:.7rem;z-index:8;font:inherit;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+  color:#5a6472;background:rgba(255,255,255,.75);border:1px solid rgba(18,38,58,.15);border-radius:999px;padding:.3rem .7rem;transition:background .2s,color .2s}
+.ivs-replay:hover{background:#fff;color:#12263a}
+.ivs-replay[hidden],.ivs-openbtn[hidden]{display:none}
+@media (max-width:520px){.ivs-stage{--P:165px}}
+@media (prefers-reduced-motion:reduce){.env-back,.env-front,.env-flap,.env-seal{transition-duration:.01s!important;animation:none!important}}
+
 /* Service detail pages */
 .svc-photos{columns:3;column-gap:1rem;margin-top:1.6rem}
 .svc-photo{margin:0 0 1rem;break-inside:avoid;border-radius:10px;overflow:hidden;box-shadow:0 10px 28px rgba(18,38,58,.16);background:var(--cream)}
