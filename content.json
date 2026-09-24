@@ -104,7 +104,8 @@
         "images/svc-planning-15.jpg",
         "images/svc-planning-16.jpg"
       ],
-      "book": "contact-us.html"
+      "book": "contact-us.html",
+      "seo_desc": "Full event planning and coordination in Lebanon. One team, one plan, from the first idea to the final applause, so you enjoy the day."
     },
     {
       "title": "Venues & Locations",
@@ -188,7 +189,8 @@
       "group_blurbs": {
         "Indoor venues": "Grand halls, chandeliers and ceilings of light.",
         "Outdoor venues": "Terraces, gardens and mountain views."
-      }
+      },
+      "seo_desc": "Find and secure the right venue in Lebanon: indoor or outdoor, mountain view, beach sunset or private. Tell us what your celebration needs."
     },
     {
       "title": "Décor, Styling & Table Setups",
@@ -696,17 +698,17 @@
         "images/svc-catering-catering-20.jpg",
         "images/svc-catering-catering-21.jpg",
         "images/svc-catering-catering-22.jpg",
-        "images/svc-catering-catering-23.png",
-        "images/svc-catering-catering-24.png",
-        "images/svc-catering-catering-25.png",
-        "images/svc-catering-catering-26.png",
-        "images/svc-catering-catering-27.png",
-        "images/svc-catering-catering-28.png",
-        "images/svc-catering-catering-29.png",
-        "images/svc-catering-catering-30.png",
-        "images/svc-catering-catering-31.png",
-        "images/svc-catering-catering-32.png",
-        "images/svc-catering-catering-33.png",
+        "images/svc-catering-catering-23.webp",
+        "images/svc-catering-catering-24.webp",
+        "images/svc-catering-catering-25.webp",
+        "images/svc-catering-catering-26.webp",
+        "images/svc-catering-catering-27.webp",
+        "images/svc-catering-catering-28.webp",
+        "images/svc-catering-catering-29.webp",
+        "images/svc-catering-catering-30.webp",
+        "images/svc-catering-catering-31.webp",
+        "images/svc-catering-catering-32.webp",
+        "images/svc-catering-catering-33.webp",
         "images/svc-catering-bar-1.jpg",
         "images/svc-catering-bar-2.jpg",
         "images/svc-catering-bar-3.jpg",
@@ -793,17 +795,17 @@
         "images/svc-catering-chocolate-12.jpg": "Chocolate",
         "images/svc-catering-chocolate-13.jpg": "Chocolate",
         "images/svc-catering-catering-22.jpg": "Catering",
-        "images/svc-catering-catering-23.png": "Catering",
-        "images/svc-catering-catering-24.png": "Catering",
-        "images/svc-catering-catering-25.png": "Catering",
-        "images/svc-catering-catering-26.png": "Catering",
-        "images/svc-catering-catering-27.png": "Catering",
-        "images/svc-catering-catering-28.png": "Catering",
-        "images/svc-catering-catering-29.png": "Catering",
-        "images/svc-catering-catering-30.png": "Catering",
-        "images/svc-catering-catering-31.png": "Catering",
-        "images/svc-catering-catering-32.png": "Catering",
-        "images/svc-catering-catering-33.png": "Catering"
+        "images/svc-catering-catering-23.webp": "Catering",
+        "images/svc-catering-catering-24.webp": "Catering",
+        "images/svc-catering-catering-25.webp": "Catering",
+        "images/svc-catering-catering-26.webp": "Catering",
+        "images/svc-catering-catering-27.webp": "Catering",
+        "images/svc-catering-catering-28.webp": "Catering",
+        "images/svc-catering-catering-29.webp": "Catering",
+        "images/svc-catering-catering-30.webp": "Catering",
+        "images/svc-catering-catering-31.webp": "Catering",
+        "images/svc-catering-catering-32.webp": "Catering",
+        "images/svc-catering-catering-33.webp": "Catering"
       },
       "group_covers": {
         "Catering": "images/svc-catering-catering-1.jpg",
@@ -1113,7 +1115,7 @@
     {
       "slug": "engagement",
       "title": "Engagement",
-      "image": "images/occasion-engagement.png",
+      "image": "images/occasion-engagement.webp",
       "text": "Celebrate your love story with our bespoke engagement event services. We are dedicated to crafting an unforgettable experience. Our team of experienced planners will work closely with you to bring your dream to life, ensuring every element of the celebration is designed and flawlessly executed. From intimate moments to grand gestures."
     },
     {
@@ -1133,7 +1135,7 @@
     {
       "slug": "communion",
       "title": "Holy First Communion",
-      "image": "images/occasion-communion.png",
+      "image": "images/occasion-communion.webp",
       "text": "Your child's First Communion deserves to be a truly exceptional and memorable event. Our expertise in detailed planning, combined with a touch of spiritual sophistication, ensures a distinguished and meaningful celebration."
     },
     {
@@ -1184,7 +1186,7 @@
       "text": "From our proposal to our wedding, Paradream exceeded every expectation. We had a clear vision, and they brought it to life flawlessly—the mood board was executed exactly as we imagined. The atmosphere was electric, everyone was dancing and celebrating with joy. It truly felt like a dream. I confidently recommend Paradream to anyone planning a special event; they made our moments unforgettable."
     },
     {
-      "image": "images/testimonial-jeanmarie.png",
+      "image": "images/testimonial-jeanmarie.webp",
       "name": "Jean-Marie & Lili's Engagement",
       "text": "I still get chills thinking about our engagement night—Paradream turned it into absolute MAGIC! From the moment we stepped in, it felt like we were living inside a fairytale. The setup was breathtaking, the entertainment was next-level, and the vibe? Unmatched. Every guest was blown away, and we were speechless. If you're planning an engagement, don't even think twice. Book Paradream now—they don't just plan events, they create unforgettable moments you'll cherish forever!"
     },

@@ -301,15 +301,15 @@ def footer_html():
         return re.sub(r"<li>", li, m.group(0))
     return re.sub(r"<ul>.*?</ul>", stagger, out, flags=re.S)
 
-def local_business_jsonld():
-    data = {
-        "@context": "https://schema.org",
+def local_business_data():
+    return {
         "@type": "LocalBusiness",
+        "@id": "https://paradreamlb.com/#business",
         "name": "Paradream Events",
         "url": "https://paradreamlb.com/",
         "logo": "https://paradreamlb.com/images/logo-mark.png",
         "image": OG,
-        "description": "Event planning and entertainment company in Lebanon: live show parades, oriental zaffah, décor, catering and full event coordination for weddings, engagements, baptisms, birthdays and more.",
+        "description": "Event planning and entertainment company in Lebanon: live show parades, oriental zaffah, d\u00e9cor, catering and full event coordination for weddings, engagements, baptisms, birthdays and more.",
         "slogan": SITE.get("tagline", ""),
         "telephone": SITE["phone_tel"],
         "email": SITE["email"],
@@ -319,13 +319,69 @@ def local_business_jsonld():
         "areaServed": {"@type": "Country", "name": "Lebanon"},
         "sameAs": [u for u in SOCIALS.values() if u.strip()],
     }
-    return '<script type="application/ld+json">' + json.dumps(data, ensure_ascii=False) + '</script>'
 
 PAGES_WRITTEN = []
+BASE_URL = "https://paradreamlb.com"
 
-def page(filename, title, description, body, current=None):
+def fit_title(t):
+    r = html.unescape(t)
+    if len(r) <= 60:
+        return t
+    base = r
+    for suf in (" - Paradream Events", " | Paradream Events"):
+        if r.endswith(suf):
+            base = r[:-len(suf)]
+            break
+    for c in (base + " | Paradream Events", base.replace(" in Lebanon", "") + " | Paradream Events",
+              base + " | Paradream", base.replace(" in Lebanon", "") + " | Paradream"):
+        if len(c) <= 60:
+            return html.escape(c, quote=False)
+    return html.escape(base[:57].rstrip() + "...", quote=False)
+
+def fit_desc(d):
+    m = re.match(r"Tell us about the (.+?) you're planning and Paradream will help bring it to life\.$", html.unescape(d))
+    if m:
+        d = ("Plan your %s in Lebanon with Paradream: entertainment, d\u00e9cor and catering, fully coordinated. "
+             "Share your details and we reply quickly." % m.group(1))
+    r = html.unescape(d)
+    if len(r) > 155:
+        cut = r[:152]
+        k = max(cut.rfind(". "), cut.rfind("! "))
+        if k >= 90:
+            r = cut[:k + 1]
+        else:
+            r = cut[:cut.rfind(" ")].rstrip(" ,;:-") + "..."
+    return html.escape(r, quote=True)
+
+def page_url(filename):
+    return BASE_URL + "/" if filename == "index.html" else BASE_URL + "/" + filename[:-5]
+
+def breadcrumb_ld(filename, title, current):
+    name = re.split(r" [-|] ", html.unescape(title))[0]
+    items = [("Home", BASE_URL + "/")]
+    if filename.startswith("service-"):
+        items.append(("Our Services", BASE_URL + "/our-services"))
+    elif current == "occasions.html" and filename != "occasions.html":
+        items.append(("Occasions We Cover", BASE_URL + "/occasions"))
+    items.append((name, page_url(filename)))
+    return {"@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": i + 1, "name": n, "item": u} for i, (n, u) in enumerate(items)]}
+
+def page(filename, title, description, body, current=None, ld=None):
     PAGES_WRITTEN.append(filename)
-    extra_head = local_business_jsonld() if filename == "index.html" else ""
+    title = fit_title(title)
+    description = fit_desc(description)
+    url = page_url(filename)
+    graph = []
+    if filename == "index.html":
+        graph.append(local_business_data())
+    else:
+        graph.append(breadcrumb_ld(filename, title, current))
+    if ld:
+        graph.extend(ld)
+    ld_tag = ('<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False) + '</script>') if graph else ""
+    robots = '<meta name="robots" content="noindex, follow">' if filename == "thanks.html" else ""
+    extra_head = ld_tag + robots
     doc = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -333,10 +389,15 @@ def page(filename, title, description, body, current=None):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
 <meta name="description" content="{description}">
+<link rel="canonical" href="{url}">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{description}">
 <meta property="og:image" content="{OG}">
 <meta property="og:type" content="website">
+<meta property="og:url" content="{url}">
+<meta property="og:site_name" content="Paradream Events">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
@@ -445,7 +506,7 @@ how_steps_html = "\n".join(
       </div>""" for i, s in enumerate(PAGES["home"]["how_steps"]))
 
 marquee_cards = "\n".join(
-    f'      <a class="mq-card" href="{svc_url(x)}"><img src="{media(x.get("image", ""), 700)}" alt="" loading="lazy" decoding="async">'
+    f'      <a class="mq-card" href="{svc_url(x)}"><img src="{media(x.get("image", ""), 700)}" alt="{html.escape(x["title"], quote=True)}" loading="lazy" decoding="async">'
     f'<span class="mq-title">{x["title"]}</span></a>'
     for x in CONTENT["services"]
 )
@@ -586,7 +647,7 @@ HOME_BLOCKS = {
 }
 
 home = "\n\n".join(HOME_BLOCKS[k] for k in PAGES["home"]["sections"] if k in HOME_BLOCKS)
-page("index.html", "Paradream Events | Event Planner, Zaffah &amp; Live Parades in Lebanon",
+page("index.html", "Paradream Events | Event Planner &amp; Zaffah in Lebanon",
      "Event planner in Lebanon: weddings, engagements, baptisms, birthdays and more. Live parades, oriental zaffah, entertainment and décor. Based in Beirut.",
      home)
 
@@ -595,7 +656,7 @@ page("index.html", "Paradream Events | Event Planner, Zaffah &amp; Live Parades 
 TESTIMONIALS = [(x["image"], x["name"], x["text"]) for x in CONTENT["testimonials"]]
 
 quotes = "\n".join(f"""      <figure class="quote reveal">
-        <img src="{media(src, 900)}" alt="" loading="lazy">
+        <img src="{media(src, 900)}" alt="Client review photo: {html.escape(name, quote=True)}, Paradream Events" loading="lazy">
         <div>
           <blockquote>{text}</blockquote>
           <cite>{name}</cite>
@@ -640,7 +701,7 @@ why = f"""
 </section>
 
 """ + "\n\n".join(WHY_BLOCKS[k] for k in WHY["sections"] if k in WHY_BLOCKS)
-page("why-paradream.html", "Why Paradream? | Top Event Planner &amp; Parade Experts in Lebanon",
+page("why-paradream.html", "Why Paradream? | Top Event Planner in Lebanon",
      "Discover why Paradream is Lebanon's top event planner. Unique parades, dazzling shows, and unforgettable zaffahs for every special occasion.",
      why)
 
@@ -788,7 +849,7 @@ def invitation_html():
 
 
 page("our-services.html", "Our Services - Paradream Events",
-     "Full event planning, live show parades, oriental zaffah, photo booths, mascots, fire and LED shows, décor, catering and entertainment by Paradream Events in Lebanon.",
+     "Full event planning, live parades, zaffah, photo booths, mascots, fire shows, décor, catering and entertainment by Paradream Events in Lebanon.",
      f"""
 <section class="page-head">
   <h1>{PAGES["our-services"]["h1"]}</h1>
@@ -817,8 +878,9 @@ def service_page_html(s):
         <h3>{_e(st["h"])}</h3>
         <p>{_e(st["p"])}</p>
       </div>""" for i, st in enumerate(s["how"]))
+    ALTP = ""
     figs = "\n".join(
-        f"""      <figure class="svc-photo reveal" style="--d:{(i % 3) * 90}ms"><img src="{media(p, 900)}" srcset="{media(p, 600)} 600w, {media(p, 900)} 900w, {media(p, 1400)} 1400w" sizes="(max-width:700px) 92vw, (max-width:1100px) 46vw, 360px" alt="{title} by Paradream Events" loading="lazy" decoding="async"></figure>"""
+        f"""      <figure class="svc-photo reveal" style="--d:{(i % 3) * 90}ms"><img src="{media(p, 900)}" srcset="{media(p, 600)} 600w, {media(p, 900)} 900w, {media(p, 1400)} 1400w" sizes="(max-width:700px) 92vw, (max-width:1100px) 46vw, 360px" alt="{ALTP}{title} in Lebanon by Paradream Events, photo {i + 1}" loading="lazy" decoding="async"></figure>"""
         for i, p in enumerate(s["photos"]))
     others = "\n".join(
         f'        <a href="{svc_url(o)}">{_e(o["title"])}</a>' for o in SVC if o["slug"] != s["slug"])
@@ -848,8 +910,8 @@ def service_page_html(s):
     choice_section = ""
     if groups and s["photos"]:
         pg = s.get("photo_groups", {})
-        def _fig(i, p):
-            return f"""      <figure class="svc-photo reveal" style="--d:{(i % 3) * 90}ms"><img src="{media(p, 900)}" srcset="{media(p, 600)} 600w, {media(p, 900)} 900w, {media(p, 1400)} 1400w" sizes="(max-width:700px) 92vw, (max-width:1100px) 46vw, 360px" alt="{title} by Paradream Events" loading="lazy" decoding="async"></figure>"""
+        def _fig(i, p, ALTP=""):
+            return f"""      <figure class="svc-photo reveal" style="--d:{(i % 3) * 90}ms"><img src="{media(p, 900)}" srcset="{media(p, 600)} 600w, {media(p, 900)} 900w, {media(p, 1400)} 1400w" sizes="(max-width:700px) 92vw, (max-width:1100px) 46vw, 360px" alt="{ALTP}{title} in Lebanon by Paradream Events, photo {i + 1}" loading="lazy" decoding="async"></figure>"""
         secs, chips = [], []
         buckets = [(g, [p for p in s["photos"] if pg.get(p) == g]) for g in groups]
         rest = [p for p in s["photos"] if pg.get(p) not in groups]
@@ -864,7 +926,7 @@ def service_page_html(s):
             chips.append(f'''      <a class="svc-choice-card" href="#{gid}"><img src="{media(cover, 900)}" alt="{_e(g)}" loading="lazy" decoding="async"><span class="svc-choice-shade"></span><span class="svc-choice-body"><b>{_e(g)}</b><small>{_e(blurb)}</small><i>{len(ps)} photos &darr;</i></span></a>''')
             secs.append(f"""    <h2 class="reveal svc-group-h" id="{gid}">{_e(g)}</h2>
     <div class="svc-photos">
-{chr(10).join(_fig(i, p) for i, p in enumerate(ps))}
+{chr(10).join(_fig(i, p, _e(g) + ' - ') for i, p in enumerate(ps))}
     </div>""")
         choice_section = f"""<section class="band band-cream">
   <div class="band-inner">
@@ -907,9 +969,22 @@ def service_page_html(s):
 </section>
 """
 
+def service_ld(s):
+    img = s.get("image", "")
+    return [{
+        "@type": "Service",
+        "name": s["title"],
+        "serviceType": s["title"],
+        "description": html.unescape(fit_desc(s.get("seo_desc", s["intro"]))),
+        "url": page_url(svc_url(s)),
+        "image": (BASE_URL + "/" + img) if img.startswith("images/") else OG,
+        "provider": {"@id": "https://paradreamlb.com/#business"},
+        "areaServed": {"@type": "Country", "name": "Lebanon"},
+    }]
+
 for _s in SVC:
     page(svc_url(_s), _e(_s["title"]) + " in Lebanon - Paradream Events",
-         _e(_s["intro"]), service_page_html(_s), current="our-services.html")
+         _e(_s.get("seo_desc", _s["intro"])), service_page_html(_s), current="our-services.html", ld=service_ld(_s))
 
 
 occasion_options = "\n".join(
@@ -1075,7 +1150,7 @@ def occasion_form(slug, title, chocolate_options, extra_top=""):
 """
 
 # ── Contact ─────────────────────────────────────────────────
-page("contact-us.html", "Contact Paradream | Book the Best Event Entertainment in Lebanon",
+page("contact-us.html", "Contact Paradream | Event Entertainment in Lebanon",
      "Ready to plan your dream event? Contact Paradream for the best parades, zaffah, and entertainment services in Lebanon.",
      f"""
 <section class="page-head">
@@ -1506,3 +1581,8 @@ with open(os.path.join(OUT, "sitemap.xml"), "w", encoding="utf-8") as _fh:
     _fh.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
               + "\n".join(_urls) + "\n</urlset>\n")
 print("wrote sitemap.xml")
+
+# ── robots.txt ─────────────────────────────────────────────
+with open(os.path.join(OUT, "robots.txt"), "w", encoding="utf-8") as _fh:
+    _fh.write("User-agent: *\nAllow: /\nDisallow: /admin.html\nDisallow: /thanks.html\n\nSitemap: https://paradreamlb.com/sitemap.xml\n")
+print("wrote robots.txt")
