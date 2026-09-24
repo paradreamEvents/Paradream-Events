@@ -985,7 +985,18 @@
           "p": "We set everything up so you can enjoy the day with your loved ones."
         }
       ],
-      "photos": [],
+      "photos": [
+        "images/svc-family-baptism-1.jpg",
+        "images/svc-family-baptism-2.jpg",
+        "images/svc-family-baptism-3.jpg",
+        "images/svc-family-baptism-4.jpg",
+        "images/svc-family-baptism-5.jpg",
+        "images/svc-family-baptism-6.jpg",
+        "images/svc-family-baptism-7.jpg",
+        "images/svc-family-baptism-8.jpg",
+        "images/svc-family-baptism-9.jpg",
+        "images/svc-family-baptism-10.jpg"
+      ],
       "book": "occasions.html"
     }
   ],
