@@ -105,7 +105,25 @@
         "images/svc-planning-16.jpg"
       ],
       "book": "contact-us.html",
-      "seo_desc": "Full event planning and coordination in Lebanon. One team, one plan, from the first idea to the final applause, so you enjoy the day."
+      "seo_desc": "Full event planning and coordination in Lebanon. One team, one plan, from the first idea to the final applause, so you enjoy the day.",
+      "about": [
+        "Planning an event in Lebanon means juggling a venue, décor, entertainment, catering and a timeline that has to work on the day. Paradream Events takes all of that off your hands. We start by listening to your occasion, date, guest count and budget, then shape a concept around your vision and line up every supplier in one clear plan.",
+        "On the day, our coordinators are on site from set-up to the last guest, so the schedule holds and you enjoy the celebration instead of running it. We plan weddings, engagements, private celebrations and corporate events from our base in Furn El Chebbak, Beirut, and we work across Lebanon."
+      ],
+      "faq": [
+        {
+          "q": "What does full event planning include?",
+          "a": "It covers the concept, budget, timeline, venue, décor, entertainment, catering and on-the-day coordination, all handled by one team so you deal with one point of contact."
+        },
+        {
+          "q": "How far ahead should I contact you?",
+          "a": "As early as you can. Popular dates and venues fill up, so the sooner we know your date and guest count, the more choice you have. Short-notice events are welcome too, and we will tell you honestly what is possible."
+        },
+        {
+          "q": "Can you plan only part of my event?",
+          "a": "Yes. You can hire us for the whole event or for specific parts, such as the entertainment, the décor or the coordination on the day."
+        }
+      ]
     },
     {
       "title": "Venues & Locations",
@@ -190,7 +208,25 @@
         "Indoor venues": "Grand halls, chandeliers and ceilings of light.",
         "Outdoor venues": "Terraces, gardens and mountain views."
       },
-      "seo_desc": "Find and secure the right venue in Lebanon: indoor or outdoor, mountain view, beach sunset or private. Tell us what your celebration needs."
+      "seo_desc": "Find and secure the right venue in Lebanon: indoor or outdoor, mountain view, beach sunset or private. Tell us what your celebration needs.",
+      "about": [
+        "The right space sets the tone for everything else. Whether you picture a mountain terrace with a panoramic view, a garden, a beach sunset or a grand indoor hall, Paradream helps you find and secure a venue in Lebanon that fits your guests, your style and your budget.",
+        "Tell us the feel you want and your guest count. We suggest suitable spaces, help you compare them against your plans and then design the décor, lighting, sound, seating and entertainment around the venue you choose. Browse the indoor and outdoor examples below for inspiration."
+      ],
+      "faq": [
+        {
+          "q": "Can you help me find a venue in Lebanon?",
+          "a": "Yes. Tell us the occasion, date, guest count and style, and we suggest spaces that suit, from mountain terraces and gardens to grand halls."
+        },
+        {
+          "q": "Do you handle the décor and setup at the venue?",
+          "a": "Yes. We plan the décor, lighting, sound, seating and entertainment to fit the venue you pick, and our team installs it before your guests arrive."
+        },
+        {
+          "q": "Indoor or outdoor, which is better?",
+          "a": "It depends on the season, your guest count and the mood you want. We talk through the practical side, such as weather back-up and power, and recommend what works best for your date."
+        }
+      ]
     },
     {
       "title": "Décor, Styling & Table Setups",
@@ -296,7 +332,25 @@
         "images/svc-decor-81.jpg",
         "images/svc-decor-82.jpg"
       ],
-      "book": "contact-us.html"
+      "book": "contact-us.html",
+      "about": [
+        "Décor is what your guests remember first. Paradream designs centerpieces, floral runners, linens, signage, backdrops and themed styling around your colors and vision, and sets everything up before the first guest walks in.",
+        "We start with your theme and inspiration and turn it into a mood board you approve. Then we choose the details, from table setups and chocolates to lighting and signs, so the whole space feels like one story. Our work covers weddings, engagements, baptisms, communions, birthdays and corporate events across Lebanon."
+      ],
+      "faq": [
+        {
+          "q": "Can you match my colors and theme?",
+          "a": "Yes. Share your colors, theme or inspiration photos, and we turn them into a mood board for your approval before anything is made."
+        },
+        {
+          "q": "Do you set up and take down?",
+          "a": "Yes. Our team installs the décor before your guests arrive and takes care of it after the event."
+        },
+        {
+          "q": "Do you also provide chocolates and favors?",
+          "a": "Yes. We can design personalised chocolates, favors and dessert tables with your names, date and colors to match the décor."
+        }
+      ]
     },
     {
       "title": "Live Show Parade",
@@ -330,7 +384,25 @@
         "images/svc-parade-9.jpg",
         "images/svc-parade-10.jpg"
       ],
-      "book": "contact-us.html"
+      "book": "contact-us.html",
+      "about": [
+        "A parade turns your entrance into a moment everyone joins. Paradream's live show parade brings drummers, brass players and performers in costume who lead the crowd through your venue with music and energy, from the first step to the last.",
+        "We agree the route, timing and entrance with you in advance, so the parade fits your event exactly. It works for weddings, engagements, birthdays, corporate events and public celebrations anywhere in Lebanon."
+      ],
+      "faq": [
+        {
+          "q": "What is a live show parade?",
+          "a": "It is a moving live performance, with drummers, brass and performers, that leads you and your guests into or through your celebration."
+        },
+        {
+          "q": "Can the parade be customised?",
+          "a": "Yes. We plan the route, the timing and the style with you, including costumes and the songs that matter to your family."
+        },
+        {
+          "q": "Does it work for events other than weddings?",
+          "a": "Yes. We perform at birthdays, engagements, baptisms, graduations, corporate events, openings and Christmas events too."
+        }
+      ]
     },
     {
       "title": "Oriental Zaffah",
@@ -364,7 +436,25 @@
         "images/svc-zaffah-9.jpg",
         "images/svc-zaffah-10.jpg"
       ],
-      "book": "wedding.html"
+      "book": "wedding.html",
+      "about": [
+        "The zaffah is the heart of a Lebanese wedding entrance. Paradream performs the traditional zaffah with drums, dancers and brass, timed to the second so the moment your couple appears is unforgettable.",
+        "Choose a traditional zaffah or a modern take with extra instruments and dancers. We agree the entrance, the song order and the exact moment with the family in advance, then lead the couple in while your guests clap along. Our zaffah team performs at weddings and engagements across Lebanon."
+      ],
+      "faq": [
+        {
+          "q": "What is a Lebanese zaffah?",
+          "a": "A zaffah is a traditional festive procession with drums, brass and dancing that announces the couple's grand entrance."
+        },
+        {
+          "q": "Can we choose the songs and style?",
+          "a": "Yes. You can pick a traditional zaffah or a modern version, and we agree the song order and timing with you before the event."
+        },
+        {
+          "q": "How much does a zaffah cost?",
+          "a": "The price depends on the size of the team, the length of the show and the location. Contact us with your date and venue and we will send you a quote."
+        }
+      ]
     },
     {
       "title": "Live Music & Entertainment",
@@ -394,7 +484,25 @@
         "images/svc-music-5.jpg",
         "images/svc-music-6.jpg"
       ],
-      "book": "contact-us.html"
+      "book": "contact-us.html",
+      "about": [
+        "Music decides the mood of the night. Paradream offers live violin, saxophone, trumpet and piano, DJs and customised music shows for every moment, from an elegant dinner to a full dance floor.",
+        "Tell us the mood and we recommend the right line-up, or you can pick the shows yourself. We arrive early, set up and play through the moments you planned, at weddings, private celebrations and corporate events throughout Lebanon."
+      ],
+      "faq": [
+        {
+          "q": "Can I combine live musicians with a DJ?",
+          "a": "Yes. Many events use live instruments for the ceremony or dinner and a DJ for the dance floor. We build the line-up around your timeline."
+        },
+        {
+          "q": "Do you provide the sound equipment?",
+          "a": "We arrange the sound and setup needed for the show. Tell us about your venue and we will confirm what is required."
+        },
+        {
+          "q": "Can you play specific songs?",
+          "a": "Yes. Share your song requests in advance and we shape the performance around them."
+        }
+      ]
     },
     {
       "title": "Photo Booths & Backdrops",
@@ -480,7 +588,25 @@
       "group_blurbs": {
         "Photobooth & Backdrops": "Photo booths, mirror booths and styled backdrops for your guests.",
         "Games": "Lawn games and party games to keep guests entertained all night."
-      }
+      },
+      "about": [
+        "Photo booths and backdrops give your guests something to queue up for. Paradream offers custom photo booths and styled backdrops designed with your names, date and theme, so every picture matches your celebration.",
+        "Pick a booth or backdrop style, and we design the print or backdrop with your colors. Guests pose, share and take memories home. Below you will find our booth, backdrop and party-game options for weddings, birthdays and corporate events across Lebanon."
+      ],
+      "faq": [
+        {
+          "q": "Can the photo booth be personalised?",
+          "a": "Yes. We design the print or backdrop with your names, date, colors and theme."
+        },
+        {
+          "q": "Do you offer other games and activities?",
+          "a": "Yes. Beyond photo booths and backdrops, we offer garden and party games such as giant board games, cornhole and more, to keep guests entertained."
+        },
+        {
+          "q": "Is an attendant included?",
+          "a": "We can arrange an attendant to run the booth. Ask us when you request a quote."
+        }
+      ]
     },
     {
       "title": "Characters & LED Mascots",
@@ -588,7 +714,25 @@
       "group_blurbs": {
         "LED Mascots & Entertainment": "Light-up costumes and performers for a striking entrance and nightlife energy.",
         "Kids & Birthday Mascots": "Favorite characters for birthdays, school events and family parties."
-      }
+      },
+      "about": [
+        "Life-size mascots and glowing LED costumes that children and adults love to meet, dance with and photograph. Paradream's characters come with a trained performer, so they greet guests, join the fun and pose for pictures throughout your event.",
+        "Choose the characters and costumes for the age and theme of your celebration, from kids' birthday mascots to LED entertainment for weddings and corporate nights. We perform across Lebanon."
+      ],
+      "faq": [
+        {
+          "q": "Which characters can I choose?",
+          "a": "Browse the mascots and LED costumes below, and tell us the age group and theme of your event. We recommend what fits best."
+        },
+        {
+          "q": "Is a performer included?",
+          "a": "Yes. Each character comes with a performer who knows how to entertain a crowd."
+        },
+        {
+          "q": "Can the mascots appear at corporate events?",
+          "a": "Yes. LED entertainment and branded mascots work well for launches, openings and company parties."
+        }
+      ]
     },
     {
       "title": "Fire, LED & Circus Shows",
@@ -620,7 +764,25 @@
         "images/svc-fire-shows-7.jpg",
         "images/svc-fire-shows-8.jpg"
       ],
-      "book": "contact-us.html"
+      "book": "contact-us.html",
+      "about": [
+        "Fire, LED and circus acts turn an ordinary evening into the part of the night people talk about for years. Paradream provides fire performers, LED shows, aerial and circus acts, alone or combined into a full show.",
+        "Before the event we check your venue and confirm the space and setup each act needs, so the performance is safe and impressive. Shows are available for weddings, festivals, corporate events and public celebrations across Lebanon."
+      ],
+      "faq": [
+        {
+          "q": "Are fire shows safe indoors?",
+          "a": "It depends on the venue. We inspect the space in advance and tell you honestly whether a fire act is suitable, and we can suggest LED or circus alternatives if not."
+        },
+        {
+          "q": "Can I combine different acts?",
+          "a": "Yes. You can book a single act or a full show that combines fire, LED, aerial and circus performers."
+        },
+        {
+          "q": "How much space do the performers need?",
+          "a": "It depends on the act. We confirm the space, height and setup requirements with you after seeing your venue."
+        }
+      ]
     },
     {
       "title": "Inflatable Games & Kids' Fun",
@@ -653,7 +815,25 @@
         "images/svc-inflatables-band1.jpg"
       ],
       "book": "https://wa.me/96181406046?text=Hi%21%20I%20would%20like%20to%20get%20your%20inflatable%20games%20catalogue.",
-      "book_label": "Ask for our inflatable catalogue"
+      "book_label": "Ask for our inflatable catalogue",
+      "about": [
+        "Keep the children busy and happy while you enjoy the celebration. Paradream supplies slides, obstacle courses, climbing walls, ball pits, combo castles and water games for birthdays, family days and corporate fun days.",
+        "We deliver the games to your venue, install them before the event and supervise the fun. Browse the catalogue below, then ask us for the full inflatable catalogue on WhatsApp to pick your favourites."
+      ],
+      "faq": [
+        {
+          "q": "Do you deliver and set up the inflatables?",
+          "a": "Yes. We bring the games to your venue and install them before the event."
+        },
+        {
+          "q": "What space do I need?",
+          "a": "It depends on the game. Send us the size of your space and we recommend what fits."
+        },
+        {
+          "q": "Are the games supervised?",
+          "a": "Yes. Our team supervises the games so children can play safely while you enjoy the event."
+        }
+      ]
     },
     {
       "title": "Catering, Bar & Chocolate",
@@ -808,7 +988,25 @@
         "Catering": "Buffets, platters and live stations",
         "Bar": "Drink stations, dispensers and signature bars",
         "Chocolate": "Chocolate fountains, dessert shots and sweet tables"
-      }
+      },
+      "about": [
+        "Good food makes an event feel generous. Paradream prepares platters, buffets, canapés, hot dishes, a bar and chocolate and dessert stations, presented to match the rest of your celebration.",
+        "Tell us your guest count, menu ideas and any dietary needs, and we choose the menu with you. Everything is set up and served at your venue. Browse the catering, bar and chocolate examples below for weddings, family milestones and corporate events across Lebanon."
+      ],
+      "faq": [
+        {
+          "q": "Can you cater special diets?",
+          "a": "Yes. Tell us about vegetarian, allergy or other dietary needs when you request a quote and we build the menu around them."
+        },
+        {
+          "q": "Do you provide a bar service?",
+          "a": "Yes. We offer drink stations, dispensers and bar service, and can style them to match your décor."
+        },
+        {
+          "q": "Can you make custom chocolate and dessert tables?",
+          "a": "Yes. We design chocolate stations, dessert tables and personalised sweets with your names, date and colors."
+        }
+      ]
     },
     {
       "title": "Signature Guest Experiences",
@@ -838,7 +1036,25 @@
         "images/svc-signature-6.jpg",
         "images/svc-signature-7.jpg"
       ],
-      "book": "contact-us.html"
+      "book": "contact-us.html",
+      "about": [
+        "Small surprises are what guests remember. Paradream designs signature touches such as Ring the Bell champagne moments, dancing-shoes stands, sign-in boards, sparklers, fans and coffee stations that make your event feel personal.",
+        "Tell us the feeling you want your guests to have, and we design and brand each experience with your names, colors and theme, then install it and keep it running during the event."
+      ],
+      "faq": [
+        {
+          "q": "What is Ring the Bell?",
+          "a": "It is a champagne moment: a decorative bell and champagne glass that guests use to celebrate the couple, styled with your names."
+        },
+        {
+          "q": "Can these be branded with our names?",
+          "a": "Yes. Each experience is styled with your names, colors and theme."
+        },
+        {
+          "q": "Do you set them up on the day?",
+          "a": "Yes. Our team installs everything and keeps it running during the event."
+        }
+      ]
     },
     {
       "title": "Roaming Acts & Interactive Hospitality",
@@ -873,7 +1089,25 @@
         "images/svc-roaming-hd-10.jpg",
         "images/svc-roaming-hd-11.jpg"
       ],
-      "book": "contact-us.html"
+      "book": "contact-us.html",
+      "about": [
+        "Roaming performers in dazzling costumes move through your event, serving canapés and drinks, greeting guests and starting conversations. Think disco-ball heads, LED costumes, champagne-tray dresses and silver hospitality outfits.",
+        "Choose the characters and we prepare everything they need to circulate, so the entertainment reaches every table and not only the stage. Available for weddings, private parties and corporate events across Lebanon."
+      ],
+      "faq": [
+        {
+          "q": "What are roaming acts?",
+          "a": "They are performers who walk among your guests, serving, greeting and entertaining, instead of performing on a stage."
+        },
+        {
+          "q": "Can they serve food and drinks?",
+          "a": "Yes. Many of our costumes are built to serve champagne, canapés and desserts."
+        },
+        {
+          "q": "Can the costumes match my theme?",
+          "a": "Yes. Tell us your theme and colors and we suggest matching characters."
+        }
+      ]
     },
     {
       "title": "Christmas & Seasonal Mascots",
@@ -957,7 +1191,25 @@
       "group_blurbs": {
         "Christmas Season": "Our Christmas band, Santa and festive mascots live at real events",
         "Christmas Mascots": "Santa, elves, nutcrackers and more Christmas characters"
-      }
+      },
+      "about": [
+        "Bring Christmas to life with Santa, a friendly polar bear, snowmen, reindeer, elves and more. Paradream's seasonal mascots greet the children, pose for photos and keep the party moving, with live music if you want a Christmas parade or a party entrance.",
+        "Book them for Christmas parties, schools, offices, malls, public events and home visits across Lebanon. Browse our Christmas events and our mascot lineup below."
+      ],
+      "faq": [
+        {
+          "q": "Can Santa visit my home or office?",
+          "a": "Yes. We offer Santa and other mascots for parties, schools, offices, malls and home visits."
+        },
+        {
+          "q": "Can I add live music?",
+          "a": "Yes. We can bring a band for a Christmas parade or a party entrance."
+        },
+        {
+          "q": "When should I book?",
+          "a": "Christmas dates fill up early, so contact us as soon as you know your date."
+        }
+      ]
     },
     {
       "title": "Baptisms, Communions & Family Milestones",
@@ -1087,7 +1339,25 @@
         "First Communion": "First Communion setups and favors",
         "Birthday": "Birthday parties and celebrations",
         "Gender Reveal": "Gender reveal moments and setups"
-      }
+      },
+      "about": [
+        "The milestones that matter most to your family deserve warmth and detail. Paradream plans baptisms, first communions, birthdays and gender reveals, with décor, sweets, entertainment and catering designed around your family.",
+        "Tell us the milestone, the date and your guest count, then choose the décor, chocolates, entertainment and catering that suit you. We set everything up so you can enjoy the day with your loved ones. Browse the four sections below for ideas."
+      ],
+      "faq": [
+        {
+          "q": "Do you plan baptisms and first communions?",
+          "a": "Yes. We design the backdrop, décor, favors and sweet tables, and can add entertainment and catering."
+        },
+        {
+          "q": "Can you organise a gender reveal?",
+          "a": "Yes. We arrange the reveal moment, décor and sweets, and can add a photo backdrop or a mascot."
+        },
+        {
+          "q": "Can we personalise favors with our names?",
+          "a": "Yes. We design chocolates, favors and signs with your family's names, dates and colors."
+        }
+      ]
     }
   ],
   "occasions": [
@@ -1487,6 +1757,8 @@
     "how_title": "How we do it",
     "photos_title": "Our work",
     "book_label": "Book your free consultation",
-    "more_title": "More services"
+    "more_title": "More services",
+    "about_title": "About",
+    "faq_title": "Frequently asked questions"
   }
 }

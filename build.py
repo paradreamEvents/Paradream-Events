@@ -890,6 +890,25 @@ def service_page_html(s):
     book_label = _e(s.get("book_label", SP_CFG.get("book_label", "Book Now")))
     book_attrs = ' target="_blank" rel="noopener"' if book.startswith("http") else ""
     bg = media(s["image"], 1800)
+    about_section = ""
+    if s.get("about"):
+        about_section = f"""<section class="band band-cream svc-about">
+  <div class="band-inner reveal">
+    <h2>{_e(SP_CFG.get("about_title", "About"))} {title}</h2>
+{chr(10).join("    <p>" + _e(p) + "</p>" for p in s["about"])}
+  </div>
+</section>"""
+    faq_section = ""
+    if s.get("faq"):
+        items = "\n".join(f"""      <details class="faq-item"><summary>{_e(f["q"])}</summary><p>{_e(f["a"])}</p></details>""" for f in s["faq"])
+        faq_section = f"""<section class="band svc-faq">
+  <div class="band-inner reveal">
+    <h2>{_e(SP_CFG.get("faq_title", "Frequently asked questions"))}</h2>
+    <div class="faq-list">
+{items}
+    </div>
+  </div>
+</section>"""
     how_section = f"""<section class="band band-cream">
   <div class="band-inner reveal">
     <h2>{_e(SP_CFG.get("how_title", "How we do it"))}</h2>
@@ -956,6 +975,8 @@ def service_page_html(s):
 {choice_section}
 {how_section}
 {photos_section}
+{about_section}
+{faq_section}
 
 <section class="band band-cream svc-cta">
   <div class="band-inner reveal">
@@ -980,7 +1001,11 @@ def service_ld(s):
         "image": (BASE_URL + "/" + img) if img.startswith("images/") else OG,
         "provider": {"@id": "https://paradreamlb.com/#business"},
         "areaServed": {"@type": "Country", "name": "Lebanon"},
-    }]
+    }] + ([{
+        "@type": "FAQPage",
+        "mainEntity": [{"@type": "Question", "name": f["q"],
+                        "acceptedAnswer": {"@type": "Answer", "text": f["a"]}} for f in s["faq"]],
+    }] if s.get("faq") else [])
 
 for _s in SVC:
     page(svc_url(_s), _e(_s["title"]) + " in Lebanon - Paradream Events",
