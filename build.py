@@ -270,7 +270,8 @@ FOOTER = f"""<footer class="site-footer">
 </div>
 
 {PRICING_TAG}
-<script src="main.js?v={stamp('main.js')}"></script>"""
+<script src="main.js?v={stamp('main.js')}"></script>
+<script src="spin.js?v={stamp('spin.js')}" defer></script>"""
 
 
 def analytics_tag():
@@ -407,6 +408,7 @@ def page(filename, title, description, body, current=None, ld=None):
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v={stamp('styles.css')}">
+<link rel="stylesheet" href="spin.css?v={stamp('spin.css')}">
 {analytics_tag()}
 {extra_head}
 </head>

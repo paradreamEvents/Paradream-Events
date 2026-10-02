@@ -178,3 +178,28 @@ force a format, though Netlify already picks the best one per browser.
 **Source quality matters most.** A photo that has been through WhatsApp is
 already compressed and cannot be recovered. Get originals from the photographer,
 or send them through WhatsApp as *Document* rather than *Photo*.
+
+---
+
+## Christmas countdown + spin wheel (`spin.js`, `spin.css`)
+
+A navy countdown bar above the header ("Christmas is coming! 83d 07h ... Book Your
+Christmas Event") and a "Spin for a Christmas Surprise!" popup. It is seasonal: it
+only shows between `start` and `end` at the top of `spin.js` (1 Oct - 26 Dec 2026).
+
+- **Prizes and chances** - the `prizes` list in `CONFIG` at the top of `spin.js`.
+  *The current prizes and odds are placeholders.* Keep only what Paradream will
+  honor and make the costly ones rare (higher `weight` = more likely). "Try Again"
+  is a free respin that always ends on a real prize.
+- **How it behaves** - opens by itself after 9 s or at 45% scroll, once per visitor
+  (snoozed 3 days if closed; never again after they win). Never auto-opens on pages
+  with a form. A small "Spin & win" pill (bottom-left) reopens it.
+- **Claiming** - the winner gets a code like `PD-7K3QX`, a "Claim on WhatsApp" button
+  (pre-written message with the code) and a link to the Christmas page, where the
+  prize and code are pre-filled into "Special Instructions".
+- **Codes are not checked by a server.** They are random labels that arrive with the
+  enquiry; match them against the WhatsApp message / form submission yourself.
+- **Preview any time** (ignores dates and saved prizes): add `?spin=1` to a page
+  address. `?spin=reset` also clears the prize saved on your own device.
+- **Retire it** - delete the `spin.css` and `spin.js` lines in `build.py`
+  (search `spin.`) and run `python3 build.py`.

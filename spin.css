@@ -1,0 +1,135 @@
+/* ==========================================================
+   Paradream - Christmas countdown bar + spin popup (see spin.js)
+   Uses the site's own colors: --red, --ink, Lato.
+   ========================================================== */
+
+/* ── Countdown bar ───────────────────────────────── */
+.pdx-bar{
+  position:relative;z-index:60;background:var(--ink,#12263A);color:#fff;
+  display:flex;flex-wrap:wrap;gap:.35rem 1rem;align-items:center;justify-content:center;
+  padding:.55rem 2.8rem .55rem 1rem;font-size:.9rem;line-height:1.3;text-align:center;
+}
+.pdx-bar-lead{font-weight:900;letter-spacing:.02em}
+.pdx-bar-timer{display:inline-flex;gap:.3rem;align-items:baseline;font-variant-numeric:tabular-nums;color:rgba(255,255,255,.78)}
+.pdx-bar-timer b{
+  display:inline-block;min-width:2.1ch;padding:.12rem .4rem;border-radius:2px;
+  background:rgba(255,255,255,.12);color:#fff;font-weight:900;text-align:center;
+}
+.pdx-bar-cta{
+  color:#fff;font-weight:900;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;
+  text-decoration:none;border-bottom:2px solid var(--red,#E4251B);padding-bottom:1px;
+}
+.pdx-bar-cta:hover{border-bottom-color:#fff}
+.pdx-bar-x{
+  position:absolute;right:.5rem;top:50%;transform:translateY(-50%);width:2rem;height:2rem;
+  border:0;background:transparent;color:rgba(255,255,255,.7);font-size:1.5rem;line-height:1;cursor:pointer;
+}
+.pdx-bar-x:hover{color:#fff}
+
+/* ── Launcher (bottom-left pill) ─────────────────── */
+.pdx-launch{
+  position:fixed;left:1.1rem;bottom:calc(1.1rem + var(--dock,0px));z-index:95;
+  display:inline-flex;align-items:center;gap:.55rem;padding:.65rem 1.1rem .65rem .8rem;
+  border:0;border-radius:999px;background:var(--ink,#12263A);color:#fff;cursor:pointer;
+  font-family:inherit;font-size:.78rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;
+  box-shadow:0 6px 22px rgba(18,38,58,.32);
+  transition:bottom .25s ease,opacity .2s,transform .2s;
+}
+.pdx-launch svg{width:22px;height:22px;fill:#fff;background:var(--red,#E4251B);border-radius:50%;padding:4px;box-sizing:content-box}
+.pdx-launch:hover{transform:translateY(-2px)}
+.pdx-launch.is-hidden,.calc-active .pdx-launch{opacity:0;pointer-events:none;transform:translateY(12px)}
+
+/* ── Popup ───────────────────────────────────────── */
+.pdx-lock{overflow:hidden}
+.pdx-modal{position:fixed;inset:0;z-index:140;display:grid;place-items:center;padding:12px}
+.pdx-modal[hidden]{display:none}
+.pdx-backdrop{
+  position:absolute;inset:0;background:rgba(7,16,26,.74);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:pdx-fade .3s both;
+}
+.pdx-card{
+  position:relative;width:min(440px,100%);max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);
+  overflow-y:auto;padding:1.9rem 1.4rem 1.3rem;text-align:center;color:#fff;
+  background:linear-gradient(180deg,#1b3a5a 0%,#12263A 48%,#0c1a29 100%);
+  border-top:4px solid var(--red,#E4251B);border-radius:4px;
+  box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.1);
+  animation:pdx-pop .5s cubic-bezier(.2,.9,.3,1.12) both;outline:0;
+}
+.pdx-card h2{
+  margin:0 0 .3rem;color:#fff;font-size:clamp(1.45rem,5.6vw,1.85rem);line-height:1.15;
+  letter-spacing:-.01em;text-wrap:balance;
+}
+.pdx-sub{margin:0;color:rgba(255,255,255,.82);font-size:1rem}
+.pdx-close{
+  position:absolute;right:.5rem;top:.4rem;width:2.4rem;height:2.4rem;border:0;background:transparent;
+  color:rgba(255,255,255,.75);font-size:1.8rem;line-height:1;cursor:pointer;
+}
+.pdx-close:hover{color:#fff}
+
+/* wheel */
+.pdx-wheel{position:relative;width:min(330px,76vw);aspect-ratio:1;margin:1.4rem auto 1rem;transition:width .45s ease,margin .45s ease}
+/* once there is a prize, the wheel steps back so the prize and buttons fit on a phone */
+.pdx-card.is-won .pdx-wheel{width:min(200px,52vw);margin:1.1rem auto .9rem}
+.pdx-rim,.pdx-disc{position:absolute;display:block}
+.pdx-rim{inset:0;width:100%;height:100%;filter:drop-shadow(0 10px 18px rgba(0,0,0,.45))}
+.pdx-disc{left:5.45%;top:5.45%;width:89.1%;height:89.1%;will-change:transform}
+.pdx-bulb{fill:#FFF3D1;filter:drop-shadow(0 0 3px #FFD27A);animation:pdx-twinkle 1.6s ease-in-out infinite}
+.pdx-bulb-b{fill:#FFD27A;animation-delay:.8s}
+.pdx-pointer{
+  position:absolute;left:50%;top:-4.5%;width:12.5%;transform:translateX(-50%);z-index:3;
+  transform-origin:50% 20%;filter:drop-shadow(0 3px 3px rgba(0,0,0,.45));
+}
+.is-spinning .pdx-pointer{animation:pdx-flick .22s ease-in-out infinite alternate}
+.pdx-hub{
+  position:absolute;left:50%;top:50%;z-index:2;width:21%;aspect-ratio:1;transform:translate(-50%,-50%);
+  display:grid;place-items:center;border-radius:50%;background:#fff;
+  border:5px solid var(--ink,#12263A);box-shadow:0 0 0 3px var(--red,#E4251B),0 6px 14px rgba(0,0,0,.4);
+}
+.pdx-hub img{width:84%;height:84%;object-fit:contain}
+
+/* actions + result */
+.pdx-actions{display:flex;flex-wrap:wrap;gap:.7rem;justify-content:center;margin:.4rem 0 0}
+.pdx-actions[hidden],.pdx-result[hidden],.pdx-fine[hidden]{display:none}
+.pdx-spin{min-width:13rem;padding:1rem 2.2rem;font-size:.95rem}
+.pdx-spin:disabled{opacity:.7;cursor:progress}
+.pdx-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.55)}
+.pdx-ghost:hover{background:#fff;color:var(--ink,#12263A);border-color:#fff}
+.pdx-result{margin-top:.2rem}
+.pdx-prize{margin:.1rem 0 .15rem;font-size:clamp(1.3rem,5vw,1.6rem);font-weight:900;line-height:1.2;color:#fff}
+.pdx-note{margin:0 0 1rem;color:rgba(255,255,255,.78);font-size:.95rem}
+.pdx-code{
+  display:inline-flex;flex-direction:column;align-items:center;gap:.1rem;margin:0 0 1.1rem;
+  padding:.6rem 1.6rem;border:2px dashed rgba(255,255,255,.55);border-radius:3px;
+  background:rgba(255,255,255,.07);color:#fff;font-family:inherit;cursor:pointer;
+}
+.pdx-code small{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.pdx-code b{font-size:1.45rem;font-weight:900;letter-spacing:.14em}
+.pdx-code em{font-size:.7rem;font-style:normal;color:#FFD27A}
+.pdx-code:hover{border-color:#fff}
+.pdx-fine{margin:1rem 0 0;color:rgba(255,255,255,.6);font-size:.78rem;line-height:1.45}
+.pdx-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;list-style:none}
+
+/* the prize, carried onto the Christmas booking form */
+.pdx-claimed{
+  max-width:760px;margin:0 auto 1.2rem;padding:.9rem 1.1rem;border-left:4px solid var(--red,#E4251B);
+  background:var(--cream,#F5F7F9);color:var(--ink,#12263A);font-size:.95rem;
+}
+
+@keyframes pdx-fade{from{opacity:0}to{opacity:1}}
+@keyframes pdx-pop{from{opacity:0;transform:translateY(18px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes pdx-twinkle{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes pdx-flick{from{transform:translateX(-50%) rotate(-7deg)}to{transform:translateX(-50%) rotate(3deg)}}
+
+@media (max-width:520px){
+  .pdx-bar{font-size:.8rem;gap:.25rem .7rem;padding:.5rem 2.4rem .5rem .8rem}
+  .pdx-bar-timer b{padding:.1rem .3rem}
+  .pdx-sec{display:none}   /* seconds hidden on phones so the bar stays two lines */
+  .pdx-launch{padding:.6rem .95rem .6rem .7rem}
+  .pdx-spin{min-width:11rem}
+  .pdx-actions .btn{padding-inline:1.1rem;letter-spacing:.06em;font-size:.8rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .pdx-card,.pdx-backdrop{animation:none}
+  .pdx-bulb{animation:none}
+  .is-spinning .pdx-pointer{animation:none}
+}
