@@ -1554,7 +1554,15 @@ page("thanks.html", "Thank you - Paradream Events",
   <p>{PAGES["thanks"]["sub"]}</p>
 </section>
 
-""" + "\n\n".join(THANKS_BLOCKS[k] for k in PAGES["thanks"]["sections"] if k in THANKS_BLOCKS),
+""" + "\n\n".join(THANKS_BLOCKS[k] for k in PAGES["thanks"]["sections"] if k in THANKS_BLOCKS)
+  # Declares the "spin-entry" form so Netlify Forms accepts the entries that
+  # netlify/functions/spin.mjs posts (one per spin: email, prize, code).
+  # It is never shown or submitted from the browser.
+  + """
+<form name="spin-entry" data-netlify="true" netlify-honeypot="website" hidden>
+  <input name="email"><input name="prize"><input name="code"><input name="website">
+</form>
+""",
      current="index.html")
 
 

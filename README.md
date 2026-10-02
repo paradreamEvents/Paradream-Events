@@ -181,25 +181,44 @@ or send them through WhatsApp as *Document* rather than *Photo*.
 
 ---
 
-## Christmas countdown + spin wheel (`spin.js`, `spin.css`)
+## Christmas countdown + spin wheel (`spin.js`, `spin.css`, `netlify/functions/spin.mjs`)
 
 A navy countdown bar above the header ("Christmas is coming! 83d 07h ... Book Your
 Christmas Event") and a "Spin for a Christmas Surprise!" popup. It is seasonal: it
-only shows between `start` and `end` at the top of `spin.js` (1 Oct - 26 Dec 2026).
+only shows between `start` and `end` (1 Oct - 26 Dec 2026).
 
-- **Prizes and chances** - the `prizes` list in `CONFIG` at the top of `spin.js`.
-  *The current prizes and odds are placeholders.* Keep only what Paradream will
-  honor and make the costly ones rare (higher `weight` = more likely). "Try Again"
-  is a free respin that always ends on a real prize.
+**One spin per email address.** The visitor enters their email; the Netlify function
+`spin.mjs` gives that address one spin, ever, picks the prize on the server (so the
+odds cannot be changed in the browser) and makes the claim code. Case, `+tags` and
+Gmail dots are ignored, so `Jo.E+1@gmail.com` and `joe@googlemail.com` are the same
+person. A second try with the same email is refused without revealing the first
+prize. The email is not verified - anyone can type someone else's address, and
+someone with many addresses can spin many times.
+
+- **Prizes and odds** - the `PRIZES` table at the top of `netlify/functions/spin.mjs`
+  (whole-number weights; they add up to 100 now):
+  Try Again 30, Free consultation 10, 10% off 10, 20% off 5, Try Again 30,
+  Free candy 10, Free Santa character 5. "Try Again" is **no prize** (60% in total).
+  The wheel's order and the prize wording live in `CONFIG.prizes` in `spin.js`; the
+  `id`s must match (a check fails loudly if they drift).
+- **Where entries go** - Netlify Blobs (store `spin-entries`, one record per email:
+  email, prize, code, time) and the Netlify form **`spin-entry`**. Add an email
+  notification for `spin-entry` in Netlify (Forms -> Form notifications) like the
+  other forms; the entries then also appear under Forms and can be exported as CSV.
+- **Claiming** - the winner sees a code like `PD-7K3QX`, a "Claim on WhatsApp" button
+  (message pre-written with the code) and a link to the Christmas page, where the
+  prize and code are pre-filled into "Special Instructions". Codes are random labels
+  that arrive with the enquiry; match them against the `spin-entry` list.
 - **How it behaves** - opens by itself after 9 s or at 45% scroll, once per visitor
-  (snoozed 3 days if closed; never again after they win). Never auto-opens on pages
+  (snoozed 3 days if closed; never again after they spin). Never auto-opens on pages
   with a form. A small "Spin & win" pill (bottom-left) reopens it.
-- **Claiming** - the winner gets a code like `PD-7K3QX`, a "Claim on WhatsApp" button
-  (pre-written message with the code) and a link to the Christmas page, where the
-  prize and code are pre-filled into "Special Instructions".
-- **Codes are not checked by a server.** They are random labels that arrive with the
-  enquiry; match them against the WhatsApp message / form submission yourself.
-- **Preview any time** (ignores dates and saved prizes): add `?spin=1` to a page
-  address. `?spin=reset` also clears the prize saved on your own device.
-- **Retire it** - delete the `spin.css` and `spin.js` lines in `build.py`
-  (search `spin.`) and run `python3 build.py`.
+- **Preview locally** - `npm install` once, then `node dev-server.mjs` and open
+  `http://127.0.0.1:8123/index.html?spin=1`. This runs the real function with a local
+  Blobs store (kept in `.netlify/blobs-local`), and shows the photos. `--fresh` forgets
+  every email that has spun; `--lan` also serves your phone on the same Wi-Fi.
+  `?spin=1` ignores dates; `?spin=reset` also forgets the result saved in your browser.
+- **Deploying it** adds `package.json` (one dependency, `@netlify/blobs`), so Netlify
+  runs `npm install` during the build, and one function. Nothing else to configure.
+- **Retire it** - delete the `spin.css` and `spin.js` lines in `build.py` (search
+  `spin.`), delete the `spin-entry` form block at the end of the thanks page in
+  `build.py`, and rebuild.
