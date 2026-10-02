@@ -5,7 +5,7 @@
 
 /* ── Countdown bar ───────────────────────────────── */
 .pdx-bar{
-  position:relative;z-index:60;background:var(--ink,#12263A);color:#fff;
+  position:relative;z-index:60;background:#000;color:#fff;
   display:flex;flex-wrap:wrap;gap:.35rem 1rem;align-items:center;justify-content:center;
   padding:.55rem 2.8rem .55rem 1rem;font-size:.9rem;line-height:1.3;text-align:center;
 }
@@ -30,9 +30,9 @@
 .pdx-launch{
   position:fixed;left:1.1rem;bottom:calc(1.1rem + var(--dock,0px));z-index:95;
   display:inline-flex;align-items:center;gap:.55rem;padding:.65rem 1.1rem .65rem .8rem;
-  border:0;border-radius:999px;background:var(--ink,#12263A);color:#fff;cursor:pointer;
+  border:0;border-radius:999px;background:#000;color:#fff;cursor:pointer;
   font-family:inherit;font-size:.78rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;
-  box-shadow:0 6px 22px rgba(18,38,58,.32);
+  box-shadow:0 0 0 1px rgba(255,255,255,.2),0 6px 22px rgba(0,0,0,.4);
   transition:bottom .25s ease,opacity .2s,transform .2s;
 }
 .pdx-launch svg{width:22px;height:22px;fill:#fff;background:var(--red,#E4251B);border-radius:50%;padding:4px;box-sizing:content-box}
@@ -45,13 +45,13 @@
 .pdx-modal{position:fixed;inset:0;z-index:140;display:grid;place-items:center;padding:12px}
 .pdx-modal[hidden]{display:none}
 .pdx-backdrop{
-  position:absolute;inset:0;background:rgba(7,16,26,.74);
+  position:absolute;inset:0;background:rgba(0,0,0,.76);
   -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:pdx-fade .3s both;
 }
 .pdx-card{
   position:relative;width:min(440px,100%);max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);
   overflow-y:auto;padding:1.9rem 1.4rem 1.3rem;text-align:center;color:#fff;
-  background:linear-gradient(180deg,#1b3a5a 0%,#12263A 48%,#0c1a29 100%);
+  background:#000;
   border-top:4px solid var(--red,#E4251B);border-radius:4px;
   box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.1);
   animation:pdx-pop .5s cubic-bezier(.2,.9,.3,1.12) both;outline:0;
@@ -70,7 +70,7 @@
 /* wheel */
 .pdx-wheel{position:relative;width:min(330px,76vw);aspect-ratio:1;margin:1.4rem auto 1rem}
 /* once there is a prize, the wheel steps back so the prize and buttons fit on a phone */
-.pdx-card.is-won .pdx-wheel{width:min(200px,52vw);margin:1.1rem auto .9rem;transition:width .45s ease,margin .45s ease}
+.pdx-card.is-won .pdx-wheel{width:min(200px,52vw);margin:1.1rem auto .9rem}
 .pdx-rim,.pdx-disc{position:absolute;display:block}
 .pdx-rim{inset:0;width:100%;height:100%;filter:drop-shadow(0 10px 18px rgba(0,0,0,.45))}
 .pdx-disc{left:5.45%;top:5.45%;width:89.1%;height:89.1%;will-change:transform}
@@ -84,7 +84,7 @@
 .pdx-hub{
   position:absolute;left:50%;top:50%;z-index:2;width:21%;aspect-ratio:1;transform:translate(-50%,-50%);
   display:grid;place-items:center;border-radius:50%;background:#fff;
-  border:5px solid var(--ink,#12263A);box-shadow:0 0 0 3px var(--red,#E4251B),0 6px 14px rgba(0,0,0,.4);
+  border:5px solid #000;box-shadow:0 0 0 3px var(--red,#E4251B),0 6px 14px rgba(0,0,0,.5);
 }
 .pdx-hub img{width:84%;height:84%;object-fit:contain}
 

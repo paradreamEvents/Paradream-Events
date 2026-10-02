@@ -167,10 +167,10 @@
            p1[0].toFixed(2) + " " + p1[1].toFixed(2) + " Z";
   }
 
-  // Red / white alternate; with an odd number of segments the last one is navy
-  // so it never sits next to a segment of its own color.
+  // Red / white alternate; with an odd number of segments the last one is charcoal
+  // so it never sits next to a segment of its own color (charcoal, like the footer).
   function segStyle(k) {
-    if (N % 2 === 1 && k === N - 1) return { fill: "#1E3A5C", ink: "#fff" };
+    if (N % 2 === 1 && k === N - 1) return { fill: "#1A1A1A", ink: "#fff" };
     return k % 2 === 0 ? { fill: "#E4251B", ink: "#fff" } : { fill: "#F5F7F9", ink: "#12263A" };
   }
 
@@ -214,13 +214,13 @@
       '<defs><linearGradient id="pdx-rimg" x1="0" y1="0" x2="0" y2="1">' +
       '<stop offset="0" stop-color="#F0382E"/><stop offset="1" stop-color="#B91910"/></linearGradient></defs>' +
       '<circle cx="' + c + '" cy="' + c + '" r="218" fill="url(#pdx-rimg)"/>' +
-      '<circle cx="' + c + '" cy="' + c + '" r="199" fill="none" stroke="#12263A" stroke-width="5"/>' +
+      '<circle cx="' + c + '" cy="' + c + '" r="199" fill="none" stroke="#000" stroke-width="5"/>' +
       '<circle cx="' + c + '" cy="' + c + '" r="216" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>' +
       bulbs + '</svg>';
   }
 
   var POINTER = '<svg class="pdx-pointer" viewBox="0 0 60 72" aria-hidden="true" focusable="false">' +
-    '<path d="M30 68 8 18Q5 7 15 6H45Q55 7 52 18Z" fill="#fff" stroke="#12263A" stroke-width="5" stroke-linejoin="round"/></svg>';
+    '<path d="M30 68 8 18Q5 7 15 6H45Q55 7 52 18Z" fill="#fff" stroke="#000" stroke-width="5" stroke-linejoin="round"/></svg>';
 
   var GIFT = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7h-2.3A3.2 3.2 0 0 0 12 5a3.2 3.2 0 0 0-5.7 2H4a1 1 0 0 0-1 1v3h8V8h2v3h8V8a1 1 0 0 0-1-1ZM9.5 7a1.2 1.2 0 1 1 1.2 1.2H9.5Zm4.8 1.2A1.2 1.2 0 1 1 15.5 7v1.2ZM4 13v6a1 1 0 0 0 1 1h6v-7Zm9 0v7h6a1 1 0 0 0 1-1v-6Z"/></svg>';
 
