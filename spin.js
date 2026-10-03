@@ -3,7 +3,7 @@
    Surprise" popup.
 
    How it works: the visitor enters their email, the server
-   (netlify/functions/spin.mjs) gives that email ONE spin, picks the
+   (functions/api/spin.js) gives that email ONE spin, picks the
    prize and makes the claim code; this file just animates the wheel
    to whatever the server picked.
 
@@ -17,7 +17,7 @@
        add  ?spin=reset  to any page address
    (Your email stays used on the server; test with another address.)
 
-   The ODDS are not here - they are in netlify/functions/spin.mjs.
+   The ODDS are not here - they are in cf-lib/spin-core.js.
    ========================================================== */
 (function () {
   "use strict";
@@ -29,12 +29,12 @@
     christmas: "2026-12-25T00:00:00",
     bookUrl: "christmas.html",      // where "Book Your Christmas Event" goes
     whatsapp: "96181406046",
-    endpoint: "/.netlify/functions/spin",
+    endpoint: "/api/spin",
     autoOpenAfterMs: 9000,          // the popup opens by itself after this long...
     snoozeDays: 3,                  // ...and stays quiet this many days once closed
 
     // The wheel, clockwise from the top: its look and the prize wording.
-    // The ids must match PRIZES in netlify/functions/spin.mjs.
+    // The ids must match PRIZES in cf-lib/spin-core.js.
     // `none: true` = the wheel lands there but the visitor wins nothing.
     prizes: [
       { id: "again-a", lines: ["Try", "Again"],       icon: "🎉", none: true },

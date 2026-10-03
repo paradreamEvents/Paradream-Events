@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Builds the Paradream static site. Run: python3 build.py"""
-import os, html, json, re
+import os, html, json, re, sys, shutil
 from urllib.parse import quote
 
 # Everything editable lives in content.json — the admin panel writes to it.
@@ -25,6 +25,21 @@ for _sv in CONTENT.get("services", []):
     _sv.setdefault("book", "contact-us.html")
 
 OUT = os.path.dirname(os.path.abspath(__file__))
+ROOT = OUT
+
+# Where the site is hosted. Default "netlify" keeps the old behaviour (pages written next to
+# this file). "cloudflare" builds the whole site into dist/ for Cloudflare Pages:
+#     PD_TARGET=cloudflare python3 build.py        (or:  python3 build.py --cloudflare)
+TARGET = "cloudflare" if "--cloudflare" in sys.argv else os.environ.get("PD_TARGET", "netlify").lower()
+CF = TARGET == "cloudflare"
+if CF:
+    OUT = os.path.join(ROOT, "dist")
+    os.makedirs(OUT, exist_ok=True)
+
+# What each <form> posts to. Netlify collects forms itself; on Cloudflare they go to
+# functions/api/form.js, which saves them and emails the team.
+FORM_ATTRS = ('action="/api/form"' if CF else
+              'action="/thanks.html" data-netlify="true" netlify-honeypot="website"')
 
 CDN = "https://custom-images.strikinglycdn.com/res/hrscywv4p/image/upload"
 LOGO = "images/logo-mark.png"
@@ -127,7 +142,14 @@ def media(src, w):
         return ""
     return cdn(src, w) if src.startswith("images/") else src
 
+IMG_USED = {}   # (path, width) -> True, filled while pages are built; generate_images() makes these files
+
 def cdn(path, w, extra="&amp;q=90"):
+    if CF:
+        # Cloudflare target: a normal static file made at build time (see generate_images)
+        IMG_USED[(path, int(w))] = True
+        name = os.path.splitext(path[len("images/"):] if path.startswith("images/") else path)[0]
+        return f"/_img/{int(w)}/{name}.webp?v={stamp(path)}"
     # No "fit=cover" here: without a matching "h=", Netlify's image CDN crops
     # to the SOURCE image's native height instead of scaling proportionally,
     # which over-zoomed every photo whose height is large relative to the
@@ -368,6 +390,15 @@ def breadcrumb_ld(filename, title, current):
     return {"@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": i + 1, "name": n, "item": u} for i, (n, u) in enumerate(items)]}
 
+def clean_links(h):
+    """Cloudflare Pages answers /why-paradream and redirects /why-paradream.html to it,
+    so point internal links straight at the clean address (no extra hop)."""
+    def fix(m):
+        name = m.group(1)
+        return 'href="' + ("/" if name == "index" else "/" + name) + m.group(2)
+    return re.sub(r'href="/?([a-z0-9-]+)\.html(["?#])', fix, h)
+
+
 def page(filename, title, description, body, current=None, ld=None):
     PAGES_WRITTEN.append(filename)
     title = fit_title(title)
@@ -381,7 +412,7 @@ def page(filename, title, description, body, current=None, ld=None):
     if ld:
         graph.extend(ld)
     ld_tag = ('<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False) + '</script>') if graph else ""
-    robots = '<meta name="robots" content="noindex, follow">' if filename == "thanks.html" else ""
+    robots = '<meta name="robots" content="noindex, follow">' if filename in ("thanks.html", "404.html") else ""
     extra_head = ld_tag + robots
     doc = f"""<!DOCTYPE html>
 <html lang="en">
@@ -422,6 +453,8 @@ def page(filename, title, description, body, current=None, ld=None):
 </body>
 </html>
 """
+    if CF:
+        doc = clean_links(doc)
     with open(os.path.join(OUT, filename), "w", encoding="utf-8") as f:
         f.write(doc)
     print("wrote", filename)
@@ -1145,7 +1178,7 @@ def occasion_form(slug, title, chocolate_options, extra_top=""):
 <section class="form-wrap" style="grid-template-columns:1fr;max-width:760px">
   <div>
     <p class="form-note">{RESPONSE_NOTE}</p>
-    <form class="form" name="{slug}-enquiry" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="website">
+    <form class="form" name="{slug}-enquiry" method="POST" {FORM_ATTRS}>
       <input type="hidden" name="form-name" value="{slug}-enquiry">
       <p class="hp"><label>Leave empty <input name="website"></label></p>
 
@@ -1199,7 +1232,7 @@ page("contact-us.html", "Contact Paradream | Event Entertainment in Lebanon",
     </dl>
   </div>
 
-  <form class="form" name="event-enquiry" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="website">
+  <form class="form" name="event-enquiry" method="POST" {FORM_ATTRS}>
     <input type="hidden" name="form-name" value="event-enquiry">
     <input type="hidden" name="service" id="service-field" value="">
     <p class="hp"><label>Leave empty <input name="website"></label></p>
@@ -1344,7 +1377,7 @@ wedding_body = f"""
 <section class="form-wrap" style="grid-template-columns:1fr;max-width:760px">
   <div>
     <p class="form-note">{RESPONSE_NOTE}</p>
-    <form class="form" name="wedding-enquiry" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="website">
+    <form class="form" name="wedding-enquiry" method="POST" {FORM_ATTRS}>
       <input type="hidden" name="form-name" value="wedding-enquiry">
       <p class="hp"><label>Leave empty <input name="website"></label></p>
 
@@ -1417,7 +1450,7 @@ plan_body = f"""
 <section class="form-wrap" style="grid-template-columns:1fr;max-width:760px">
   <div>
     <p class="form-note">{RESPONSE_NOTE}</p>
-    <form class="form" name="plan-event-enquiry" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="website">
+    <form class="form" name="plan-event-enquiry" method="POST" {FORM_ATTRS}>
       <input type="hidden" name="form-name" value="plan-event-enquiry">
       <p class="hp"><label>Leave empty <input name="website"></label></p>
 
@@ -1485,7 +1518,7 @@ page("join-us.html", "Join Our Team - Paradream Events",
     <h2>{PAGES["join-us"]["work_h"]}</h2>
     <p>{PAGES["join-us"]["work_p"]}</p>
 
-    <form class="form" name="join-us" method="POST" action="/thanks.html" enctype="multipart/form-data" data-netlify="true" netlify-honeypot="website">
+    <form class="form" name="join-us" method="POST" enctype="multipart/form-data" {FORM_ATTRS}>
       <input type="hidden" name="form-name" value="join-us">
       <p class="hp"><label>Leave empty <input name="website"></label></p>
 
@@ -1558,11 +1591,11 @@ page("thanks.html", "Thank you - Paradream Events",
   # Declares the "spin-entry" form so Netlify Forms accepts the entries that
   # netlify/functions/spin.mjs posts (one per spin: email, prize, code).
   # It is never shown or submitted from the browser.
-  + """
+  + ("" if CF else """
 <form name="spin-entry" data-netlify="true" netlify-honeypot="website" hidden>
   <input name="email"><input name="prize"><input name="code"><input name="website">
 </form>
-""",
+"""),
      current="index.html")
 
 
@@ -1605,7 +1638,7 @@ print("done")
 
 # ── sitemap.xml ─────────────────────────────────────────────
 import datetime
-_skip = {"thanks.html", "admin.html"}
+_skip = {"thanks.html", "admin.html", "404.html"}
 _urls = []
 for _f in PAGES_WRITTEN:
     if _f in _skip:
@@ -1621,3 +1654,115 @@ print("wrote sitemap.xml")
 with open(os.path.join(OUT, "robots.txt"), "w", encoding="utf-8") as _fh:
     _fh.write("User-agent: *\nAllow: /\nDisallow: /admin.html\nDisallow: /thanks.html\n\nSitemap: https://paradreamlb.com/sitemap.xml\n")
 print("wrote robots.txt")
+
+
+# ── Cloudflare Pages: everything that is not a page ─────────────────────────
+def generate_images():
+    """Make the resized WebP copies the pages ask for (see cdn()). Each photo is opened once
+    and all its sizes are made together, several photos at a time. Files that already exist
+    and are newer than the original are kept, so rebuilding after a small edit is quick."""
+    from PIL import Image, ImageOps
+    from concurrent.futures import ThreadPoolExecutor
+    by_src = {}
+    for (path, w) in IMG_USED:
+        by_src.setdefault(path, set()).add(w)
+
+    def work(item):
+        path, widths = item
+        src = os.path.join(ROOT, path)
+        if not os.path.exists(src):
+            print("  WARNING: missing image", path)
+            return (0, 0)
+        name = os.path.splitext(path[len("images/"):] if path.startswith("images/") else path)[0]
+        todo, kept = [], 0
+        for w in sorted(widths):
+            dest = os.path.join(OUT, "_img", str(w), name + ".webp")
+            if os.path.exists(dest) and os.path.getmtime(dest) >= os.path.getmtime(src):
+                kept += 1
+            else:
+                todo.append((w, dest))
+        if not todo:
+            return (0, kept)
+        im = Image.open(src)
+        if im.format == "JPEG":                    # decode big photos at a smaller size: much faster
+            big = max(w for w, _ in todo)
+            im.draft("RGB", (big, max(1, round(big * im.height / im.width))))
+        im = ImageOps.exif_transpose(im)
+        has_alpha = im.mode in ("RGBA", "LA") or (im.mode == "P" and "transparency" in im.info)
+        im = im.convert("RGBA" if has_alpha else "RGB")
+        for w, dest in todo:
+            out = im if im.width <= w else im.resize((w, max(1, round(im.height * w / im.width))), Image.LANCZOS)
+            os.makedirs(os.path.dirname(dest), exist_ok=True)
+            out.save(dest, "WEBP", quality=82, method=2)   # method 2: ~2x faster than 4, same size within 5%
+        return (len(todo), kept)
+
+    with ThreadPoolExecutor(max_workers=os.cpu_count() or 4) as pool:
+        results = list(pool.map(work, sorted(by_src.items())))
+    made = sum(r[0] for r in results)
+    kept = sum(r[1] for r in results)
+    print(f"images: {made} made, {kept} already up to date, {len(by_src)} photos")
+
+
+def finish_cloudflare():
+    # 404 page. Without one, Cloudflare answers every wrong address with the home page.
+    page("404.html", "Page not found - Paradream Events", "That page does not exist.",
+         """
+<section class="page-head">
+  <h1>Page not found</h1>
+  <p>The page you are looking for does not exist or has moved.</p>
+</section>
+<section class="band">
+  <div class="band-inner">
+    <a class="btn btn-solid" href="index.html">Back to the home page</a>
+    <a class="btn btn-outline" href="our-services.html">Our services</a>
+  </div>
+</section>""", current="index.html")
+
+    # files that are served as they are
+    static = ["styles.css", "main.js", "spin.css", "spin.js", "favicon.ico", "favicon-32.png",
+              "favicon-192.png", "apple-touch-icon.png", "admin.html"]
+    static += [f for f in os.listdir(ROOT) if f.startswith("google") and f.endswith(".html")]
+    for f in static:
+        if os.path.exists(os.path.join(ROOT, f)):
+            shutil.copy2(os.path.join(ROOT, f), os.path.join(OUT, f))
+
+    # photos that pages point at directly (logo, social-share image, ...)
+    direct = set()
+    pat = re.compile(r"images/[A-Za-z0-9_./-]+\.(?:png|jpe?g|webp|gif|svg|ico)")
+    for fn in os.listdir(OUT):
+        if fn.endswith((".html", ".css", ".js")):
+            with open(os.path.join(OUT, fn), encoding="utf-8", errors="ignore") as fh:
+                direct.update(pat.findall(fh.read()))
+    copied = 0
+    for rel in sorted(direct):
+        src = os.path.join(ROOT, rel)
+        if os.path.isfile(src):
+            os.makedirs(os.path.dirname(os.path.join(OUT, rel)), exist_ok=True)
+            shutil.copy2(src, os.path.join(OUT, rel))
+            copied += 1
+    print(f"copied {copied} photos used directly")
+
+    generate_images()
+
+    # response headers, and the old Strikingly addresses -> new pages
+    hdr = os.path.join(ROOT, "cloudflare", "_headers")
+    if os.path.exists(hdr):
+        shutil.copy2(hdr, os.path.join(OUT, "_headers"))
+    red = os.path.join(ROOT, "_redirects")
+    if os.path.exists(red):
+        out_lines = []
+        for line in open(red, encoding="utf-8").read().splitlines():
+            parts = line.split()
+            if len(parts) >= 2 and not line.lstrip().startswith("#"):
+                parts[1] = re.sub(r"\.html$", "", parts[1]) or "/"
+                if parts[1] == "/index":
+                    parts[1] = "/"
+                line = "  ".join(parts)
+            out_lines.append(line)
+        with open(os.path.join(OUT, "_redirects"), "w", encoding="utf-8", newline="\n") as fh:
+            fh.write("\n".join(out_lines) + "\n")
+    print("wrote _headers and _redirects")
+
+
+if CF:
+    finish_cloudflare()

@@ -4,6 +4,8 @@
   "description": "Paradream Events website. Static pages built by build.py; Netlify functions in netlify/functions.",
   "scripts": {
     "build": "python3 build.py",
+    "build:cloudflare": "python3 build.py --cloudflare",
+    "dev:cloudflare": "wrangler pages dev",
     "dev": "node dev-server.mjs"
   },
   "dependencies": {

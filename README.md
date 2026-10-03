@@ -1,6 +1,8 @@
 # Paradream Events
 
-Static site migrated from Strikingly. Deploys to Netlify from `main`.
+Static site migrated from Strikingly. **Moving from Netlify to Cloudflare Pages: see `CLOUDFLARE.md`** (setup steps, what changed, how to try it locally). The Netlify notes below describe the old setup.
+
+Old setup: deploys to Netlify from `main`.
 
 ## Pages
 

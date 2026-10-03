@@ -3,3 +3,8 @@ Thumbs.db
 node_modules/
 .netlify/
 photo-prep.html
+
+# Cloudflare build output and local dev state
+dist/
+.wrangler/
+.dev.vars

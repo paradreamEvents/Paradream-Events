@@ -565,7 +565,7 @@
       history.push({ role: "user", content: text });
       var t = typing();
 
-      fetch("/.netlify/functions/assistant", {
+      fetch("/api/assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: history })

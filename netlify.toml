@@ -19,3 +19,15 @@
   for = "/admin.html"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
+
+# The site calls /api/spin and /api/assistant (Cloudflare addresses). This keeps them working if the
+# site is ever served from Netlify again.
+[[redirects]]
+  from = "/api/spin"
+  to = "/.netlify/functions/spin"
+  status = 200
+
+[[redirects]]
+  from = "/api/assistant"
+  to = "/.netlify/functions/assistant"
+  status = 200

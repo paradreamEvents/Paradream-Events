@@ -1,0 +1,20 @@
+# Cloudflare Pages settings for the Paradream site.
+# Build command (set in the Pages project):  pip install -r requirements.txt && PD_TARGET=cloudflare python3 build.py
+# Build output directory:                      dist
+
+name = "paradream"
+compatibility_date = "2025-10-01"
+pages_build_output_dir = "dist"
+
+# The database (create it once, then paste its id below):  npx wrangler d1 create paradream
+[[d1_databases]]
+binding = "DB"
+database_name = "paradream"
+database_id = "00000000-0000-0000-0000-000000000000"   # <- replace with the real id after "d1 create"
+
+# Plain settings. Secrets (RESEND_API_KEY, ANTHROPIC_API_KEY) are NOT written here; add them in
+# the Cloudflare dashboard: the project -> Settings -> Variables and Secrets.
+[vars]
+NOTIFY_TO = "paradedream@gmail.com"                             # who gets the form / winner emails
+MAIL_FROM = "Paradream Website <onboarding@resend.dev>"         # works for the Resend account owner's own address
+SPIN_NOTIFY = "winners"                                         # winners | all | off
