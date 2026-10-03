@@ -86,7 +86,9 @@
   display:grid;place-items:center;border-radius:50%;background:#fff;
   border:5px solid #000;box-shadow:0 0 0 3px var(--red,#E4251B),0 6px 14px rgba(0,0,0,.5);
 }
-.pdx-hub img{width:84%;height:84%;object-fit:contain}
+/* logo-mark.png has its ring ~15px left of / 3px below the file's centre; nudge it so the ring is
+   concentric with the hub (measured by fitting circles to the logo's red and black rings) */
+.pdx-hub img{width:84%;height:84%;object-fit:contain;transform:translate(3.78%,-.85%)}
 
 /* email step */
 .pdx-form{display:grid;gap:.7rem;width:min(21rem,100%);margin:.3rem auto 0;text-align:left}
