@@ -19,14 +19,10 @@ the functions (spin, forms, chat): 100,000 calls a day. Past that, those three s
 ## One-time setup
 
 ### 1. The database
-```
-npx wrangler login
-npx wrangler d1 create paradream
-```
-Copy the `database_id` it prints into `wrangler.toml` (replace the `0000...` one), then create the tables:
-```
-npx wrangler d1 migrations apply paradream --remote
-```
+Cloudflare dashboard -> **Storage & databases** -> **D1 SQL database** -> **Create database**, name it `paradream`.
+Open it, go to **Console**, and run the three statements in `migrations/0001_init.sql` one at a time.
+Its id (the long code in the address bar after `/databases/`) goes in `wrangler.toml` as `database_id`.
+(Command-line alternative: `npx wrangler login`, `npx wrangler d1 create paradream`, `npx wrangler d1 migrations apply paradream --remote`.)
 
 ### 2. The Pages project
 Cloudflare dashboard -> **Workers & Pages** -> **Create** -> **Pages** -> **Connect to Git** -> pick
@@ -61,11 +57,15 @@ address you signed up with - **test this**. If emails do not arrive, verify `par
 Open the `.pages.dev` address. Send a test enquiry, spin the wheel with a test email, open the chat bubble,
 click through the pages. Check the email arrived. Nothing about `paradreamlb.com` has changed yet.
 
-### 6. Switch the domain (this is the only step that changes the live site)
-Project -> **Custom domains** -> add `paradreamlb.com` and `www.paradreamlb.com`. The domain's DNS is already in
-this Cloudflare account, so Cloudflare offers to update it. Replace the two records that point at Netlify
-(`paradreamlb.com` A `75.2.60.5`, and the `www` CNAME). **Leave the MX and TXT records alone** - they are your email.
-To go back, point those two records at Netlify again.
+### 6. Connect the domain
+`paradreamlb.com` was registered through Strikingly, and its DNS lived in Strikingly's dashboard. The domain is now added
+to this Cloudflare account (nameservers `collins.ns.cloudflare.com` and `jason.ns.cloudflare.com`, status Active) and its
+registration is being transferred to Cloudflare Registrar (started 2026-10-06; it expires 2026-11-08, the transfer adds a year).
+
+Pages project -> **Custom domains** -> add `paradreamlb.com` and `www.paradreamlb.com`. Cloudflare creates the DNS records itself.
+Keep the existing TXT records (Google verification, SPF). The old Netlify records (an A record and the `www` CNAME) are already deleted.
+There is no working @paradreamlb.com mailbox (the MX target does not exist); email forwarding via Cloudflare Email Routing is an option.
+To go back to Netlify, point those two records at Netlify again (its free plan may be paused).
 
 ## Day to day
 - Edit in the admin panel as before, or push to `main`: Cloudflare rebuilds and publishes by itself.

@@ -10,7 +10,7 @@ pages_build_output_dir = "dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "paradream"
-database_id = "00000000-0000-0000-0000-000000000000"   # <- replace with the real id after "d1 create"
+database_id = "f89eb79f-35a4-44d2-aa53-6d76333d028a"
 
 # Plain settings. Secrets (RESEND_API_KEY, ANTHROPIC_API_KEY) are NOT written here; add them in
 # the Cloudflare dashboard: the project -> Settings -> Variables and Secrets.
