@@ -1754,6 +1754,13 @@ def finish_cloudflare():
         for line in open(red, encoding="utf-8").read().splitlines():
             parts = line.split()
             if len(parts) >= 2 and not line.lstrip().startswith("#"):
+                # Netlify serves a real page in preference to a redirect for the same address.
+                # Cloudflare does the opposite (redirects win), so an old Strikingly address that is
+                # now a real page here (/christmas, /proposal, ...) must not be redirected away.
+                src = parts[0]
+                if "*" not in src and os.path.exists(os.path.join(OUT, src.lstrip("/") + ".html")):
+                    out_lines.append("# kept as a real page, not redirected: " + src)
+                    continue
                 parts[1] = re.sub(r"\.html$", "", parts[1]) or "/"
                 if parts[1] == "/index":
                     parts[1] = "/"

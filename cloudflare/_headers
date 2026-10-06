@@ -19,5 +19,5 @@
   X-Robots-Tag: noindex
 
 # Keep the temporary *.pages.dev addresses out of Google; only the real domain should be indexed.
-https://*.pages.dev/*
+https://:project.pages.dev/*
   X-Robots-Tag: noindex
