@@ -1540,7 +1540,7 @@ page("join-us.html", "Join Our Team - Paradream Events",
       <div class="field">
         <label for="cv">Attach Your Portfolio / Resume <span class="field-required">*</span></label>
         <input id="cv" name="cv" type="file" required accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-        <small class="field-note">Link to your CV or social media profile &middot; up to 20 MB</small>
+        <small class="field-note">PDF, Word or image &middot; up to 7 MB. Bigger portfolio or video? Attach your CV here and paste the link in &ldquo;Tell us about your experience&rdquo;.</small>
       </div>
       <div class="field">
         <label for="motivation">Why do you want to join Paradream?</label>
