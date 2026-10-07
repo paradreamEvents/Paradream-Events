@@ -39,8 +39,10 @@ export async function sendMail(env, { subject, text, replyTo, attachments }) {
   }
 }
 
-// ArrayBuffer -> base64 without blowing the call stack on large files.
+// ArrayBuffer -> base64. Buffer (nodejs_compat, see wrangler.toml) does it natively in a few ms even for
+// multi-megabyte files; the loop below is only a fallback and is far too slow for the free plan's CPU limit.
 export function toBase64(buffer) {
+  if (typeof Buffer !== "undefined") return Buffer.from(buffer).toString("base64");
   const bytes = new Uint8Array(buffer);
   let bin = "";
   const CHUNK = 0x8000;

@@ -5,6 +5,9 @@
 name = "paradream"
 compatibility_date = "2025-10-01"
 pages_build_output_dir = "dist"
+# Gives the functions Node's native Buffer, used to encode CV attachments in almost no CPU time
+# (the free plan allows only ~10 ms of CPU per request; a JavaScript loop over a 7 MB file blows it).
+compatibility_flags = ["nodejs_compat"]
 
 # The database (create it once, then paste its id below):  npx wrangler d1 create paradream
 [[d1_databases]]
