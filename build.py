@@ -682,7 +682,7 @@ HOME_BLOCKS = {
 }
 
 home = "\n\n".join(HOME_BLOCKS[k] for k in PAGES["home"]["sections"] if k in HOME_BLOCKS)
-page("index.html", "Paradream Events | Event Planner &amp; Zaffah in Lebanon",
+page("index.html", "Paradream Events | Event Planner in Lebanon",
      "Event planner in Lebanon: weddings, engagements, baptisms, birthdays and more. Live parades, oriental zaffah, entertainment and décor. Based in Beirut.",
      home)
 
