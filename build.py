@@ -1742,6 +1742,11 @@ def finish_cloudflare():
             copied += 1
     print(f"copied {copied} photos used directly")
 
+    # pictures used only inside outreach emails (banner, logo): served from /images/email/
+    email_imgs = os.path.join(ROOT, "images", "email")
+    if os.path.isdir(email_imgs):
+        shutil.copytree(email_imgs, os.path.join(OUT, "images", "email"), dirs_exist_ok=True)
+
     generate_images()
 
     # response headers, and the old Strikingly addresses -> new pages
