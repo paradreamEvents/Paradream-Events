@@ -21,6 +21,5 @@ database_id = "f89eb79f-35a4-44d2-aa53-6d76333d028a"
 NOTIFY_TO = "paradedream@gmail.com"                             # who gets the form / winner emails
 MAIL_FROM = "Paradream Website <onboarding@resend.dev>"         # works for the Resend account owner's own address
 SPIN_NOTIFY = "winners"                                         # winners | all | off
-SPIN_ENABLED = "off"                                            # on | off: "off" = the spin wheel is closed (also set CONFIG.wheel in spin.js)
-WINNER_EMAIL = "on"                                            # on | off: email every spin-wheel winner their prize + code
+WINNER_EMAIL = "on"                                             # on | off: email every spin-wheel winner their prize + code
 WINNER_FROM = "Paradream Events <hello@paradreamlb.com>"        # needs paradreamlb.com verified in Resend
