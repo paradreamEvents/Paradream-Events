@@ -41,7 +41,9 @@ export function buildWinnerEmail(prizeId, code, whatsapp = "96181406046") {
     "Merry Christmas,",
     "Paradream Events",
     "Furn El Chebbak, Beirut",
-    "paradreamlb.com/christmas"
+    "paradreamlb.com/christmas",
+    "",
+    "Can't find our emails? Check your Promotions or Spam folder."
   ].join("\n");
 
   const font = "font-family:Arial,Helvetica,sans-serif;";
@@ -60,6 +62,7 @@ export function buildWinnerEmail(prizeId, code, whatsapp = "96181406046") {
     `<a href="${wa}" style="display:inline-block;padding:15px 34px;${font}font-size:17px;font-weight:bold;color:#ffffff;text-decoration:none">Claim on WhatsApp</a></td></tr></table>` +
     `<div style="${font}font-size:13px;color:#777;padding-top:10px">${esc(phone)}</div></td></tr>` +
     `<tr><td style="padding:0 28px 22px;${font}color:#222;font-size:14px;line-height:1.6">Tell us the date and the kind of event you are planning, and we will take it from there.<br><br>Merry Christmas,<br><b>Paradream Events</b><br>Furn El Chebbak, Beirut</td></tr>` +
+    `<tr><td align="center" style="padding:0 28px 22px;${font}color:#777;font-size:12px;line-height:1.5">Can't find our emails? Check your Promotions or Spam folder.</td></tr>` +
     `</table></td></tr></table>`;
 
   return { subject, text, html };
