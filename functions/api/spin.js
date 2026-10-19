@@ -11,6 +11,7 @@
  */
 import { PRIZES, SEASON, weightedPick, makeCode, normalizeEmail, inSeason, sha256Hex } from "../../cf-lib/spin-core.js";
 import { sendMail } from "../../cf-lib/mail.js";
+import { buildWinnerEmail } from "../../cf-lib/winner-mail.js";
 
 const HEADERS = { "content-type": "application/json", "cache-control": "no-store" };
 const reply = (status, body) => new Response(JSON.stringify(body), { status, headers: HEADERS });
@@ -58,6 +59,24 @@ export async function onRequestPost({ request, env, waitUntil }) {
       replyTo: who.shown
     });
     if (waitUntil) waitUntil(note);
+  }
+
+  // Email the winner their prize and code, with a WhatsApp button to claim it (WINNER_EMAIL = "off" switches this off).
+  // It needs the sending domain to be verified in Resend; if it is not, or Resend is down, only this email fails:
+  // the spin and the team's own notification are unaffected.
+  if (code && String(env.WINNER_EMAIL || "on").toLowerCase() !== "off") {
+    const mail = buildWinnerEmail(prize.id, code);
+    if (mail) {
+      const toWinner = sendMail(env, {
+        to: who.shown,
+        from: env.WINNER_FROM || "Paradream Events <hello@paradreamlb.com>",
+        replyTo: String(env.NOTIFY_TO || "").split(",")[0].trim() || undefined,
+        subject: mail.subject,
+        text: mail.text,
+        html: mail.html
+      });
+      if (waitUntil) waitUntil(toWinner);
+    }
   }
 
   return reply(200, { id: prize.id, code });

@@ -7,17 +7,21 @@
  *   RESEND_API_URL   only for testing; leave unset in production.
  */
 
-export async function sendMail(env, { subject, text, replyTo, attachments }) {
+export async function sendMail(env, { subject, text, html, replyTo, attachments, to: toOverride, from: fromOverride }) {
   if (!env.RESEND_API_KEY) return { ok: false, skipped: true };
-  const to = String(env.NOTIFY_TO || "").split(",").map((s) => s.trim()).filter(Boolean);
+  // By default the team is emailed (NOTIFY_TO). `to` sends to someone else instead (e.g. a spin-wheel winner).
+  const to = toOverride
+    ? [String(toOverride).trim()]
+    : String(env.NOTIFY_TO || "").split(",").map((s) => s.trim()).filter(Boolean);
   if (!to.length) return { ok: false, skipped: true };
 
   const body = {
-    from: env.MAIL_FROM || "Paradream Website <onboarding@resend.dev>",
+    from: fromOverride || env.MAIL_FROM || "Paradream Website <onboarding@resend.dev>",
     to,
     subject,
     text
   };
+  if (html) body.html = html;
   if (replyTo) body.reply_to = replyTo;
   if (attachments && attachments.length) body.attachments = attachments;
 
