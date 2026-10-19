@@ -17,6 +17,8 @@ const HEADERS = { "content-type": "application/json", "cache-control": "no-store
 const reply = (status, body) => new Response(JSON.stringify(body), { status, headers: HEADERS });
 
 export async function onRequestPost({ request, env, waitUntil }) {
+  // SPIN_ENABLED = "off" (wrangler.toml) closes the wheel: nobody can spin, nothing is saved, nothing is emailed.
+  if (String(env.SPIN_ENABLED || "on").toLowerCase() === "off") return reply(403, { error: "closed" });
   if (!inSeason(Date.now(), SEASON)) return reply(403, { error: "closed" });
 
   let body;

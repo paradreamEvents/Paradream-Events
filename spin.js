@@ -24,6 +24,8 @@
 
   /* ── What you can change ─────────────────────────────────── */
   var CONFIG = {
+    wheel: false,                   // false = no spin wheel (no popup, no "Spin & win" button); the countdown bar stays.
+                                    // To bring the wheel back: true here, and SPIN_ENABLED = "on" in wrangler.toml.
     start: "2026-10-01",            // first day it shows (visitor's local time)
     end: "2026-12-26",              // last day it shows (keep in step with spin.mjs)
     christmas: "2026-12-25T00:00:00",
@@ -572,6 +574,8 @@
 
   /* ── Go ──────────────────────────────────────────────────── */
   buildBar();
+  if (!CONFIG.wheel) return;          // wheel switched off: only the countdown bar above is shown
+
   buildModal();
   buildLauncher();
   prefillChristmasForm();
