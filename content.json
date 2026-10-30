@@ -1130,7 +1130,6 @@
         }
       ],
       "photos": [
-        "images/svc-xmas-season-1.jpg",
         "images/svc-xmas-season-2.jpg",
         "images/svc-xmas-season-3.jpg",
         "images/svc-xmas-season-4.jpg",
@@ -1160,7 +1159,6 @@
         "Christmas Mascots"
       ],
       "photo_groups": {
-        "images/svc-xmas-season-1.jpg": "Christmas Season",
         "images/svc-xmas-season-2.jpg": "Christmas Season",
         "images/svc-xmas-season-3.jpg": "Christmas Season",
         "images/svc-xmas-season-4.jpg": "Christmas Season",
