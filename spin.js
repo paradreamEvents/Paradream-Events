@@ -190,9 +190,10 @@
       var size = two ? 14 : 15.5;
       var g = '<g transform="rotate(' + (k * SEG + SEG / 2) + ' ' + c + ' ' + c + ')">';
       g += '<text x="' + c + '" y="' + (c - 150) + '" font-size="27" text-anchor="middle" dominant-baseline="central">' + p.icon + '</text>';
+      // Lines end just short of the icon, so every label sits the same distance from its icon.
       p.lines.forEach(function (line, i) {
         var dx = two ? (i === 0 ? -8.5 : 8.5) : 0;
-        g += '<text transform="translate(' + (c + dx) + ' ' + (c - 92) + ') rotate(-90)" text-anchor="middle" ' +
+        g += '<text transform="translate(' + (c + dx) + ' ' + (c - 125) + ') rotate(-90)" text-anchor="end" ' +
              'dominant-baseline="central" font-family="Lato,system-ui,sans-serif" font-weight="900" ' +
              'font-size="' + size + '" letter-spacing=".3" fill="' + ink + '">' + line + '</text>';
       });
